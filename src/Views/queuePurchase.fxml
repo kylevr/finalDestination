@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.QueuePurchaseController">
+   <children>
+      <Label layoutX="15.0" layoutY="435.0" text="Current awaiting Queue Purchases">
+         <font>
+            <Font size="15.0" fx:id="x1" />
+         </font>
+      </Label>
+      <ScrollPane fx:id="scrollPaneBiddedAuctions" content="$null" layoutX="4.0" layoutY="466.0" prefHeight="214.0" prefWidth="254.0" />
+      <ComboBox fx:id="comboBoxCategory" layoutX="85.0" layoutY="45.0" onAction="#handleComboBoxAction" prefHeight="25.0" prefWidth="156.0">
+         <items>
+            <FXCollections fx:factory="observableArrayList">
+               <String fx:value="Item 1" />
+               <String fx:value="Item 2" />
+               <String fx:value="Item 3" />
+            </FXCollections>
+         </items>
+      </ComboBox>
+      <Label layoutX="14.0" layoutY="47.0" prefHeight="21.0" prefWidth="71.0" text="Category">
+         <font>
+            <Font size="15.0" fx:id="x11" />
+         </font>
+      </Label>
+      <Label layoutX="14.0" layoutY="14.0" prefHeight="21.0" prefWidth="71.0" text="Name">
+         <font>
+            <Font size="15.0" fx:id="x111" />
+         </font>
+      </Label>
+      <TextField fx:id="textFieldProductName" layoutX="85.0" layoutY="12.0" prefHeight="25.0" prefWidth="156.0" />
+      <ScrollPane fx:id="productsPane" content="$null" hbarPolicy="NEVER" layoutX="301.0" prefHeight="680.0" prefWidth="426.0" />
+      <Button layoutX="15.0" layoutY="404.0" mnemonicParsing="false" onAction="#createQueuePurchase" prefHeight="25.0" prefWidth="147.0" text="Create queue Purchase" />
+      <TextField fx:id="txtQuantity" layoutX="87.0" layoutY="271.0" prefHeight="25.0" prefWidth="147.0" />
+      <Label layoutX="16.0" layoutY="273.0" prefHeight="21.0" prefWidth="71.0" text="Quantity">
+         <font>
+            <Font size="15.0" fx:id="x1111" />
+         </font>
+      </Label>
+      <Label layoutX="16.0" layoutY="307.0" prefHeight="21.0" prefWidth="71.0" text="Min Price">
+         <font>
+            <Font size="15.0" fx:id="x11111" />
+         </font>
+      </Label>
+      <TextField fx:id="txtMinPrice" layoutX="87.0" layoutY="305.0" prefHeight="25.0" prefWidth="147.0" />
+      <Label layoutX="16.0" layoutY="341.0" prefHeight="21.0" prefWidth="71.0" text="Max Price">
+         <font>
+            <Font size="15.0" fx:id="x11112" />
+         </font>
+      </Label>
+      <TextField fx:id="txtMaxPrice" layoutX="87.0" layoutY="339.0" prefHeight="25.0" prefWidth="147.0" />
+      <Label layoutX="16.0" layoutY="373.0" prefHeight="21.0" prefWidth="71.0" text="Product :">
+         <font>
+            <Font size="15.0" fx:id="x11113" />
+         </font>
+      </Label>
+      <Label fx:id="lblProductName" layoutX="87.0" layoutY="373.0" prefHeight="21.0" prefWidth="156.0">
+         <font>
+            <Font size="15.0" fx:id="x111131" />
+         </font>
+      </Label>
+      <ListView fx:id="lstCategory" layoutX="16.0" layoutY="81.0" onMouseClicked="#CategoryDelete" prefHeight="142.0" prefWidth="228.0" />
+      <Button layoutX="18.0" layoutY="235.0" mnemonicParsing="false" onAction="#searchProduct" prefHeight="25.0" prefWidth="147.0" text="Search Product" />
+   </children>
+</AnchorPane>

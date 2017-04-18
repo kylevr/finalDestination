@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
+  <children>
+    <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="700.0" />
+    <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" prefWidth="113.0" text="Settings" />
+    <ScrollPane fx:id="scrollPaneBiddedAuctions" content="$null" layoutX="15.0" layoutY="330.0" prefHeight="214.0" prefWidth="474.0" />
+    <Label layoutX="15.0" layoutY="310.0" text="Auctions You've placed a bid on:">
+      <font>
+        <Font size="15.0" fx:id="x1" />
+      </font>
+    </Label>
+    <ScrollPane fx:id="scrollPaneWonBought" content="$null" layoutX="15.0" layoutY="572.0" prefHeight="214.0" prefWidth="474.0" />
+    <Label font="$x1" layoutX="15.0" layoutY="552.0" text="Auctions You've won / Bought:" />
+    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="15.0" layoutY="44.0" pickOnBounds="true" preserveRatio="false" />
+    <CheckBox layoutX="290.0" layoutY="43.0" mnemonicParsing="false" prefWidth="199.0" text="Direct Auctions" />
+    <Label font="$x1" layoutX="290.0" layoutY="24.0" text="Filters:" />
+    <CheckBox layoutX="290.0" layoutY="75.0" mnemonicParsing="false" prefWidth="199.0" text="Countdown Auctions" />
+    <CheckBox layoutX="290.0" layoutY="59.0" mnemonicParsing="false" prefWidth="199.0" text="Ascending Auctions" />
+    <ListView fx:id="lstCategory" layoutX="290.0" layoutY="149.0" onMouseClicked="#CategoryDelete" prefHeight="161.0" prefWidth="199.0" />
+    <ComboBox fx:id="comboBoxCategory" layoutX="290.0" layoutY="118.0" onAction="#CategorySelected" prefHeight="21.0" prefWidth="199.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ComboBox>
+    <Label layoutX="290.0" layoutY="99.0" text="Categories:">
+      <font>
+        <Font size="13.0" />
+      </font>
+    </Label>
+    <Button layoutX="16.0" layoutY="203.0" mnemonicParsing="false" prefWidth="199.0" text="Sell an item" />
+      <Button layoutX="16.0" layoutY="47.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" />
+      <Button layoutX="16.0" layoutY="80.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
+  </children>
+</AnchorPane>
