@@ -543,87 +543,10 @@ public class Connection {
         return user;
     }
     
-    /**
-     * Gets user with given username
-     * @param username
-     * @return
-     */
-    public User getUser(String username) {
-        User user = null;
 
-        try {
-            getConnection();
-            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
-            pstmt.setString(1, username);
-
-            myRs = pstmt.executeQuery();
-            myRs.next();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
-            String usernm = myRs.getString("username");
-            String pass = myRs.getString("password");
-            String alias = myRs.getString("alias");
-            String email = myRs.getString("email");
-            boolean verified = myRs.getBoolean("verified");
-            double saldo = myRs.getDouble("saldo");
-            String imgURL = myRs.getString("imageUrl");
-
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
-            closeConnection();
-        } catch (SQLException ex) {
-            System.out.println("User not found");
-            closeConnection();
-        }
-
-        return user;
-    }
     
-    /**
-     * Gets user with given username
-     * @param username
-     * @return
-     */
-    public User getUser(String username) {
-        User user = null;
-
-        try {
-            getConnection();
-            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
-            pstmt.setString(1, username);
-
-            myRs = pstmt.executeQuery();
-            myRs.next();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
-            String usernm = myRs.getString("username");
-            String pass = myRs.getString("password");
-            String alias = myRs.getString("alias");
-            String email = myRs.getString("email");
-            boolean verified = myRs.getBoolean("verified");
-            double saldo = myRs.getDouble("saldo");
-            String imgURL = myRs.getString("imageUrl");
-
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
-            closeConnection();
-        } catch (SQLException ex) {
-            System.out.println("User not found");
-            closeConnection();
-        }
-
-        return user;
-    }
+    
+   
     
     /**
      *

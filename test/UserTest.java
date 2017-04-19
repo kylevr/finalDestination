@@ -85,7 +85,7 @@ public class UserTest {
    */
     @Test
     public void TestRequestPlaceBid() {
-        Bid b = new Bid(TestUser, 10);
+        Bid b = new Bid(1, TestUser, 10);
         TestUser.requestPlaceBid(a, b);
         assertEquals(1, a.getBids().size());
 
@@ -96,7 +96,7 @@ public class UserTest {
    */
     @Test
     public void TestRequestRemoveBid() {
-        Bid b = new Bid(TestUser, 10);
+        Bid b = new Bid(1, TestUser, 10);
         TestUser.requestPlaceBid(a, b);
         assertEquals(1, a.getBids().size());
         TestUser.requestRemoveBid();
