@@ -32,7 +32,7 @@ public class Grand_Exchange implements Observer {
         auctions = con.getAuctions("*", "auction", "''");
         products = con.getProducts();
         queuepurchases = con.getQueuePurchases();
-        
+
         dbListener = new DatabaseListener();
         dbListener.addObserver(this);
     }
@@ -95,7 +95,7 @@ public class Grand_Exchange implements Observer {
             products.add(product);
         }
     }
-    
+
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
         con.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
     }
@@ -156,31 +156,29 @@ public class Grand_Exchange implements Observer {
     public ArrayList<Product> getProducts() {
         return products;
     }
-    
+
     public ArrayList<Product> getProducts(String name, CategoryEnum category) {
         ArrayList<Product> tempList = new ArrayList<>();
         String productName = name.toLowerCase();
-        for(Product p : products){
-            if(productName.equals("")){
-                if (p.getCategory().equals(category)){
+        for (Product p : products) {
+            if (productName.equals("")) {
+                if (p.getCategory().equals(category)) {
                     tempList.add(p);
                 }
-            }            
-            else if(p.getName().contains(productName) && p.getCategory().equals(category)){
+            } else if (p.getName().contains(productName) && p.getCategory().equals(category)) {
                 tempList.add(p);
-            }
-            else if (p.getName().contains(productName)){
+            } else if (p.getName().contains(productName)) {
                 tempList.add(p);
             }
         }
-        
+
         return tempList;
     }
 
     public Collection<Auction> getAuctions() {
         return auctions;
     }
-    
+
     public boolean InstabuyItem(int amount, int auctionID, int buyerID) throws SQLException {
         try {
             System.out.println("amount :" + amount + " AID: " + auctionID + "BID: " + buyerID);
@@ -190,7 +188,7 @@ public class Grand_Exchange implements Observer {
             return false;
         }
     }
-    
+
     public boolean addBid(double amount, int auctionID, int buyerID, double price) {
         try {
             System.out.println("amount :" + amount + " AID: " + auctionID + " BID: " + buyerID + " Price: " + price);
@@ -200,79 +198,99 @@ public class Grand_Exchange implements Observer {
             return false;
         }
     }
-    
-        public void updateQueuePurchaseFromDB(ArrayList<Integer> newQueuePurchases) {
+
+    public void updateQueuePurchaseFromDB(ArrayList<Integer> newQueuePurchases) {
         Queue_Purchase tempQueuePurchase;
         for (int i : newQueuePurchases) {
-                tempQueuePurchase = con.getQueuePurchase(i);
-                
-                if (tempQueuePurchase == null) {
-                    System.out.println("QueuePurchase is null");
-                    }
+            tempQueuePurchase = con.getQueuePurchase(i);
 
-                for (Queue_Purchase QP : queuepurchases) {
-                    if (QP.getID() == tempQueuePurchase.getID()) {
-                        queuepurchases.set(queuepurchases.indexOf(QP), tempQueuePurchase);
-                        System.out.println("Queue purchase replaced with ID : " + tempQueuePurchase.getID());
-                    }
-                }
-                if(!queuepurchases.contains(tempQueuePurchase) && tempQueuePurchase != null){
-                    queuepurchases.add(tempQueuePurchase);
-                    System.out.println("New queue purchase added with ID: " + tempQueuePurchase.getID());
+            if (tempQueuePurchase == null) {
+                System.out.println("QueuePurchase is null");
+            }
+
+            for (Queue_Purchase QP : queuepurchases) {
+                if (QP.getID() == tempQueuePurchase.getID()) {
+                    queuepurchases.set(queuepurchases.indexOf(QP), tempQueuePurchase);
+                    System.out.println("Queue purchase replaced with ID : " + tempQueuePurchase.getID());
                 }
             }
+            if (!queuepurchases.contains(tempQueuePurchase) && tempQueuePurchase != null) {
+                queuepurchases.add(tempQueuePurchase);
+                System.out.println("New queue purchase added with ID: " + tempQueuePurchase.getID());
+            }
         }
+    }
 
     public void updateAuctionsFromDB(ArrayList<Integer> newAuctionIDs) {
         Auction tempAuction;
         for (int i : newAuctionIDs) {
-                tempAuction = con.getAuction(i);
-                
-                if (tempAuction == null) {
-                    System.out.println("Auction is null");
-                    }
+            tempAuction = con.getAuction(i);
 
-                for (Auction A : auctions) {
-                    if (A.getId() == tempAuction.getId()) {
-                        auctions.set(auctions.indexOf(A), tempAuction);
-                        System.out.println(tempAuction.getProduct().getName() + "Replaced in list.");
-                    }
+            if (tempAuction == null) {
+                System.out.println("Auction is null");
+            }
+
+            for (Auction A : auctions) {
+                if (A.getId() == tempAuction.getId()) {
+                    auctions.set(auctions.indexOf(A), tempAuction);
+                    System.out.println(tempAuction.getProduct().getName() + "Replaced in list.");
                 }
-                if(!auctions.contains(tempAuction) && tempAuction != null){
-                    
-                    for(Queue_Purchase QP : queuepurchases){
-                        if(tempAuction.getProduct().getId() == QP.getProductID()){
-                            if (tempAuction.getInstabuyPrice() < QP.getMaxPrice()){
-                                if(tempAuction.getProductQuantity() >= QP.getQuantity()){
-                                    con.InstabuyItem(QP.getQuantity(),tempAuction.getId(),QP.getPlacerID());
-                                    //TODO Queuepurchase has to be dropped from database, AND displayed in the GUI
-                                }
+            }
+            if (!auctions.contains(tempAuction) && tempAuction != null) {
+
+                for (Queue_Purchase QP : queuepurchases) {
+                    if (tempAuction.getProduct().getId() == QP.getProductID()) {
+                        if (tempAuction.getInstabuyPrice() < QP.getMaxPrice()) {
+                            if (tempAuction.getProductQuantity() >= QP.getQuantity()) {
+                                con.InstabuyItem(QP.getQuantity(), tempAuction.getId(), QP.getPlacerID());
+                                //TODO Queuepurchase has to be dropped from database, AND displayed in the GUI
                             }
                         }
                     }
-                    
-                    auctions.add(tempAuction);
-                    System.out.println(tempAuction.getProduct().getName() + "New Auction added to list.");
                 }
+
+                auctions.add(tempAuction);
+                System.out.println(tempAuction.getProduct().getName() + "New Auction added to list.");
             }
         }
+    }
 
     @Override
-    public void update (Observable o, Object arg) {
+    public void update(Observable o, Object arg) {
         String type = arg.toString();
-        if (type.equals("Auction")){
+        if (type.equals("Auction")) {
             System.out.println("New auctions found.");
             updateAuctionsFromDB(dbListener.getUpdateAuctionList());
-        }
-        else if(type.equals("Queue")){
+        } else if (type.equals("Queue")) {
             System.out.println("New QueuePurchase found.");
             updateQueuePurchaseFromDB(dbListener.getUpdateQueuepurchaseList());
         }
-        
-    }
 
+    }
 
     public void updateAuction(Auction auction) {
         con.updateAuction(auction);
+    }
+
+    /**
+     * gest user from collection of users with given username
+     *
+     * @param userName
+     */
+    public User getUser(String userName) {
+        User missingUser = null;
+        for (User u : this.users) {
+            if (u.getUsername().equals(userName)) {
+                missingUser = u;
+            }
+        }
+        return missingUser;
+    }
+
+    public void updateUsers() {
+        this.users.clear();
+        for (User u : this.con.getAllUsers()) {
+            this.addUser(u);
+        }
     }
 }

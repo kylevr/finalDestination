@@ -66,24 +66,33 @@ public class Profile_FeedbackController implements Initializable {
     }    
     
     public void setUp(Grand_Exchange GX, String feedbackOwnerUsername) {
-//        this.GX = GX;
-//        GX.updateUsers();
-//        this.feedbackOwner = GX.getUser(feedbackOwnerUsername);
-//        this.refreshFeedbacklist();
-//        this.label_owner.setText(feedbackOwner.getUsername() + "'s feedback");
-//        this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback");
+        this.GX = GX;
+        GX.updateUsers();
+        this.feedbackOwner = GX.getUser(feedbackOwnerUsername);
+        this.refreshFeedbacklist();
+        this.label_owner.setText(feedbackOwner.getUsername() + "'s feedback");
+        this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback to " + this.feedbackOwner.getUsername());
     }
     
+    @FXML
     public void button_submitFeedback()
     {
-//        Connection conn = new Connection();
-//        conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername());
-//        this.refreshFeedbacklist();
+        Connection conn = new Connection();
+        conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername());
+        this.refreshFeedbacklist();
     }
     
+    @FXML
     public void refreshFeedbacklist()
     {
-        //this.feedbackOwner.updateFeedbacklist();
-        //listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
+        this.feedbackOwner.updateFeedbacklist();
+        listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
+    }
+    
+    @FXML
+    public void button_cancelFeedback()
+    {
+        this.textfield_description.clear();
+        this.slider_rating.setValue(1);
     }
 }
