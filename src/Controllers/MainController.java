@@ -227,4 +227,8 @@ public class MainController implements Initializable {
             System.out.println("textField_usernameOfFeedbackOwner may not be empty when trying to open profile feedback");
         }
     }
+    
+    public void btnRefresh(){
+        setUp(GX);
+    }
 }
