@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.MainController">
   <children>
     <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="700.0" />
     <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" prefWidth="113.0" text="Settings" />
@@ -42,9 +42,10 @@
       </font>
     </Label>
     <Button layoutX="18.0" layoutY="270.0" mnemonicParsing="false" prefWidth="199.0" text="Sell an item" />
-      <Button layoutX="136.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" underline="true" />
-      <Button layoutX="15.0" layoutY="47.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
-      <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="80.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
-      <Button layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
+    <Button layoutX="136.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" underline="true" />
+    <Button layoutX="15.0" layoutY="47.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
+    <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="80.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
+    <Button layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
+    <Button layoutX="433.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#btnRefresh" text="Refresh" />
   </children>
 </AnchorPane>
