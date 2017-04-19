@@ -46,9 +46,11 @@ public class Connection {
     static final String GET_FROM_AUCTIONS = "SELECT * FROM auction";
     static final String GET_FROM_USER_ID = "SELECT * FROM user WHERE id = ?";
     static final String GET_FROM_USER_BYLOGININFO = "SELECT * FROM user WHERE BINARY username = ? and BINARY password = ?";
+    static final String GET_FROM_USER_BYUSERNAME = "SELECT * FROM user WHERE BINARY username = ?";
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
     static final String SET_USER_NEW = "INSERT INTO user(bsn, username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
+    static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_AUCTION_BY_ID = "SELECT * FROM auction WHERE id = ?";
     static final String GET_FROM_PRODUCTS = "SELECT * FROM product";
     static final String SET_QUEUEPURCHASE_NEW = "INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID) VALUES (?,?,?,?,?)";
@@ -456,6 +458,47 @@ public class Connection {
     }
     
     /**
+     * Gets user with given username
+     * @param username
+     * @return
+     */
+    public User getUser(String username) {
+        User user = null;
+
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
+            pstmt.setString(1, username);
+
+            myRs = pstmt.executeQuery();
+            myRs.next();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            int userID = myRs.getInt("id");
+            int bsn = myRs.getInt("bsn");
+            String usernm = myRs.getString("username");
+            String pass = myRs.getString("password");
+            String alias = myRs.getString("alias");
+            String email = myRs.getString("email");
+            boolean verified = myRs.getBoolean("verified");
+            double saldo = myRs.getDouble("saldo");
+            String imgURL = myRs.getString("imageUrl");
+
+            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            closeConnection();
+        } catch (SQLException ex) {
+            System.out.println("User not found");
+            closeConnection();
+        }
+
+        return user;
+    }
+    
+    /**
      *
      * @param checkValue
      * @return
@@ -800,21 +843,54 @@ public class Connection {
                     System.out.println("succesfully deleted user with bsn: " + bsn);
                     return true;
                 } else {
-                    System.out.println("Couldn't delete user because User with bsn: " + bsn + " doesn't exist in the database");
+                    System.out.println("Couldn't delete user because user with bsn:: " + bsn + " doesn't exist in the database");
                     return true;
                 }
             } catch (SQLException ex) {
-                System.out.println("failed to register new user. SQLException");
+                System.out.println("failed to remove user with bsn: " + bsn + ". SQLException");
                 ex.printStackTrace();
                 closeConnection();
                 return false;
             }
         } else {
-            System.out.println("failed to register new user. No connection to database.");
+            System.out.println("failed to remove user with bsn: " + bsn + ". No connection to database.");
             return false;
         }
     }
 
+    /**
+     * removes a user with given username 
+     * note: doesn't delete any objects yet that the user created (e.g. auctions, bids, feedbacks)
+     * @param username
+     * @return
+     */
+    public Boolean removeUser_BYUSERNAME(String username) {
+        getConnection();
+
+        if (myConn != null) {
+            try {
+                pstmt = myConn.prepareStatement(REMOVE_USER_BYUSERNAME);
+                pstmt.setString(1, username);
+
+                if (pstmt.executeUpdate() > 0) {
+                    System.out.println("succesfully deleted user with username: " + username);
+                    return true;
+                } else {
+                    System.out.println("Couldn't delete user because User with username: " + username + " doesn't exist in the database");
+                    return true;
+                }
+            } catch (SQLException ex) {
+                System.out.println("failed to remove with username: " + username + ". SQLException");
+                ex.printStackTrace();
+                closeConnection();
+                return false;
+            }
+        } else {
+            System.out.println("failed to remove user with username: " + username + ". No connection to database.");
+            return false;
+        }
+    }
+    
     private Product getProduct(int productID) {
 
         Product product = null;
