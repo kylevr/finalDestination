@@ -7,9 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="551.0" prefWidth="300.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Profile_FeedbackController">
+<AnchorPane id="AnchorPane" fx:id="currentPane" prefHeight="551.0" prefWidth="300.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Profile_FeedbackController">
    <children>
-      <Button fx:id="button_back" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="back" underline="true" />
+      <Button fx:id="button_back" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_goBack" text="back" underline="true" />
       <Label fx:id="label_owner" layoutX="15.0" layoutY="49.0" text="&lt;feedback owner&gt; 's feedback" />
       <ScrollPane layoutX="15.0" layoutY="75.0" prefViewportHeight="221.0" prefViewportWidth="270.0">
          <content>

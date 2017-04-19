@@ -31,6 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -46,6 +47,8 @@ public class Profile_FeedbackController implements Initializable {
     
     User feedbackOwner;
     
+    @FXML
+    AnchorPane currentPane;
     @FXML
     ListView listview_profile_feedback; 
     @FXML
@@ -94,5 +97,22 @@ public class Profile_FeedbackController implements Initializable {
     {
         this.textfield_description.clear();
         this.slider_rating.setValue(1);
+    }
+    
+    @FXML
+    public void button_goBack() throws IOException {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
+            Parent root = loader.load();
+            
+            MainController controller = (MainController) loader.getController();
+            controller.setUp(GX);
+
+            Stage inputStage = new Stage();
+            Scene newScene = new Scene(root);
+            inputStage.setScene(newScene);
+            inputStage.setTitle("Grand Exchange");
+            inputStage.show();
+            Stage stage = (Stage) currentPane.getScene().getWindow();
+            stage.close();
     }
 }
