@@ -174,6 +174,8 @@ public class QueuePurchaseController implements Initializable {
         }
     }
     
+    
+    
     public void handleComboBoxAction(ActionEvent event) {
         selectedCategory = comboBoxCategory.getSelectionModel().getSelectedItem();
  }

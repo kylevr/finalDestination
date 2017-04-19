@@ -74,6 +74,7 @@ public class Grand_Exchange implements Observer {
             auctions.add(auction);
         }
     }
+   
 
     public void removeAuction(Auction auction) {
         if (auction == null) {
@@ -99,6 +100,15 @@ public class Grand_Exchange implements Observer {
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
         con.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
     }
+    
+    public int addProductToDB(String name, String description, int gtin){
+        return con.insertProduct(name,description,gtin);
+    }
+    
+    public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description){
+        return con.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
+    }
+    
 
     /**
      * removes product from collection of products
