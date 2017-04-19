@@ -228,9 +228,7 @@ public class MainController implements Initializable {
         }
     }
     
-    @FXML
-    private void button_refreshGUI()
-    {
-        this.setUp(this.GX);
+    public void btnRefresh(){
+        setUp(GX);
     }
 }

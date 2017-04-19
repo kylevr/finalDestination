@@ -16,7 +16,6 @@ public abstract class Auction {
     private double currentPrice;
     private double instabuyPrice;
 
-    
     private boolean instabuyable;
     private int productQuantity;
     private Bid currentBid;
@@ -66,7 +65,7 @@ public abstract class Auction {
     public Auction(User seller, Product product, int quantity, double price, double instabuyprice, StatusEnum status, String description, String imageURLs) {
         this.seller = seller;
         this.product = product;
-        this.currentPrice = round(price,2);
+        this.currentPrice = round(price, 2);
         this.productQuantity = quantity;
         this.instabuyPrice = instabuyprice;
         this.instabuyable = true;
@@ -76,11 +75,10 @@ public abstract class Auction {
         bids = new ArrayList<>();
     }
 
-    
     public double getInstabuyPrice() {
         return instabuyPrice;
     }
-    
+
     public boolean isInstabuyable() {
         return instabuyable;
     }
@@ -100,12 +98,13 @@ public abstract class Auction {
      */
     public boolean addBid(Bid bid) {
         try {
-            for (Bid item : bids) {
-                if (item.getAmount() > currentBid.getAmount()) {
-                    this.bids.add(item);
-                    this.currentBid = item;
-                    return true;
-                }
+            if (bid.getAmount() > currentPrice) {
+                this.bids.add(bid);
+                this.currentPrice = bid.getAmount();
+                return true;
+            } else if (bid.getAmount() == currentPrice) {
+                this.bids.add(bid);
+                return true;
             }
             return false;
         } catch (IllegalArgumentException ex) {
@@ -114,8 +113,12 @@ public abstract class Auction {
         }
     }
 
+    public void addBid(ArrayList<Bid> bids) {
+        this.bids.addAll(bids);
+    }
+
     public void setCurrentPrice(double newPrice) {
-        currentPrice = round(newPrice,2);
+        currentPrice = round(newPrice, 2);
     }
 
     /**
@@ -179,7 +182,7 @@ public abstract class Auction {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-    
+
     public int getId() {
         return id;
     }

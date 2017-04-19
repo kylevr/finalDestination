@@ -21,47 +21,48 @@ public class Countdown extends Auction {
     private double priceloweringAmount;
     private double priceloweringDelay;
     private double minPrice;
+    private double startingPrice;
     private Timestamp creationDate;
 
     public Countdown(User seller, Product product, int quantity, double price, double instabuyprice, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, Timestamp creatDate) {
         super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);
         this.priceloweringAmount = priceloweringAmount;
         this.priceloweringDelay = priceloweringDelay;
+        this.startingPrice = price;
         this.minPrice = minprice;
         this.creationDate = creatDate;
-        long now = System.currentTimeMillis();
-        long then = creatDate.getTime();
-        long periods = (now - then) / 60000 / (long) priceloweringDelay;
-        double newPrice = price - ((int) periods * (int) priceloweringAmount);
-        setCurrentPrice(newPrice);
+        setPrice();
     }
 
     public Countdown(int id, User seller, Product product, int quantity, double price, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, double instabuy, Timestamp creatDate) {
         super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);
         this.priceloweringAmount = priceloweringAmount;
         this.priceloweringDelay = priceloweringDelay;
+        this.startingPrice = price;
         this.minPrice = minprice;
         this.creationDate = creatDate;
-        long now = System.currentTimeMillis();
-        long then = creatDate.getTime();
-        long periods = (now - then) / 60000 / (long) priceloweringDelay;
-        double newPrice = price - ((int) periods * (int) priceloweringAmount);
-        setCurrentPrice(newPrice);
-        
+        setPrice();
+
     }
 
     public Timestamp getCreationDate() {
         return creationDate;
     }
-    
+
     public double getPriceLoweringAmount() {
         return priceloweringAmount;
     }
-    
+
     public double getPriceLoweringDelay() {
         return priceloweringDelay;
     }
-    
-   
+
+    public void setPrice() {
+        long now = System.currentTimeMillis();
+        long then = creationDate.getTime();
+        long periods = (now - then) / 60000 / (long) priceloweringDelay;
+        double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);
+        setCurrentPrice(newPrice);
+    }
 
 }

@@ -16,7 +16,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="countdownBuyButton" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AuctionController">
+<AnchorPane id="AnchorPane" fx:id="countdownBuyButton" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.AuctionController">
   <children>
     <Pane layoutX="0.0" layoutY="0.0" prefHeight="800.0" prefWidth="400.0" style="-fx-background-color: lightgrey;">
       <children>
@@ -64,11 +64,11 @@
         </Label>
         <Label id="countdownAvailableUnits" layoutX="15.0" layoutY="120.0" text="Time To Go:" />
         <ProgressBar fx:id="minutesBar" layoutX="17.0" layoutY="168.0" prefHeight="26.6015625" prefWidth="366.999755859375" progress="0.0" visible="false" />
-        <Button id="countdownBidBuyBtn" fx:id="BidBtn" layoutX="121.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#bidBuyButtonClick" prefWidth="76.0" text="Bid" />
+        <Button id="countdownBidBuyBtn" fx:id="BidBtn" layoutX="210.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#bidBuyButtonClick" prefWidth="76.0" text="Bid" />
         <TextField fx:id="txtUnitstoBuyBid" layoutX="121.0" layoutY="210.0" prefWidth="76.0" />
-        <Label id="BidTextid" layoutX="121.0" layoutY="194.0" text="Units to buy:" />
+        <Label id="BidTextid" fx:id="lblUnits" layoutX="121.0" layoutY="194.0" text="Units to buy:" />
         <TextField id="txtBidPrice" fx:id="txtPriceToBid" layoutX="208.0" layoutY="211.0" prefWidth="76.0" />
-        <Label id="instabuyTextid" layoutX="210.0" layoutY="195.0" text="Bid price:" />
+        <Label id="instabuyTextid" fx:id="lblBid" layoutX="210.0" layoutY="195.0" text="Bid price:" />
         <Label font="$x2" layoutX="197.0" layoutY="51.0" text="Instabuy price:" />
         <Label id="instabuyPrice" fx:id="InstabuyCurrentPrice" font="$x3" layoutX="197.0" layoutY="71.0" text="..." />
       </children>

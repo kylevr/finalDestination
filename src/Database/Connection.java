@@ -10,6 +10,7 @@ import Classes.Auctions.Countdown;
 import Classes.Auctions.Direct;
 import Classes.Auctions.Standard;
 import Classes.Auctions.StatusEnum;
+import Classes.Bid;
 import Classes.Feedback;
 import Classes.Product;
 import Classes.Queue_Purchase;
@@ -45,6 +46,7 @@ public class Connection {
     static final String GET_FROM_AUCTIONS_SQL = "SELECT ? FROM auction WHERE ? = ?";
     static final String GET_FROM_AUCTIONS = "SELECT * FROM auction";
     static final String GET_FROM_USER_ID = "SELECT * FROM user WHERE id = ?";
+    static final String GET_BID_FROM_AUCTION_ID = "SELECT * FROM bid WHERE auctionID = ?";
     static final String GET_FROM_USER_BYLOGININFO = "SELECT * FROM user WHERE BINARY username = ? and BINARY password = ?";
     static final String GET_FROM_USER_BYUSERNAME = "SELECT * FROM user WHERE BINARY username = ?";
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
@@ -97,6 +99,7 @@ public class Connection {
         StatusEnum status;
         String description;
         String imageURL;
+                ArrayList<Bid> bids;
 
         try {
             getConnection();
@@ -124,9 +127,9 @@ public class Connection {
                     description = myRs.getString("description");
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
-                    date = myRs.getTimestamp("timecreated");
-                    
+                    date = myRs.getTimestamp("timecreated");                  
                     auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);
+                    auction.addBid(getBids(id));
                 }
 
                 // In case of Direct 
@@ -142,6 +145,7 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
 
                 //In case of standard auction
@@ -158,6 +162,7 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
                 return auction;
             
@@ -193,6 +198,7 @@ public class Connection {
         StatusEnum status;
         String description;
         String imageURL;
+        ArrayList<Bid> bids;
 
         try {
             getConnection();
@@ -225,10 +231,11 @@ public class Connection {
                     instabuyprice = myRs.getDouble("instabuyprice");
                     date = myRs.getTimestamp("timecreated");
                     auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);
+                    auction.addBid(getBids(id));
                 }
 
                 // In case of Direct 
-                if (myRs.getString("type").equals("direct")) {
+                else if (myRs.getString("type").equals("direct")) {
                     id = myRs.getInt("id");
                     user = getUser(myRs.getInt("sellerID"));
                     product = getProduct(myRs.getInt("productID"));
@@ -240,9 +247,10 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
 
-                if (myRs.getString("type").equals("standard")) {
+                else if (myRs.getString("type").equals("standard")) {
                     id = myRs.getInt("id");
                     user = getUser(myRs.getInt("sellerID"));
                     product = getProduct(myRs.getInt("productID"));
@@ -255,6 +263,7 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
 
                 auctions.add(auction);
@@ -269,6 +278,43 @@ public class Connection {
         return auctions;
     }
     
+    
+     public ArrayList<Bid> getBids(int id) {
+
+        ArrayList<Bid>bids = new ArrayList<>();
+        Bid bid;
+        User user;
+        int auctionId;
+        int buyerId;
+        double price;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultset = null;
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_BID_FROM_AUCTION_ID);
+            pstmt.setInt(1, id);
+            resultset = pstmt.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            while (resultset.next()) {
+                    auctionId = resultset.getInt("auctionID");
+                    buyerId = resultset.getInt("placerID");
+                    price = resultset.getDouble("amount");
+                    user = getUser(buyerId);
+                    bid = new Bid(auctionId,user,price);         
+                bids.add(bid);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Cannot add bids to list");
+        }
+
+        return bids;
+    }
     /**
      *
      * @return
@@ -375,7 +421,6 @@ public class Connection {
 
         PreparedStatement preparedStatement = null;
         ResultSet resultset = null;
-
         if (myConn != null) {
 
             try {
@@ -489,6 +534,88 @@ public class Connection {
             String imgURL = myRs.getString("imageUrl");
 
             user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
+            closeConnection();
+        } catch (SQLException ex) {
+            System.out.println("User not found");
+            closeConnection();
+        }
+
+        return user;
+    }
+    
+    /**
+     * Gets user with given username
+     * @param username
+     * @return
+     */
+    public User getUser(String username) {
+        User user = null;
+
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
+            pstmt.setString(1, username);
+
+            myRs = pstmt.executeQuery();
+            myRs.next();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            int userID = myRs.getInt("id");
+            int bsn = myRs.getInt("bsn");
+            String usernm = myRs.getString("username");
+            String pass = myRs.getString("password");
+            String alias = myRs.getString("alias");
+            String email = myRs.getString("email");
+            boolean verified = myRs.getBoolean("verified");
+            double saldo = myRs.getDouble("saldo");
+            String imgURL = myRs.getString("imageUrl");
+
+            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            closeConnection();
+        } catch (SQLException ex) {
+            System.out.println("User not found");
+            closeConnection();
+        }
+
+        return user;
+    }
+    
+    /**
+     * Gets user with given username
+     * @param username
+     * @return
+     */
+    public User getUser(String username) {
+        User user = null;
+
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
+            pstmt.setString(1, username);
+
+            myRs = pstmt.executeQuery();
+            myRs.next();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            int userID = myRs.getInt("id");
+            int bsn = myRs.getInt("bsn");
+            String usernm = myRs.getString("username");
+            String pass = myRs.getString("password");
+            String alias = myRs.getString("alias");
+            String email = myRs.getString("email");
+            boolean verified = myRs.getBoolean("verified");
+            double saldo = myRs.getDouble("saldo");
+            String imgURL = myRs.getString("imageUrl");
+
+            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
             closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
