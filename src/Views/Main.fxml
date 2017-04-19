@@ -21,7 +21,7 @@
     </Label>
     <ScrollPane fx:id="scrollPaneWonBought" content="$null" layoutX="15.0" layoutY="572.0" prefHeight="214.0" prefWidth="474.0" />
     <Label font="$x1" layoutX="15.0" layoutY="552.0" text="Auctions You've won / Bought:" />
-    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="15.0" layoutY="44.0" pickOnBounds="true" preserveRatio="false" />
+    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="18.0" layoutY="110.0" pickOnBounds="true" preserveRatio="false" />
     <CheckBox layoutX="290.0" layoutY="43.0" mnemonicParsing="false" prefWidth="199.0" text="Direct Auctions" />
     <Label font="$x1" layoutX="290.0" layoutY="24.0" text="Filters:" />
     <CheckBox layoutX="290.0" layoutY="75.0" mnemonicParsing="false" prefWidth="199.0" text="Countdown Auctions" />
@@ -41,8 +41,10 @@
         <Font size="13.0" />
       </font>
     </Label>
-    <Button layoutX="16.0" layoutY="203.0" mnemonicParsing="false" prefWidth="199.0" text="Sell an item" />
-      <Button layoutX="16.0" layoutY="47.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" />
-      <Button layoutX="16.0" layoutY="80.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
+    <Button layoutX="18.0" layoutY="270.0" mnemonicParsing="false" prefWidth="199.0" text="Sell an item" />
+      <Button layoutX="136.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" underline="true" />
+      <Button layoutX="15.0" layoutY="47.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
+      <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="80.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
+      <Button layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
   </children>
 </AnchorPane>
