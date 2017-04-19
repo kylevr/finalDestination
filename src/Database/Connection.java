@@ -49,7 +49,7 @@ public class Connection {
     static final String GET_FROM_USER_BYUSERNAME = "SELECT * FROM user WHERE BINARY username = ?";
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
     static final String SET_USER_NEW = "INSERT INTO user(username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
+  //removed  static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
     static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_AUCTION_BY_ID = "SELECT * FROM auction WHERE id = ?";
     static final String GET_FROM_PRODUCTS = "SELECT * FROM product";
@@ -365,7 +365,7 @@ public class Connection {
     public User getUser(int id) {
         User user = null;
         int userID;
-        int bsn;
+      //removed  int bsn;
         String username;
         String password;
         String alias;
@@ -390,7 +390,7 @@ public class Connection {
 
             try {
                 userID = resultset.getInt("id");
-                bsn = resultset.getInt("bsn");
+             //removed   bsn = resultset.getInt("bsn");
                 username = resultset.getString("username");
                 password = resultset.getString("password");
                 alias = resultset.getString("alias");
@@ -399,7 +399,7 @@ public class Connection {
                 saldo = resultset.getFloat("saldo");
                 String imgURL = resultset.getString("imageUrl");
 
-                user = new User(userID,bsn, username, password, alias, email, verified, saldo, imgURL);
+                user = new User(userID, username, password, alias, email, verified, saldo, imgURL);
 
                 return user;
             } catch (SQLException ex) {
@@ -438,7 +438,7 @@ public class Connection {
 
         try {
             int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
+          //removed  int bsn = myRs.getInt("bsn");
             String usernm = myRs.getString("username");
             String pass = myRs.getString("password");
             String alias = myRs.getString("alias");
@@ -447,7 +447,7 @@ public class Connection {
             double saldo = myRs.getDouble("saldo");
             String imgURL = myRs.getString("imageUrl");
 
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
@@ -479,7 +479,7 @@ public class Connection {
 
         try {
             int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
+          //removed  int bsn = myRs.getInt("bsn");
             String usernm = myRs.getString("username");
             String pass = myRs.getString("password");
             String alias = myRs.getString("alias");
@@ -488,7 +488,7 @@ public class Connection {
             double saldo = myRs.getDouble("saldo");
             String imgURL = myRs.getString("imageUrl");
 
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
@@ -503,6 +503,7 @@ public class Connection {
      * @param checkValue
      * @return
      */
+    /*
     public boolean hasDuplicateBSN(int checkValue) {
         Boolean hasDuplicate = false;
         int count = 0;
@@ -534,6 +535,7 @@ public class Connection {
 
         return hasDuplicate;
     }
+    /*
 
     /**
      *
@@ -744,7 +746,7 @@ public class Connection {
     
     /**
      *
-     * @param bsn
+     *
      * @param username
      * @param password
      * @param alias
@@ -830,6 +832,7 @@ public class Connection {
      * @param bsn
      * @return
      */
+    /*
     public Boolean removeUser_BYBSN(int bsn) {
         getConnection();
 
@@ -1003,7 +1006,7 @@ public class Connection {
     public ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<User>();
 
-        int bsn;
+       //removed int bsn;
         String username;
         String password;
         String alias;
@@ -1022,7 +1025,7 @@ public class Connection {
                 resultset = preparedStatement.executeQuery();
 
                 while (resultset.next()) {
-                    bsn = resultset.getInt("bsn");
+                   //removed bsn = resultset.getInt("bsn");
                     username = resultset.getString("username");
                     password = resultset.getString("password");
                     alias = resultset.getString("alias");
@@ -1031,7 +1034,7 @@ public class Connection {
                     saldo = resultset.getFloat("saldo");
                     String imgURL = resultset.getString("imageUrl");
 
-                    User foundUser =    new User(bsn, username, password, alias, email, verified, saldo, imgURL);
+                    User foundUser = new User(username, password, alias, email, verified, saldo, imgURL);
                     users.add(foundUser);
                 }
             } catch (SQLException ex) {
