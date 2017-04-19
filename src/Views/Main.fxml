@@ -46,5 +46,6 @@
       <Button layoutX="15.0" layoutY="47.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
       <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="80.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
       <Button layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
+      <Button layoutX="410.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_refreshGUI" text="Refresh GUI" />
   </children>
 </AnchorPane>
