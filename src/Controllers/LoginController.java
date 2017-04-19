@@ -52,7 +52,7 @@ public class LoginController implements Initializable {
         if (GX.login(textfield_username.getText(), textfield_password.getText())) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
             Parent root = loader.load();
-
+            
             MainController controller = (MainController) loader.getController();
             controller.setUp(GX);
 

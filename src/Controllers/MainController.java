@@ -200,7 +200,7 @@ public class MainController implements Initializable {
     }
     
     @FXML
-    public void button_goToFeedback() throws IOException {
+    public void button_goToFeedbackOf() throws IOException {
         if (!textField_usernameOfFeedbackOwner.getText().isEmpty()) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Profile_Feedback.fxml"));
