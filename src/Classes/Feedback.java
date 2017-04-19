@@ -65,7 +65,13 @@ public class Feedback {
     }
 
     @Override
+    /**
+     * A more readable toString() to be used when in the profilefeedbackcontroller
+     * @return a String of feedback used for a page where the feedbackowner is already known
+     */
     public String toString() {
-        return "timeCreated:" + timeCreated + ", rating:" + rating + ", description:" + description + ", userFrom_Username:" + userFrom_Username + ", userTo_Username:" + userTo_Username + '}';
+        return "FROM:" + userFrom_Username + "@" + timeCreated + ", RATING:" + rating + ", DESCRIPTION:" + description;
+        //return "timeCreated:" + timeCreated + ", rating:" + rating + ", description:" + description + ", userFrom_Username:" + userFrom_Username + ", userTo_Username:" + userTo_Username + '}';
     }
 }
+
