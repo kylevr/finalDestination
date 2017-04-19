@@ -30,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -59,6 +60,8 @@ public class MainController implements Initializable {
     private ScrollPane scrollPaneWonBought;
     @FXML
     private Button btnQueuePurchase;
+    @FXML
+    private TextField textField_usernameOfFeedbackOwner;
 
     private Grand_Exchange GX;
 
@@ -209,5 +212,37 @@ public class MainController implements Initializable {
         inputStage.setScene(newScene);
         inputStage.showAndWait();}
         catch(Exception e){e.printStackTrace();}
+    }
+    
+    public void button_goToFeedbackOf() throws IOException {
+        if (!textField_usernameOfFeedbackOwner.getText().isEmpty()) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Profile_Feedback.fxml"));
+                Parent root = loader.load();
+
+                Profile_FeedbackController controller = (Profile_FeedbackController) loader.getController();
+
+                controller.setUp(GX, textField_usernameOfFeedbackOwner.getText());
+
+                Stage inputStage = new Stage();
+                Scene newScene = new Scene(root);
+                inputStage.setScene(newScene);
+                inputStage.setTitle("Grand Exchange");
+                inputStage.show();
+                Stage stage = (Stage) auctionsPane.getScene().getWindow();
+                stage.close();
+            } catch (Exception ex) {
+                System.out.println("Failed to open feedback screen");
+                ex.printStackTrace();
+            }
+        }
+        else
+        {
+            System.out.println("textField_usernameOfFeedbackOwner may not be empty when trying to open profile feedback");
+        }
+    }
+    
+    public void btnRefresh(){
+        setUp(GX);
     }
 }

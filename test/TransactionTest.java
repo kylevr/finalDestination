@@ -28,7 +28,7 @@ public class TransactionTest {
     @Before
     public void setUp() {
         User testUser = new User("lesley","wachtwoord");
-        Product testProduct = new Product("123456789","FIFA 17","beschrijving");
+        Product testProduct = new Product(1, "123456789","FIFA 17","beschrijving");
         Date endDate = new Date(2017,3,29);
         testAuction = new Standard(testUser,testProduct,22.50,1,endDate,StatusEnum.GoodAsNew, "Hasn't been used got it double", "");
         testTransaction = new Transaction(testAuction);

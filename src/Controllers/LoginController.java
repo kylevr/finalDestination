@@ -10,6 +10,10 @@ import Classes.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,9 +21,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import static javafx.scene.input.KeyCode.T;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javax.annotation.Resource;
+import javax.swing.event.DocumentEvent;
 
 /**
  *
@@ -63,9 +71,7 @@ public class LoginController implements Initializable {
             inputStage.show();
             Stage stage = (Stage) textfield_username.getScene().getWindow();
             stage.close();
-        }
-        else
-        {
+        } else {
             label_errorMsg.setVisible(true);
             label_errorMsg.setText("Failed to login. \n try a different username/password \n or \n check your internet connection");
         }

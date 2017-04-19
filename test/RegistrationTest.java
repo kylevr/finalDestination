@@ -88,15 +88,15 @@ public class RegistrationTest {
         System.out.println("test_registration_user");
 
         Database.Connection conn = new Database.Connection();
-        String bsnString = "1234";
+       // String bsnString = "1234";
         String username = "test1234";
         String password = "password";
         String email = "test1234@email.com";
         String alias = "xTest1234";
 
-        int bsn = Integer.parseInt(bsnString.trim());
-        assertTrue(conn.setUser_REGISTER(bsn, username, password, alias, email, null, 0));
-        assertTrue(conn.removeUser_BYBSN(1234));
+        
+        assertTrue(conn.setUser_REGISTER(username, password, alias, email, null, 0));
+        assertTrue(conn.removeUser_BYUSERNAME("test1234"));
     }
     
     /**
@@ -108,23 +108,23 @@ public class RegistrationTest {
         System.out.println("test_registration_duplicate_user");
         
         Database.Connection conn = new Database.Connection();
-        String bsnString = "2345";
+      
         String username = "test2345";
         String password = "password";
         String email = "test2345@email.com";
         String alias = "xTest2345";
 
-        int bsn = Integer.parseInt(bsnString.trim());
-        assertTrue(conn.setUser_REGISTER(bsn, username, password, alias, email, null, 0));
+        
+        assertTrue(conn.setUser_REGISTER( username, password, alias, email, null, 0));
 
-        bsnString = "2345";
+       
         username = "test2345";
         password = "password";
         email = "test2345@email.com";
         alias = "xTest2345";
 
-        bsn = Integer.parseInt(bsnString.trim());
-        assertFalse(conn.setUser_REGISTER(bsn, username, password, alias, email, null, 0));
-        assertTrue(conn.removeUser_BYBSN(2345));
+       
+        assertFalse(conn.setUser_REGISTER(username, password, alias, email, null, 0));
+        assertTrue(conn.removeUser_BYUSERNAME("test2345"));
     }
 }

@@ -10,6 +10,8 @@ import Classes.Auctions.Countdown;
 import Classes.Auctions.Direct;
 import Classes.Auctions.Standard;
 import Classes.Auctions.StatusEnum;
+import Classes.Bid;
+import Classes.Feedback;
 import Classes.Product;
 import Classes.Queue_Purchase;
 import Classes.User;
@@ -21,7 +23,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,10 +46,13 @@ public class Connection {
     static final String GET_FROM_AUCTIONS_SQL = "SELECT ? FROM auction WHERE ? = ?";
     static final String GET_FROM_AUCTIONS = "SELECT * FROM auction";
     static final String GET_FROM_USER_ID = "SELECT * FROM user WHERE id = ?";
+    static final String GET_BID_FROM_AUCTION_ID = "SELECT * FROM bid WHERE auctionID = ?";
     static final String GET_FROM_USER_BYLOGININFO = "SELECT * FROM user WHERE BINARY username = ? and BINARY password = ?";
+    static final String GET_FROM_USER_BYUSERNAME = "SELECT * FROM user WHERE BINARY username = ?";
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
-    static final String SET_USER_NEW = "INSERT INTO user(bsn, username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
+    static final String SET_USER_NEW = "INSERT INTO user(username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  //removed  static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
+    static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_AUCTION_BY_ID = "SELECT * FROM auction WHERE id = ?";
     static final String GET_FROM_PRODUCTS = "SELECT * FROM product";
     static final String SET_QUEUEPURCHASE_NEW = "INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID) VALUES (?,?,?,?,?)";
@@ -54,6 +61,11 @@ public class Connection {
     static final String GET_QUEUEPURCHASE = "SELECT * FROM queuepurchase WHERE id = ?";
     static final String GET_ALL_QUEUEPURCHASE = "SELECT * FROM queuepurchase";
     static final String DELETE_QUEUEPURCHASE = "DELETE FROM queuepurchase WHERE id = ?";
+    static final String GET_FROM_FEEDBACK_TOSELLER = "SELECT * FROM feedback WHERE sellerid = ?";
+    static final String GET_FROM_FEEDBACK_FROMBUYER = "SELECT * FROM feedback WHERE buyerid = ?";
+    static final String SET_FEEDBACK_TOSELLER = "INSERT INTO feedback(timeCreated, rating, description, sellerid, buyerid) VALUES(CURRENT_TIMESTAMP, ?, ?, ?, ?)";
+    static final String GET_FROM_USER_ALLUSERS = "SELECT * FROM user";
+    
     public Connection() {
 
     }
@@ -89,6 +101,7 @@ public class Connection {
         StatusEnum status;
         String description;
         String imageURL;
+                ArrayList<Bid> bids;
 
         try {
             getConnection();
@@ -116,9 +129,9 @@ public class Connection {
                     description = myRs.getString("description");
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
-                    date = myRs.getTimestamp("timecreated");
-                    
+                    date = myRs.getTimestamp("timecreated");                  
                     auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);
+                    auction.addBid(getBids(id));
                 }
 
                 // In case of Direct 
@@ -134,6 +147,7 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
 
                 //In case of standard auction
@@ -150,6 +164,7 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
                 return auction;
             
@@ -185,6 +200,7 @@ public class Connection {
         StatusEnum status;
         String description;
         String imageURL;
+        ArrayList<Bid> bids;
 
         try {
             getConnection();
@@ -217,10 +233,11 @@ public class Connection {
                     instabuyprice = myRs.getDouble("instabuyprice");
                     date = myRs.getTimestamp("timecreated");
                     auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);
+                    auction.addBid(getBids(id));
                 }
 
                 // In case of Direct 
-                if (myRs.getString("type").equals("direct")) {
+                else if (myRs.getString("type").equals("direct")) {
                     id = myRs.getInt("id");
                     user = getUser(myRs.getInt("sellerID"));
                     product = getProduct(myRs.getInt("productID"));
@@ -232,9 +249,10 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
 
-                if (myRs.getString("type").equals("standard")) {
+                else if (myRs.getString("type").equals("standard")) {
                     id = myRs.getInt("id");
                     user = getUser(myRs.getInt("sellerID"));
                     product = getProduct(myRs.getInt("productID"));
@@ -247,6 +265,7 @@ public class Connection {
                     imageURL = myRs.getString("imageUrl");
                     instabuyprice = myRs.getDouble("instabuyprice");
                     auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);
+                    auction.addBid(getBids(id));
                 }
 
                 auctions.add(auction);
@@ -261,6 +280,43 @@ public class Connection {
         return auctions;
     }
     
+    
+     public ArrayList<Bid> getBids(int id) {
+
+        ArrayList<Bid>bids = new ArrayList<>();
+        Bid bid;
+        User user;
+        int auctionId;
+        int buyerId;
+        double price;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultset = null;
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_BID_FROM_AUCTION_ID);
+            pstmt.setInt(1, id);
+            resultset = pstmt.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            while (resultset.next()) {
+                    auctionId = resultset.getInt("auctionID");
+                    buyerId = resultset.getInt("placerID");
+                    price = resultset.getDouble("amount");
+                    user = getUser(buyerId);
+                    bid = new Bid(auctionId,user,price);         
+                bids.add(bid);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Cannot add bids to list");
+        }
+
+        return bids;
+    }
     /**
      *
      * @return
@@ -357,7 +413,7 @@ public class Connection {
     public User getUser(int id) {
         User user = null;
         int userID;
-        int bsn;
+      //removed  int bsn;
         String username;
         String password;
         String alias;
@@ -367,7 +423,6 @@ public class Connection {
 
         PreparedStatement preparedStatement = null;
         ResultSet resultset = null;
-
         if (myConn != null) {
 
             try {
@@ -382,7 +437,7 @@ public class Connection {
 
             try {
                 userID = resultset.getInt("id");
-                bsn = resultset.getInt("bsn");
+             //removed   bsn = resultset.getInt("bsn");
                 username = resultset.getString("username");
                 password = resultset.getString("password");
                 alias = resultset.getString("alias");
@@ -391,7 +446,7 @@ public class Connection {
                 saldo = resultset.getFloat("saldo");
                 String imgURL = resultset.getString("imageUrl");
 
-                user = new User(userID,bsn, username, password, alias, email, verified, saldo, imgURL);
+                user = new User(userID, username, password, alias, email, verified, saldo, imgURL);
 
                 return user;
             } catch (SQLException ex) {
@@ -430,7 +485,7 @@ public class Connection {
 
         try {
             int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
+          //removed  int bsn = myRs.getInt("bsn");
             String usernm = myRs.getString("username");
             String pass = myRs.getString("password");
             String alias = myRs.getString("alias");
@@ -439,7 +494,7 @@ public class Connection {
             double saldo = myRs.getDouble("saldo");
             String imgURL = myRs.getString("imageUrl");
 
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
@@ -450,10 +505,57 @@ public class Connection {
     }
     
     /**
+     * Gets user with given username
+     * @param username
+     * @return
+     */
+    public User getUser(String username) {
+        User user = null;
+
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
+            pstmt.setString(1, username);
+
+            myRs = pstmt.executeQuery();
+            myRs.next();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            int userID = myRs.getInt("id");
+          //removed  int bsn = myRs.getInt("bsn");
+            String usernm = myRs.getString("username");
+            String pass = myRs.getString("password");
+            String alias = myRs.getString("alias");
+            String email = myRs.getString("email");
+            boolean verified = myRs.getBoolean("verified");
+            double saldo = myRs.getDouble("saldo");
+            String imgURL = myRs.getString("imageUrl");
+
+            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
+            closeConnection();
+        } catch (SQLException ex) {
+            System.out.println("User not found");
+            closeConnection();
+        }
+
+        return user;
+    }
+    
+
+    
+    
+   
+    
+    /**
      *
      * @param checkValue
      * @return
      */
+    /*
     public boolean hasDuplicateBSN(int checkValue) {
         Boolean hasDuplicate = false;
         int count = 0;
@@ -485,6 +587,7 @@ public class Connection {
 
         return hasDuplicate;
     }
+    /*
 
     /**
      *
@@ -695,7 +798,7 @@ public class Connection {
     
     /**
      *
-     * @param bsn
+     *
      * @param username
      * @param password
      * @param alias
@@ -704,7 +807,7 @@ public class Connection {
      * @param saldo
      * @return
      */
-    public Boolean setUser_REGISTER(int bsn, String username, String password, String alias, String email, String imageUrl, double saldo) {
+    public Boolean setUser_REGISTER(String username, String password, String alias, String email, String imageUrl, double saldo) {
         getConnection();
 
         if (myConn != null) {
@@ -713,14 +816,13 @@ public class Connection {
                     getConnection();
                     boolean verified = false;
                     pstmt = myConn.prepareStatement(SET_USER_NEW);
-                    pstmt.setInt(1, bsn);
-                    pstmt.setString(2, username);
-                    pstmt.setString(3, password);
-                    pstmt.setString(4, alias);
-                    pstmt.setString(5, email);
-                    pstmt.setBoolean(6, verified);
-                    pstmt.setString(7, imageUrl);
-                    pstmt.setDouble(8, saldo);
+                    pstmt.setString(1, username);
+                    pstmt.setString(2, password);
+                    pstmt.setString(3, alias);
+                    pstmt.setString(4, email);
+                    pstmt.setBoolean(5, verified);
+                    pstmt.setString(6, imageUrl);
+                    pstmt.setDouble(7, saldo);
 
                     if (pstmt.executeUpdate() > 0) {
                         System.out.println("succesfully registered new user with username: " + username);
@@ -745,7 +847,7 @@ public class Connection {
         }
     }
     
-        public Boolean insertQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
+    public Boolean insertQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
         getConnection();
         
                 try {
@@ -860,6 +962,7 @@ public class Connection {
      * @param bsn
      * @return
      */
+    /*
     public Boolean removeUser_BYBSN(int bsn) {
         getConnection();
 
@@ -872,21 +975,54 @@ public class Connection {
                     System.out.println("succesfully deleted user with bsn: " + bsn);
                     return true;
                 } else {
-                    System.out.println("Couldn't delete user because User with bsn: " + bsn + " doesn't exist in the database");
+                    System.out.println("Couldn't delete user because user with bsn:: " + bsn + " doesn't exist in the database");
                     return true;
                 }
             } catch (SQLException ex) {
-                System.out.println("failed to register new user. SQLException");
+                System.out.println("failed to remove user with bsn: " + bsn + ". SQLException");
                 ex.printStackTrace();
                 closeConnection();
                 return false;
             }
         } else {
-            System.out.println("failed to register new user. No connection to database.");
+            System.out.println("failed to remove user with bsn: " + bsn + ". No connection to database.");
             return false;
         }
     }
 
+    /**
+     * removes a user with given username 
+     * note: doesn't delete any objects yet that the user created (e.g. auctions, bids, feedbacks)
+     * @param username
+     * @return
+     */
+    public Boolean removeUser_BYUSERNAME(String username) {
+        getConnection();
+
+        if (myConn != null) {
+            try {
+                pstmt = myConn.prepareStatement(REMOVE_USER_BYUSERNAME);
+                pstmt.setString(1, username);
+
+                if (pstmt.executeUpdate() > 0) {
+                    System.out.println("succesfully deleted user with username: " + username);
+                    return true;
+                } else {
+                    System.out.println("Couldn't delete user because User with username: " + username + " doesn't exist in the database");
+                    return true;
+                }
+            } catch (SQLException ex) {
+                System.out.println("failed to remove with username: " + username + ". SQLException");
+                ex.printStackTrace();
+                closeConnection();
+                return false;
+            }
+        } else {
+            System.out.println("failed to remove user with username: " + username + ". No connection to database.");
+            return false;
+        }
+    }
+    
     private Product getProduct(int productID) {
 
         Product product = null;
@@ -952,7 +1088,6 @@ public class Connection {
         return queuepurchase;
     }
     
-    
     public Queue_Purchase getQueuePurchase(int queueID) {
         
         getConnection();
@@ -998,6 +1133,162 @@ public class Connection {
         return queuepurchase;
     }
 
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> users = new ArrayList<User>();
+
+       //removed int bsn;
+        String username;
+        String password;
+        String alias;
+        String email;
+        boolean verified;
+        float saldo;
+
+        PreparedStatement preparedStatement = null;
+        ResultSet resultset = null;
+
+        if (myConn != null) {
+
+            try {
+                getConnection();
+                preparedStatement = myConn.prepareStatement(GET_FROM_USER_ALLUSERS);
+                resultset = preparedStatement.executeQuery();
+
+                while (resultset.next()) {
+                   //removed bsn = resultset.getInt("bsn");
+                    username = resultset.getString("username");
+                    password = resultset.getString("password");
+                    alias = resultset.getString("alias");
+                    email = resultset.getString("email");
+                    verified = resultset.getBoolean("verified");
+                    saldo = resultset.getFloat("saldo");
+                    String imgURL = resultset.getString("imageUrl");
+
+                    User foundUser = new User(username, password, alias, email, verified, saldo, imgURL);
+                    users.add(foundUser);
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("There is no existing connection");
+        }
+        return users;
+    }
+
+    public List<Feedback> getFeedbackToSeller(String sellerid) {
+        List<Feedback> feedbackToSeller = new ArrayList<Feedback>();
+
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_FROM_FEEDBACK_TOSELLER);
+            pstmt.setString(1, sellerid);
+            myRs = pstmt.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            while (myRs.next()) {
+                String sellerUsername = myRs.getString("sellerid");
+                String buyerUsername = myRs.getString("buyerid"); //in tabel user is id nu varchar(20) ipv int. met username wordt nu het id ingevuld
+                int rating = myRs.getInt("rating");
+                String description = myRs.getString("description");
+
+                //gets date from 
+                Date timeCreated = null;
+                timeCreated = myRs.getDate("timeCreated");
+                Timestamp timestamp = myRs.getTimestamp("timeCreated");
+                if (timestamp != null) {
+                    timeCreated = new Date(timestamp.getTime());
+                }
+
+                Feedback f = new Feedback(timeCreated, buyerUsername, sellerUsername, rating, description);
+                feedbackToSeller.add(f);
+            }
+            closeConnection();
+        } catch (SQLException ex) {
+            System.out.println("SQLException at getFeedbackToSeller");
+            ex.printStackTrace();
+            closeConnection();
+        }
+
+        return feedbackToSeller;
+    }
+
+    public List<Feedback> getFeedbackFromBuyer(String buyerid) {
+        List<Feedback> feedbackFromBuyer = new ArrayList<Feedback>();
+
+        try {
+            getConnection();
+            pstmt = myConn.prepareStatement(GET_FROM_FEEDBACK_FROMBUYER);
+            pstmt.setString(1, buyerid);
+            myRs = pstmt.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            while (myRs.next()) {
+                String sellerUsername = myRs.getString("sellerid");
+                String buyerUsername = myRs.getString("buyerid"); //in tabel user is id nu varchar(20) ipv int. met username wordt nu het id ingevuld
+                int rating = myRs.getInt("rating");
+                String description = myRs.getString("description");
+
+                //gets date from 
+                Date timeCreated = null;
+                timeCreated = myRs.getDate("timeCreated");
+                Timestamp timestamp = myRs.getTimestamp("timeCreated");
+                if (timestamp != null) {
+                    timeCreated = new Date(timestamp.getTime());
+                }
+
+                Feedback f = new Feedback(timeCreated, buyerUsername, sellerUsername, rating, description);
+                feedbackFromBuyer.add(f);
+            }
+            closeConnection();
+        } catch (SQLException ex) {
+            System.out.println("SQLException at getFeedbackToSeller");
+            ex.printStackTrace();
+            closeConnection();
+        }
+
+        return feedbackFromBuyer;
+    }
+
+    public Boolean submitFeedback(int rating, String description, String sellerid, String buyerid) {
+        getConnection();
+
+        if (myConn != null) {
+            try {
+                getConnection();
+                pstmt = myConn.prepareStatement(SET_FEEDBACK_TOSELLER);
+                pstmt.setInt(1, rating);
+                pstmt.setString(2, description);
+                pstmt.setString(3, sellerid);
+                pstmt.setString(4, buyerid);
+
+                if (pstmt.executeUpdate() > 0) {
+                    System.out.println("succesfully submitted new feedback from " + buyerid + " to " + sellerid);
+                    return true;
+                } else {
+                    System.out.println("Couldn't insert new feedback from " + buyerid + " to " + sellerid + ". Rows are unaffected.");
+                    return false;
+                }
+            } catch (SQLException ex) {
+                System.out.println("failed to submit new feedback from " + buyerid + " to " + sellerid + ". SQLException");
+                ex.printStackTrace();
+                closeConnection();
+                return false;
+            }
+        } else {
+            System.out.println("Registration of duplicate user isn't allowed.");
+            return false;
+        }
+    }
     
     /**
      *

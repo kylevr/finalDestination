@@ -15,7 +15,7 @@ public class User {
 
     Grand_Exchange manages;
     private int userID;
-    private int BSN;
+   //removed private int BSN;
     private String username;
     private String password;
     private String alias;
@@ -27,19 +27,21 @@ public class User {
     private List<Auction> placedAuctions;
     private List<Queue_Purchase> placedOrders;
     private List<Transaction> transactions;
+    private List<Feedback> feedbacklist;
 
     /**
-     * constructor for a user that gets initialized by supplying his name and password.
-     * his info is then taken from the server
+     * constructor for a user that gets initialized by supplying his name and
+     * password. his info is then taken from the server
+     *
      * @param username
      * @param password
      */
     public User(String username, String password) {
         Connection conn = new Connection();
         User myUser = conn.getUser(username, password);
-        
+
         this.userID = myUser.userID;
-        this.BSN = myUser.BSN;
+      //removed  this.BSN = myUser.BSN;
         this.username = myUser.username;
         this.password = myUser.password;
         this.alias = myUser.alias;
@@ -51,10 +53,13 @@ public class User {
         this.placedAuctions = myUser.placedAuctions;
         this.placedOrders = myUser.placedOrders;
         this.transactions = myUser.transactions;
+        this.feedbacklist = myUser.feedbacklist;
     }
-    
+
     /**
-     * constructor for a user that gets initialized by supplying his name and password.
+     * constructor for a user that gets initialized by supplying his name and
+     * password.
+     *
      * @param username
      * @param password
      * @param imageURL
@@ -63,16 +68,15 @@ public class User {
         this.username = username;
         this.password = password;
         this.imageURL = imageURL;
-        
+
         //User myUser = Database.Connection().getUser()
     }
 
-    
     /**
      * constructor for a user with everything manually inputted.
      */
-    public User(int userID, int BSN, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
-        this.BSN = BSN;
+    public User(int userID, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
+      //removed  this.BSN = BSN;
         this.username = username;
         this.password = password;
         this.alias = alias;
@@ -84,13 +88,33 @@ public class User {
         this.placedAuctions = new ArrayList<Auction>();
         this.placedOrders = new ArrayList<Queue_Purchase>();
         this.transactions = new ArrayList<Transaction>();
-    }   
-    
+        this.feedbacklist = new ArrayList<Feedback>();
+    }
+
+    /**
+     * constructor for a user with everything manually inputted. userid isn't
+     * given here because that's a database thing
+     */
+    public User(String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
+     //removed   this.BSN = BSN;
+        this.username = username;
+        this.password = password;
+        this.alias = alias;
+        this.email = email;
+        this.verified = verified;
+        this.saldo = saldo;
+        this.imageURL = imageURL;
+        this.bids = new ArrayList<Bid>();
+        this.placedAuctions = new ArrayList<Auction>();
+        this.placedOrders = new ArrayList<Queue_Purchase>();
+        this.transactions = new ArrayList<Transaction>();
+        this.feedbacklist = new ArrayList<Feedback>();
+    }
+
     public int getUserID() {
         return userID;
     }
 
-    
     /**
      * Adds feedback to another user.
      *
@@ -209,8 +233,87 @@ public class User {
     public String getUsername() {
         return username;
     }
-    
+
     public String getImageURL() {
         return imageURL;
+    }
+
+    public void addFeedback(Feedback feedback) {
+        if (!this.feedbacklist.contains(feedback)) {
+            this.feedbacklist.add(feedback);
+        }
+    }
+
+    public void removeFeedback(Feedback feedback) {
+        this.feedbacklist.remove(feedback);
+    }
+
+    /**
+     * Receives the list with feedback addressed to user object
+     *
+     * @return a list with feedback objects
+     */
+    public List<Feedback> getFeedbackToMe() {
+        this.sortFeedbacklistByDate();
+        List<Feedback> feedbackToMeList = new ArrayList<Feedback>();
+        for (Feedback f : this.feedbacklist) {
+            if (f.getUserTo_Username().equals(this.username)) {
+                feedbackToMeList.add(f);
+            }
+        }
+        return feedbackToMeList;
+    }
+
+    /**
+     * Receives the list with feedback sended by user object
+     *
+     * @return a list with feedback objects
+     */
+    public List<Feedback> getFeedbackFromMe() {
+        this.sortFeedbacklistByDate();
+        List<Feedback> feedbackFromMeList = new ArrayList<Feedback>();
+        for (Feedback f : this.feedbacklist) {
+            if (f.getUserFrom_Username().equals(this.username)) {
+                feedbackFromMeList.add(f);
+            }
+        }
+        return feedbackFromMeList;
+    }
+
+    /**
+     * Receives the list with all feedback related to user object
+     *
+     * @return a list with feedback objects
+     */
+    public List<Feedback> getFeedbacklist() {
+        this.sortFeedbacklistByDate();
+        return this.feedbacklist;
+    }
+
+    public void updateFeedbacklist() {
+        Connection conn = new Connection();
+        conn.getConnection();
+        this.feedbacklist.clear();
+        for (Feedback f : conn.getFeedbackToSeller(this.username)) {
+            this.addFeedback(f);
+        }
+        for (Feedback f : conn.getFeedbackFromBuyer(this.username)) {
+            this.addFeedback(f);
+        }
+        this.sortFeedbacklistByDate();
+    }
+
+    /**
+     * sorts feedbacklist by timecreated descending so the most recent date is on top
+     */
+    public void sortFeedbacklistByDate() {
+        Collections.sort(this.feedbacklist, new Comparator<Feedback>() {
+            public int compare(Feedback o1, Feedback o2) {
+                if (o1.getTimeCreated() == null || o2.getTimeCreated() == null) {
+                    return 0;
+                }
+                return o2.getTimeCreated().compareTo(o1.getTimeCreated());
+            }
+        });
     }
 }

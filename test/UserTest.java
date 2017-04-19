@@ -59,7 +59,7 @@ public class UserTest {
      */
     @Test
     public void TestaddAuction() {
-        p = new Product("12345", "testprodcut", "testomschrijving");
+        p = new Product(1, "12345", "testprodcut", "testomschrijving");
         a = new Auction(TestUser, p, 10, 3, StatusEnum.New, "omschrijving", 10);
         TestUser.addAuction(a);
         assertEquals(1, GE.getAuctions().size());
@@ -72,7 +72,7 @@ public class UserTest {
     @Test
 
     public void TestRemoveAuction() {
-        p = new Product("12345", "testprodcut", "testomschrijving");
+        p = new Product(1, "12345", "testprodcut", "testomschrijving");
         a = new Auction(TestUser, p, 10, 3, StatusEnum.New, "omschrijving", 10);
         TestUser.addAuction(a);
         assertEquals(1, GE.getAuctions().size());
@@ -85,7 +85,7 @@ public class UserTest {
    */
     @Test
     public void TestRequestPlaceBid() {
-        Bid b = new Bid(TestUser, 10);
+        Bid b = new Bid(1, TestUser, 10);
         TestUser.requestPlaceBid(a, b);
         assertEquals(1, a.getBids().size());
 
@@ -96,7 +96,7 @@ public class UserTest {
    */
     @Test
     public void TestRequestRemoveBid() {
-        Bid b = new Bid(TestUser, 10);
+        Bid b = new Bid(1, TestUser, 10);
         TestUser.requestPlaceBid(a, b);
         assertEquals(1, a.getBids().size());
         TestUser.requestRemoveBid();
