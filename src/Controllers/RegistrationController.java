@@ -39,8 +39,6 @@ public class RegistrationController implements Initializable {
     AnchorPane currentPane; //id you've given to the backgroundpane of the .FXML scene
 
     @FXML
-    TextField textfield_bsn;
-    @FXML
     TextField textfield_username;
     @FXML
     TextField textfield_password;
@@ -67,29 +65,24 @@ public class RegistrationController implements Initializable {
         this.label_errorMsg.setTextFill(Color.RED);
         try {
 
-            if (textfield_bsn.getText().trim().isEmpty() || textfield_username.getText().trim().isEmpty() || textfield_password.getText().trim().isEmpty() || textfield_email.getText().trim().isEmpty() || textfield_alias.getText().trim().isEmpty()) {
+            if (textfield_username.getText().trim().isEmpty() || textfield_password.getText().trim().isEmpty() || textfield_email.getText().trim().isEmpty() || textfield_alias.getText().trim().isEmpty()) {
                 System.out.println("-All fields must be filled");
                 this.errorMsg += "\n -All fields must be filled";
                 this.label_errorMsg.setText(errorMsg);
                 this.label_errorMsg.setVisible(true);
             } else {
-                int bsn = Integer.parseInt(textfield_bsn.getText().trim());
                 String username = textfield_username.getText().trim();
                 String password = textfield_password.getText().trim();
                 String alias = textfield_alias.getText().trim();
                 String email = textfield_email.getText().trim();
 
                 Connection conn = new Connection();
-                boolean duplicateBSN = conn.hasDuplicateBSN(bsn);
                 boolean duplicateUsername = conn.hasDuplicateUsername(username);
                 boolean duplicateAlias = conn.hasDuplicateAlias(alias);
                 boolean duplicateEmail = conn.hasDuplicateEmail(email);
 
                 System.out.println("Starting registration...");
 
-                if (duplicateBSN) {
-                    this.errorMsg += "\n -BSN is already used";
-                }
                 if (duplicateUsername) {
                     this.errorMsg += "\n -Username is already used";
                 }
@@ -102,8 +95,8 @@ public class RegistrationController implements Initializable {
                 this.label_errorMsg.setText(errorMsg);
                 this.label_errorMsg.setVisible(true);
 
-                if (!duplicateBSN && !duplicateUsername && !duplicateAlias && !duplicateEmail) {
-                    conn.setUser_REGISTER(bsn, username, password, alias, email, null, 0);
+                if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
+                    conn.setUser_REGISTER(username, password, alias, email, null, 0);
                     this.label_errorMsg.setText("Succesfully registered new user!");
                     this.label_errorMsg.setTextFill(Color.GREEN);
                 }

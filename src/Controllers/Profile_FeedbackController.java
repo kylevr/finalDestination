@@ -31,6 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -46,6 +47,8 @@ public class Profile_FeedbackController implements Initializable {
     
     User feedbackOwner;
     
+    @FXML
+    AnchorPane currentPane;
     @FXML
     ListView listview_profile_feedback; 
     @FXML
@@ -66,24 +69,50 @@ public class Profile_FeedbackController implements Initializable {
     }    
     
     public void setUp(Grand_Exchange GX, String feedbackOwnerUsername) {
-//        this.GX = GX;
-//        GX.updateUsers();
-//        this.feedbackOwner = GX.getUser(feedbackOwnerUsername);
-//        this.refreshFeedbacklist();
-//        this.label_owner.setText(feedbackOwner.getUsername() + "'s feedback");
-//        this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback");
+        this.GX = GX;
+        GX.updateUsers();
+        this.feedbackOwner = GX.getUser(feedbackOwnerUsername);
+        this.refreshFeedbacklist();
+        this.label_owner.setText(feedbackOwner.getUsername() + "'s feedback");
+        this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback to " + this.feedbackOwner.getUsername());
     }
     
+    @FXML
     public void button_submitFeedback()
     {
-//        Connection conn = new Connection();
-//        conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername());
-//        this.refreshFeedbacklist();
+        Connection conn = new Connection();
+        conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername());
+        this.refreshFeedbacklist();
     }
     
+    @FXML
     public void refreshFeedbacklist()
     {
-        //this.feedbackOwner.updateFeedbacklist();
-        //listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
+        this.feedbackOwner.updateFeedbacklist();
+        listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
+    }
+    
+    @FXML
+    public void button_cancelFeedback()
+    {
+        this.textfield_description.clear();
+        this.slider_rating.setValue(1);
+    }
+    
+    @FXML
+    public void button_goBack() throws IOException {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
+            Parent root = loader.load();
+            
+            MainController controller = (MainController) loader.getController();
+            controller.setUp(GX);
+
+            Stage inputStage = new Stage();
+            Scene newScene = new Scene(root);
+            inputStage.setScene(newScene);
+            inputStage.setTitle("Grand Exchange");
+            inputStage.show();
+            Stage stage = (Stage) currentPane.getScene().getWindow();
+            stage.close();
     }
 }

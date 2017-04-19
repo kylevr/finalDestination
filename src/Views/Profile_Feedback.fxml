@@ -7,13 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="551.0" prefWidth="300.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Profile_FeedbackController">
-    <stylesheets>
-        <URL value="@profile_feedback.css" />
-    </stylesheets>
+<AnchorPane id="AnchorPane" fx:id="currentPane" prefHeight="551.0" prefWidth="300.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Profile_FeedbackController">
    <children>
-      <Button fx:id="button_logout" layoutX="231.0" layoutY="14.0" mnemonicParsing="false" text="log out" underline="true" />
-      <Button fx:id="button_back" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="back" underline="true" />
+      <Button fx:id="button_back" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_goBack" text="back" underline="true" />
       <Label fx:id="label_owner" layoutX="15.0" layoutY="49.0" text="&lt;feedback owner&gt; 's feedback" />
       <ScrollPane layoutX="15.0" layoutY="75.0" prefViewportHeight="221.0" prefViewportWidth="270.0">
          <content>
@@ -24,9 +20,9 @@
       <Label layoutX="19.0" layoutY="354.0" text="rating" />
       <Label layoutX="19.0" layoutY="392.0" text="description" />
       <Slider fx:id="slider_rating" layoutX="93.0" layoutY="354.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" prefHeight="38.0" prefWidth="141.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-      <TextField fx:id="textfield_description" layoutX="93.0" layoutY="391.0" prefHeight="105.0" prefWidth="188.0" />
+      <TextField fx:id="textfield_description" alignment="TOP_LEFT" layoutX="93.0" layoutY="391.0" prefHeight="105.0" prefWidth="188.0" />
       <Button fx:id="button_submit" layoutX="93.0" layoutY="505.0" mnemonicParsing="false" onAction="#button_submitFeedback" text="submit feedback" />
-      <Label fx:id="label_submitter" layoutX="19.0" layoutY="331.0" text="&lt;feedback submitter&gt; 's feedback" />
-      <Button fx:id="button_cancel" layoutX="231.0" layoutY="505.0" mnemonicParsing="false" text="cancel" />
+      <Label fx:id="label_submitter" layoutX="19.0" layoutY="331.0" text="&lt;feedback submitter&gt; 's feedback to &lt;feedback owner&gt;" />
+      <Button fx:id="button_cancel" layoutX="231.0" layoutY="505.0" mnemonicParsing="false" onAction="#button_cancelFeedback" text="cancel" />
    </children>
 </AnchorPane>
