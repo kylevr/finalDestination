@@ -48,7 +48,7 @@ public class Connection {
     static final String GET_FROM_USER_BYLOGININFO = "SELECT * FROM user WHERE BINARY username = ? and BINARY password = ?";
     static final String GET_FROM_USER_BYUSERNAME = "SELECT * FROM user WHERE BINARY username = ?";
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
-    static final String SET_USER_NEW = "INSERT INTO user(bsn, username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    static final String SET_USER_NEW = "INSERT INTO user(username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?)";
     static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
     static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_AUCTION_BY_ID = "SELECT * FROM auction WHERE id = ?";
@@ -753,7 +753,7 @@ public class Connection {
      * @param saldo
      * @return
      */
-    public Boolean setUser_REGISTER(int bsn, String username, String password, String alias, String email, String imageUrl, double saldo) {
+    public Boolean setUser_REGISTER(String username, String password, String alias, String email, String imageUrl, double saldo) {
         getConnection();
 
         if (myConn != null) {
@@ -762,14 +762,13 @@ public class Connection {
                     getConnection();
                     boolean verified = false;
                     pstmt = myConn.prepareStatement(SET_USER_NEW);
-                    pstmt.setInt(1, bsn);
-                    pstmt.setString(2, username);
-                    pstmt.setString(3, password);
-                    pstmt.setString(4, alias);
-                    pstmt.setString(5, email);
-                    pstmt.setBoolean(6, verified);
-                    pstmt.setString(7, imageUrl);
-                    pstmt.setDouble(8, saldo);
+                    pstmt.setString(1, username);
+                    pstmt.setString(2, password);
+                    pstmt.setString(3, alias);
+                    pstmt.setString(4, email);
+                    pstmt.setBoolean(5, verified);
+                    pstmt.setString(6, imageUrl);
+                    pstmt.setDouble(7, saldo);
 
                     if (pstmt.executeUpdate() > 0) {
                         System.out.println("succesfully registered new user with username: " + username);
