@@ -15,7 +15,7 @@ public class User {
 
     Grand_Exchange manages;
     private int userID;
-    private int BSN;
+   //removed private int BSN;
     private String username;
     private String password;
     private String alias;
@@ -41,7 +41,7 @@ public class User {
         User myUser = conn.getUser(username, password);
 
         this.userID = myUser.userID;
-        this.BSN = myUser.BSN;
+      //removed  this.BSN = myUser.BSN;
         this.username = myUser.username;
         this.password = myUser.password;
         this.alias = myUser.alias;
@@ -75,8 +75,8 @@ public class User {
     /**
      * constructor for a user with everything manually inputted.
      */
-    public User(int userID, int BSN, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
-        this.BSN = BSN;
+    public User(int userID, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
+      //removed  this.BSN = BSN;
         this.username = username;
         this.password = password;
         this.alias = alias;
@@ -95,8 +95,8 @@ public class User {
      * constructor for a user with everything manually inputted. userid isn't
      * given here because that's a database thing
      */
-    public User(int BSN, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
-        this.BSN = BSN;
+    public User(String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
+     //removed   this.BSN = BSN;
         this.username = username;
         this.password = password;
         this.alias = alias;

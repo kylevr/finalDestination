@@ -47,7 +47,7 @@ public class FeedbackTest {
      */
     @Test
     public void testConstructor() {
-        Feedback result = new Feedback(fromUser, toUser, 4, "Goede deal gemaakt");
+        Feedback result = new Feedback(fromUser.getUsername(), toUser.getUsername(), 4, "Goede deal gemaakt");
         Assert.assertNotNull("result is null", result);
     }
 

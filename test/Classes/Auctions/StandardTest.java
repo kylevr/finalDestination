@@ -48,7 +48,7 @@ public class StandardTest {
     public void setUp() {
         user = new User("Kyle","PassWW");
         date = new Date();
-        product = new Product("1932","Riem","Mooi en handig voor elke maat");
+        product = new Product(1, "1932","Riem","Mooi en handig voor elke maat");
         auction = new Standard(user,product,15,32,date,StatusEnum.New,"","", 10);
         bid = new Bid(user, 15);
         

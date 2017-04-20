@@ -51,11 +51,13 @@ public class Connection {
     static final String GET_FROM_USER_BYUSERNAME = "SELECT * FROM user WHERE BINARY username = ?";
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
     static final String SET_USER_NEW = "INSERT INTO user(username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
+  //removed  static final String REMOVE_USER_BYBSN = "DELETE FROM user WHERE bsn = ?";
     static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_AUCTION_BY_ID = "SELECT * FROM auction WHERE id = ?";
     static final String GET_FROM_PRODUCTS = "SELECT * FROM product";
     static final String SET_QUEUEPURCHASE_NEW = "INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID) VALUES (?,?,?,?,?)";
+    static final String SET_PRODUCT_NEW = "INSERT INTO product(name, description, gtin) VALUES (?,?,?)";
+    static final String SET_AUCTION_NEW = "INSERT INTO auction(sellerID, productID, timecreated, currentprice, instabuyprice, instabuyable, productquantity, timeend, priceloweringAmount, priceloweringdelay, type, status, imageUrl, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     static final String GET_QUEUEPURCHASE = "SELECT * FROM queuepurchase WHERE id = ?";
     static final String GET_ALL_QUEUEPURCHASE = "SELECT * FROM queuepurchase";
     static final String DELETE_QUEUEPURCHASE = "DELETE FROM queuepurchase WHERE id = ?";
@@ -411,7 +413,7 @@ public class Connection {
     public User getUser(int id) {
         User user = null;
         int userID;
-        int bsn;
+      //removed  int bsn;
         String username;
         String password;
         String alias;
@@ -435,7 +437,7 @@ public class Connection {
 
             try {
                 userID = resultset.getInt("id");
-                bsn = resultset.getInt("bsn");
+             //removed   bsn = resultset.getInt("bsn");
                 username = resultset.getString("username");
                 password = resultset.getString("password");
                 alias = resultset.getString("alias");
@@ -444,7 +446,7 @@ public class Connection {
                 saldo = resultset.getFloat("saldo");
                 String imgURL = resultset.getString("imageUrl");
 
-                user = new User(userID,bsn, username, password, alias, email, verified, saldo, imgURL);
+                user = new User(userID, username, password, alias, email, verified, saldo, imgURL);
 
                 return user;
             } catch (SQLException ex) {
@@ -483,7 +485,7 @@ public class Connection {
 
         try {
             int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
+          //removed  int bsn = myRs.getInt("bsn");
             String usernm = myRs.getString("username");
             String pass = myRs.getString("password");
             String alias = myRs.getString("alias");
@@ -492,7 +494,7 @@ public class Connection {
             double saldo = myRs.getDouble("saldo");
             String imgURL = myRs.getString("imageUrl");
 
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
@@ -524,7 +526,7 @@ public class Connection {
 
         try {
             int userID = myRs.getInt("id");
-            int bsn = myRs.getInt("bsn");
+          //removed  int bsn = myRs.getInt("bsn");
             String usernm = myRs.getString("username");
             String pass = myRs.getString("password");
             String alias = myRs.getString("alias");
@@ -533,7 +535,7 @@ public class Connection {
             double saldo = myRs.getDouble("saldo");
             String imgURL = myRs.getString("imageUrl");
 
-            user = new User(userID, bsn, usernm, pass, alias, email, verified, saldo, imgURL);
+            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
@@ -548,6 +550,7 @@ public class Connection {
      * @param checkValue
      * @return
      */
+    /*
     public boolean hasDuplicateBSN(int checkValue) {
         Boolean hasDuplicate = false;
         int count = 0;
@@ -579,6 +582,7 @@ public class Connection {
 
         return hasDuplicate;
     }
+    /*
 
     /**
      *
@@ -789,7 +793,7 @@ public class Connection {
     
     /**
      *
-     * @param bsn
+     *
      * @param username
      * @param password
      * @param alias
@@ -867,7 +871,85 @@ public class Connection {
             
 
     }
+        // Returns the inserted product id on succes, or 0 if the insert fails
+        public int insertProduct(String name, String description, int gtin) {
+        getConnection();
+        
+                try {
+                    pstmt = myConn.prepareStatement(SET_PRODUCT_NEW,Statement.RETURN_GENERATED_KEYS);
+                    pstmt.setString(1, name);
+                    pstmt.setString(2, description);
+                    pstmt.setInt(3, gtin);
 
+                    if (pstmt.executeUpdate() > 0) {
+                        int productid = 0;
+                        System.out.println("succesfully registered new product ");
+                        try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                            if (generatedKeys.next()) {
+                                productid = (int) generatedKeys.getLong(1);
+                            }
+                            else {
+                                throw new SQLException("Creating user failed, no ID obtained.");
+                            }
+                        }
+                        closeConnection();
+                        return productid;
+                    } else {
+                        System.out.println("Couldn't insert new queuePurchase. Rows are unaffected.");
+                        closeConnection();
+                        return 0;
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                    closeConnection();
+                    return 0;
+                }
+            
+
+    }
+
+    public Boolean insertAuction(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description ) {
+        getConnection();
+        //timecreated niet vergeten
+        
+                try {
+                    pstmt = myConn.prepareStatement(SET_AUCTION_NEW);
+                    pstmt.setInt(1, 1);
+                    pstmt.setInt(2, productid);
+                    Timestamp created = new Timestamp(System.currentTimeMillis());
+                    pstmt.setTimestamp(3, created);
+                    pstmt.setDouble(4, currentprice);
+                    pstmt.setDouble(5, instabuyprice);
+                    pstmt.setInt(6, instabuyable);
+                    pstmt.setInt(7, quantity);
+                    Timestamp end = new Timestamp(System.currentTimeMillis()+10000);
+                    pstmt.setTimestamp(8, end);
+                    pstmt.setDouble(9, loweringamount);
+                    pstmt.setInt(10, loweringdelay);
+                    pstmt.setString(11, type);
+                    pstmt.setInt(12, status);
+                    pstmt.setString(13, imgurl);
+                    pstmt.setString(14, description);
+                    
+
+                    if (pstmt.executeUpdate() > 0) {
+                        System.out.println("succesfully registered new queuePurchase: ");
+                        closeConnection();
+                        return true;
+                    } else {
+                        System.out.println("Couldn't insert new queuePurchase. Rows are unaffected.");
+                        closeConnection();
+                        return false;
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                    closeConnection();
+                    return false;
+                }
+            
+
+    }    
+        
     /**
      * removes a user with given bsn note: doesn't delete any objects yet that
      * the user created (e.g. auctions, bids, feedbacks)
@@ -875,6 +957,7 @@ public class Connection {
      * @param bsn
      * @return
      */
+    /*
     public Boolean removeUser_BYBSN(int bsn) {
         getConnection();
 
@@ -1048,7 +1131,7 @@ public class Connection {
     public ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<User>();
 
-        int bsn;
+       //removed int bsn;
         String username;
         String password;
         String alias;
@@ -1067,7 +1150,7 @@ public class Connection {
                 resultset = preparedStatement.executeQuery();
 
                 while (resultset.next()) {
-                    bsn = resultset.getInt("bsn");
+                   //removed bsn = resultset.getInt("bsn");
                     username = resultset.getString("username");
                     password = resultset.getString("password");
                     alias = resultset.getString("alias");
@@ -1076,7 +1159,7 @@ public class Connection {
                     saldo = resultset.getFloat("saldo");
                     String imgURL = resultset.getString("imageUrl");
 
-                    User foundUser =    new User(bsn, username, password, alias, email, verified, saldo, imgURL);
+                    User foundUser = new User(username, password, alias, email, verified, saldo, imgURL);
                     users.add(foundUser);
                 }
             } catch (SQLException ex) {

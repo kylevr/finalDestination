@@ -41,11 +41,15 @@
         <Font size="13.0" />
       </font>
     </Label>
+
+    
+
     <Button layoutX="18.0" layoutY="270.0" mnemonicParsing="false" prefWidth="199.0" text="Sell an item" />
     <Button layoutX="136.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" underline="true" />
     <Button layoutX="15.0" layoutY="47.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
     <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="80.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
     <Button layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
     <Button layoutX="433.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#btnRefresh" text="Refresh" />
+    <Button layoutX="14.0" layoutY="111.0" mnemonicParsing="false" onAction="#createAuction" prefWidth="113.0" text="Create Auction" />
   </children>
 </AnchorPane>

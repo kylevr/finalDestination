@@ -6,6 +6,7 @@
 package Classes;
 
 import Classes.Auctions.Auction;
+import Classes.Auctions.StatusEnum;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.junit.After;
@@ -60,7 +61,7 @@ public class Grand_ExchangeTest {
    */
     @Test
     public void TestAddProduct() {
-        p = new Product("1234", "testprodcut", "gewoon een test");
+        p = new Product(1,"1234", "testprodcut", "gewoon een test");
         GE.addProduct(p);
         assertEquals(p.getName(), "testproduct");
 
@@ -71,7 +72,7 @@ public class Grand_ExchangeTest {
    */
     @Test
     public void TestRemoveProduct() {
-        p = new Product("1234", "testprodcut", "gewoon een test");
+        p = new Product(1, "1234", "testprodcut", "gewoon een test");
         assertEquals(p.getName(), "testproduct");
         GE.removeProduct(p);
         assertNull(p.getName());
@@ -83,8 +84,8 @@ public class Grand_ExchangeTest {
    */
     @Test
     public void TestAddAuction() {
-        p = new Product("1234", "testprodcut", "gewoon een test");
-        a = new Auction(TestUser, p, 15, 2, goed, "test",10);
+        p = new Product(1,"1234", "testprodcut", "gewoon een test");
+        a = new Auction(TestUser, p, 15, 2, StatusEnum.New, "test",10);
         GE.addAuction(a);
         Collection<Auction> auc;
         auc = GE.getAuctions();

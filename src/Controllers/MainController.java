@@ -200,6 +200,20 @@ public class MainController implements Initializable {
     }
     
     @FXML
+    public void createAuction() throws IOException{
+        try{
+            
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/CreateAuction.fxml"));
+        Scene newScene;
+        newScene = new Scene(loader.load());
+        CreateAuctionController controller = loader.<CreateAuctionController>getController();
+        controller.setUp(GX);
+        Stage inputStage = new Stage();
+        inputStage.setScene(newScene);
+        inputStage.showAndWait();}
+        catch(Exception e){e.printStackTrace();}
+    }
+    
     public void button_goToFeedbackOf() throws IOException {
         if (!textField_usernameOfFeedbackOwner.getText().isEmpty()) {
             try {
