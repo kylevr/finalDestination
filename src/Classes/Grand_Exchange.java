@@ -15,12 +15,20 @@ public class Grand_Exchange implements Observer {
     Connection con;
     DatabaseListener dbListener;
 
-    public User loggedInUser;// = new User("AAP","test","http://www.jamiemagazine.nl/upload/artikel/jm/banaan-vierkant.jpg");
+    public User loggedInUser;
 
+    /**
+     * returns user logged in
+     *
+     * @return User: logged in user
+     */
     public User getLoggedInUser() {
         return loggedInUser;
     }
 
+    /**
+     * initialize GX
+     */
     public Grand_Exchange() {
         products = new ArrayList<>();
         users = new ArrayList<>();
@@ -35,10 +43,6 @@ public class Grand_Exchange implements Observer {
 
         dbListener = new DatabaseListener();
         dbListener.addObserver(this);
-    }
-
-    public void Load() {
-
     }
 
     /**
@@ -67,6 +71,11 @@ public class Grand_Exchange implements Observer {
         }
     }
 
+    /**
+     * adds auction to list of auctions
+     *
+     * @param auction :auction to be added
+     */
     public void addAuction(Auction auction) {
         if (auction == null) {
             throw new IllegalArgumentException();
@@ -74,8 +83,12 @@ public class Grand_Exchange implements Observer {
             auctions.add(auction);
         }
     }
-   
 
+    /**
+     * removes auction from list of auctions
+     *
+     * @param auction :auction to be deleted
+     */
     public void removeAuction(Auction auction) {
         if (auction == null) {
             throw new IllegalArgumentException();
@@ -97,18 +110,46 @@ public class Grand_Exchange implements Observer {
         }
     }
 
+    /**
+     * adds queue purchase to Database
+     * @param quantity : amount of items to be bought
+     * @param minprice : minimum price to pay for items
+     * @param maxprice : maximum price to pay for items
+     * @param productid: id of product to be bought
+     * @param placerid : id of user who placed the queue purchase
+     */
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
         con.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
     }
-    
-    public int addProductToDB(String name, String description, int gtin){
-        return con.insertProduct(name,description,gtin);
+/**
+ * adds product to database
+ * @param name : name of product
+ * @param description : description of product
+ * @param gtin : global trading number of product
+ * @return 
+ */
+    public int addProductToDB(String name, String description, int gtin) {
+        return con.insertProduct(name, description, gtin);
     }
-    
-    public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description){
+/**
+ * adds auction to database
+ * @param sellerid : id of user who sells item
+ * @param productid: id of product to be sold
+ * @param currentprice : price of product at the moment
+ * @param instabuyprice: price where it can be bought imedeatel
+ * @param instabuyable : is the item instabuyable?
+ * @param quantity     : quantity of products for sale
+ * @param loweringamount: amount of the pricelowering after the specified amount of time
+ * @param loweringdelay : delay for lowering the price
+ * @param type  : type of auction, standard, countdown or direct
+ * @param status: status of product
+ * @param imgurl: urls of images splitted by ;
+ * @param description : description of auction
+ * @return 
+ */
+    public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
         return con.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
     }
-    
 
     /**
      * removes product from collection of products
@@ -167,6 +208,12 @@ public class Grand_Exchange implements Observer {
         return products;
     }
 
+    /**
+     * returns list of products with filters
+     * @param name : search terms 
+     * @param category : category to search in
+     * @return ArrayList<Product>
+     */
     public ArrayList<Product> getProducts(String name, CategoryEnum category) {
         ArrayList<Product> tempList = new ArrayList<>();
         String productName = name.toLowerCase();
@@ -185,10 +232,22 @@ public class Grand_Exchange implements Observer {
         return tempList;
     }
 
+    /**
+     * returns list of all auctions available at the moment
+     * @return 
+     */
     public Collection<Auction> getAuctions() {
         return auctions;
     }
 
+    /**
+     * performs instabuy for user
+     * @param amount : amount of items to be bought
+     * @param auctionID: id of auction to buy
+     * @param buyerID : id of user who buys
+     * @return boolean
+     * @throws SQLException 
+     */
     public boolean InstabuyItem(int amount, int auctionID, int buyerID) throws SQLException {
         try {
             System.out.println("amount :" + amount + " AID: " + auctionID + "BID: " + buyerID);
@@ -199,6 +258,14 @@ public class Grand_Exchange implements Observer {
         }
     }
 
+    /**
+     * adds bid to auction and to db
+     * @param amount
+     * @param auctionID
+     * @param buyerID
+     * @param price
+     * @return 
+     */
     public boolean addBid(double amount, int auctionID, int buyerID, double price) {
         try {
             System.out.println("amount :" + amount + " AID: " + auctionID + " BID: " + buyerID + " Price: " + price);
@@ -209,6 +276,10 @@ public class Grand_Exchange implements Observer {
         }
     }
 
+    /**
+     * 
+     * @param newQueuePurchases 
+     */
     public void updateQueuePurchaseFromDB(ArrayList<Integer> newQueuePurchases) {
         Queue_Purchase tempQueuePurchase;
         for (int i : newQueuePurchases) {
@@ -230,7 +301,10 @@ public class Grand_Exchange implements Observer {
             }
         }
     }
-
+/**
+ * 
+ * @param newAuctionIDs 
+ */
     public void updateAuctionsFromDB(ArrayList<Integer> newAuctionIDs) {
         Auction tempAuction;
         for (int i : newAuctionIDs) {
@@ -264,7 +338,11 @@ public class Grand_Exchange implements Observer {
             }
         }
     }
-
+/**
+ * 
+ * @param o
+ * @param arg 
+ */
     @Override
     public void update(Observable o, Object arg) {
         String type = arg.toString();
@@ -277,7 +355,10 @@ public class Grand_Exchange implements Observer {
         }
 
     }
-
+/**
+ * updates auction from DB
+ * @param auction :auction to be updated
+ */
     public void updateAuction(Auction auction) {
         con.updateAuction(auction);
     }
@@ -297,6 +378,9 @@ public class Grand_Exchange implements Observer {
         return missingUser;
     }
 
+    /**
+     * updates all users from database
+     */
     public void updateUsers() {
         this.users.clear();
         for (User u : this.con.getAllUsers()) {

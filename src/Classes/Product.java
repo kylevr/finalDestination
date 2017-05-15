@@ -20,27 +20,44 @@ public class Product {
         this.description = description;
         randomEnum();
     }
-    
+    /**
+     * returns Gtin of product to be sold
+     * @return string
+     */
     public String getGTIN(){
         return this.GTIN;
     }
-    
+    /**
+     * returns name of product
+     * @return string
+     */
     public String getName(){
         return this.name;
     }
-    
+    /**
+     * returns description of product
+     * @return string
+     */
     public String getDescription(){
         return this.description;
     }
-    
+    /**
+     * returns category of product
+     * @return CategoryEnum
+     */
     public CategoryEnum getCategory(){
         return this.category;
     }
-    
+    /**
+     * returns id of product
+     * @return 
+     */
     public int getId() {
         return id;
     }
-    
+    /**
+     * sets random category, for testing purpose
+     */
     public void randomEnum(){
         int pick = new Random().nextInt(CategoryEnum.values().length);
         if (this.name.contains("Volvo")){

@@ -1,0 +1,5 @@
+projectKey=my:GrandExchange
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/my:GrandExchange
+ceTaskId=AVwLj8YmbCSMyI_nIp6p
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVwLj8YmbCSMyI_nIp6p

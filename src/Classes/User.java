@@ -15,7 +15,7 @@ public class User {
 
     Grand_Exchange manages;
     private int userID;
-   //removed private int BSN;
+    //removed private int BSN;
     private String username;
     private String password;
     private String alias;
@@ -41,7 +41,7 @@ public class User {
         User myUser = conn.getUser(username, password);
 
         this.userID = myUser.userID;
-      //removed  this.BSN = myUser.BSN;
+        //removed  this.BSN = myUser.BSN;
         this.username = myUser.username;
         this.password = myUser.password;
         this.alias = myUser.alias;
@@ -76,7 +76,7 @@ public class User {
      * constructor for a user with everything manually inputted.
      */
     public User(int userID, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
-      //removed  this.BSN = BSN;
+        //removed  this.BSN = BSN;
         this.username = username;
         this.password = password;
         this.alias = alias;
@@ -96,7 +96,7 @@ public class User {
      * given here because that's a database thing
      */
     public User(String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
-     //removed   this.BSN = BSN;
+        //removed   this.BSN = BSN;
         this.username = username;
         this.password = password;
         this.alias = alias;
@@ -111,6 +111,11 @@ public class User {
         this.feedbacklist = new ArrayList<Feedback>();
     }
 
+    /**
+     * returns userid
+     *
+     * @return int
+     */
     public int getUserID() {
         return userID;
     }
@@ -230,20 +235,40 @@ public class User {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
+    /**
+     * returns username of user
+     *
+     * @return String
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * returns image url of profile picture
+     *
+     * @return string
+     */
     public String getImageURL() {
         return imageURL;
     }
 
+    /**
+     * adds feedback to user
+     *
+     * @param feedback : feedback to be added
+     */
     public void addFeedback(Feedback feedback) {
         if (!this.feedbacklist.contains(feedback)) {
             this.feedbacklist.add(feedback);
         }
     }
 
+    /**
+     * removes feedback from users feedback
+     *
+     * @param feedback : feedback to be removed
+     */
     public void removeFeedback(Feedback feedback) {
         this.feedbacklist.remove(feedback);
     }
@@ -304,7 +329,8 @@ public class User {
     }
 
     /**
-     * sorts feedbacklist by timecreated descending so the most recent date is on top
+     * sorts feedbacklist by timecreated descending so the most recent date is
+     * on top
      */
     public void sortFeedbacklistByDate() {
         Collections.sort(this.feedbacklist, new Comparator<Feedback>() {
