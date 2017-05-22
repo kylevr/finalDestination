@@ -22,6 +22,10 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     ArrayList<Auction> auctions;
     ArrayList<Queue_Purchase> queuepurchases;
     Connection con;
+    AuctionConnection auctionConn;
+    ProductConnection productConn;
+    QueuePurchaseConnection qPConn;
+    UserConnection userConn;
     DatabaseListener dbListener;
 
     public User loggedInUser;
@@ -44,11 +48,12 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
         auctions = new ArrayList<>();
         queuepurchases = new ArrayList<>();
         con = new Connection();
+        auctionConn = new AuctionConnection();
 
         //Gets all existing auctions.
-        auctions = con.getAuctions("*", "auction", "''");
-        products = con.getProducts();
-        queuepurchases = con.getQueuePurchases();
+        auctions = auctionConn.getAuctions("*", "auction", "''");
+        products = productConn.getProducts();
+        queuepurchases = qPConn.getQueuePurchases();
 
         dbListener = new DatabaseListener();
         dbListener.addObserver(this);
@@ -129,7 +134,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      * @param placerid : id of user who placed the queue purchase
      */
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
-        con.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
+        qPConn.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
     }
 
     /**
@@ -141,7 +146,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      * @return
      */
     public int addProductToDB(String name, String description, int gtin) {
-        return con.insertProduct(name, description, gtin);
+        return productConn.insertProduct(name, description, gtin);
     }
 
     /**
@@ -163,7 +168,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      * @return
      */
     public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
-        return con.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
+        return auctionConn.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
     }
 
     /**
@@ -187,7 +192,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      * @return loggedIn
      */
     public User login(String username, String password) throws RemoteException {
-        User Guest = con.getUser(username, password);
+        User Guest = userConn.getUser(username, password);
         if (Guest != null) {
             users.add(Guest);
             System.out.println("user with username " + loggedInUser.getUsername() + " is logged in");
@@ -271,7 +276,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     public boolean InstabuyItem(int amount, int auctionID, int buyerID) throws SQLException {
         try {
             System.out.println("amount :" + amount + " AID: " + auctionID + "BID: " + buyerID);
-            con.InstabuyItem(amount, auctionID, 1);
+            auctionConn.InstabuyItem(amount, auctionID, 1);
             return true;
         } catch (Exception Ex) {
             return false;
@@ -285,7 +290,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     public void updateQueuePurchaseFromDB(ArrayList<Integer> newQueuePurchases) {
         Queue_Purchase tempQueuePurchase;
         for (int i : newQueuePurchases) {
-            tempQueuePurchase = con.getQueuePurchase(i);
+            tempQueuePurchase = qPConn.getQueuePurchase(i);
 
             if (tempQueuePurchase == null) {
                 System.out.println("QueuePurchase is null");
@@ -311,7 +316,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     public void updateAuctionsFromDB(ArrayList<Integer> newAuctionIDs) {
         Auction tempAuction;
         for (int i : newAuctionIDs) {
-            tempAuction = con.getAuction(i);
+            tempAuction = auctionConn.getAuction(i);
 
             if (tempAuction == null) {
                 System.out.println("Auction is null");
@@ -329,7 +334,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
                     if (tempAuction.getProduct().getId() == QP.getProductID()) {
                         if (tempAuction.getInstabuyPrice() < QP.getMaxPrice()) {
                             if (tempAuction.getProductQuantity() >= QP.getQuantity()) {
-                                con.InstabuyItem(QP.getQuantity(), tempAuction.getId(), QP.getPlacerID());
+                                auctionConn.InstabuyItem(QP.getQuantity(), tempAuction.getId(), QP.getPlacerID());
                                 //TODO Queuepurchase has to be dropped from database, AND displayed in the GUI
                             }
                         }
@@ -366,7 +371,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      * @param auction :auction to be updated
      */
     public void updateAuction(Auction auction) {
-        con.updateAuction(auction);
+        auctionConn.updateAuction(auction);
     }
 
     /**
@@ -389,7 +394,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      */
     public void updateUsers() {
         this.users.clear();
-        for (User u : this.con.getAllUsers()) {
+        for (User u : this.userConn.getAllUsers()) {
             this.addUser(u);
         }
     }
@@ -419,14 +424,14 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
         conn.getConnection();
         boolean successful = false;
 
-        if (conn.getUser(username) != null) {
+        if (userConn.getUser(username) != null) {
             for (User u : this.users) {
                 if (u.getUsername().equals(username)) {
                     u.removeAllFeedback();
-                    for (Feedback f : conn.getFeedbackToSeller(username)) {
+                    for (Feedback f : userConn.getFeedbackToSeller(username)) {
                         u.addFeedback(f);
                     }
-                    for (Feedback f : conn.getFeedbackFromBuyer(username)) {
+                    for (Feedback f : userConn.getFeedbackFromBuyer(username)) {
                         u.addFeedback(f);
                     }
                     u.sortFeedbacklistByDate();
@@ -461,9 +466,9 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
                 errorMsg += "\n -All fields must be filled";
             } else {
                 Connection conn = new Connection();
-                boolean duplicateUsername = conn.hasDuplicateUsername(username);
-                boolean duplicateAlias = conn.hasDuplicateAlias(alias);
-                boolean duplicateEmail = conn.hasDuplicateEmail(email);
+                boolean duplicateUsername = userConn.hasDuplicateUsername(username);
+                boolean duplicateAlias = userConn.hasDuplicateAlias(alias);
+                boolean duplicateEmail = userConn.hasDuplicateEmail(email);
 
                 if (duplicateUsername) {
                     errorMsg += "\n -Username is already used";
@@ -476,7 +481,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
                 }
 
                 if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
-                    conn.setUser_REGISTER(username, password, alias, email, null, 0);
+                    userConn.setUser_REGISTER(username, password, alias, email, null, 0);
                     errorMsg = "Succesfully registered new user!";
                 }
             }
@@ -491,19 +496,19 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
 
     @Override
     public boolean createProduct(int GTIN, String name, String description) throws RemoteException {
-        int newProductID = con.insertProduct(name, description, GTIN);
+        int newProductID = productConn.insertProduct(name, description, GTIN);
         return newProductID > 0;
     }
 
     @Override
     public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
-        return con.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
+        return qPConn.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
     }
 
     @Override
     public boolean placeBid(double amount, int userID, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
         try {
-            return con.addBid(amount, AuctionID, 1, price);
+            return auctionConn.addBid(amount, AuctionID, 1, price);
         } catch (SQLException ex) {
             Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
             return false;
