@@ -114,13 +114,14 @@ public class UserConnection {
         boolean verified;
         float saldo;
 
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         ResultSet resultset = null;
         if (myConn != null) {
             try {
                 preparedStatement = myConn.prepareStatement(GET_FROM_USER_ID);
                 preparedStatement.setInt(1, id);
                 resultset = preparedStatement.executeQuery();
+                preparedStatement.close();
                 resultset.next();
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
