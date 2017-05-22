@@ -5,6 +5,7 @@
  */
 package Interfaces;
 
+import Classes.User;
 import java.rmi.RemoteException;
 
 /**
@@ -12,5 +13,5 @@ import java.rmi.RemoteException;
  * @author piete
  */
 public interface IAuthorized {
-    boolean login (String username, String password) throws RemoteException;
+    User login (String username, String password) throws RemoteException;
 }
