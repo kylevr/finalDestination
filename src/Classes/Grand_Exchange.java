@@ -514,4 +514,14 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
             return false;
         }
     }
+
+    @Override
+    public Void logout(String username) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean setIsAuthorized(String username, boolean isAuthorized) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
