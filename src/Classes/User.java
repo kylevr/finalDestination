@@ -13,7 +13,7 @@ import Database.*;
  */
 public class User {
 
-    Grand_Exchange manages;
+    //Grand_Exchange manages;
     private int userID;
     //removed private int BSN;
     private String username;
@@ -28,33 +28,6 @@ public class User {
     private List<Queue_Purchase> placedOrders;
     private List<Transaction> transactions;
     private List<Feedback> feedbacklist;
-
-    /**
-     * constructor for a user that gets initialized by supplying his name and
-     * password. his info is then taken from the server
-     *
-     * @param username
-     * @param password
-     */
-    public User(String username, String password) {
-        Connection conn = new Connection();
-        User myUser = conn.getUser(username, password);
-
-        this.userID = myUser.userID;
-        //removed  this.BSN = myUser.BSN;
-        this.username = myUser.username;
-        this.password = myUser.password;
-        this.alias = myUser.alias;
-        this.email = myUser.email;
-        this.verified = myUser.verified;
-        this.saldo = myUser.saldo;
-        this.imageURL = myUser.imageURL;
-        this.bids = myUser.bids;
-        this.placedAuctions = myUser.placedAuctions;
-        this.placedOrders = myUser.placedOrders;
-        this.transactions = myUser.transactions;
-        this.feedbacklist = myUser.feedbacklist;
-    }
 
     /**
      * constructor for a user that gets initialized by supplying his name and
@@ -315,19 +288,6 @@ public class User {
         return this.feedbacklist;
     }
 
-    public void updateFeedbacklist() {
-        Connection conn = new Connection();
-        conn.getConnection();
-        this.feedbacklist.clear();
-        for (Feedback f : conn.getFeedbackToSeller(this.username)) {
-            this.addFeedback(f);
-        }
-        for (Feedback f : conn.getFeedbackFromBuyer(this.username)) {
-            this.addFeedback(f);
-        }
-        this.sortFeedbacklistByDate();
-    }
-
     /**
      * sorts feedbacklist by timecreated descending so the most recent date is
      * on top
@@ -341,5 +301,13 @@ public class User {
                 return o2.getTimeCreated().compareTo(o1.getTimeCreated());
             }
         });
+    }
+
+    /**
+     * clears feedbacklist of user
+     * @param feedbacklist 
+     */
+    public void removeAllFeedback() {
+        this.feedbacklist.clear();
     }
 }

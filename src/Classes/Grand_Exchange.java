@@ -4,9 +4,18 @@ import Classes.Auctions.Auction;
 import Classes.User;
 import java.util.*;
 import Database.*;
+import Exceptions.NotEnoughMoneyException;
+import Interfaces.IAuction;
+import Interfaces.IAuthorized;
+import Interfaces.ICreateProduct;
+import Interfaces.ICreateQueuePurchase;
+import Interfaces.IPlaceBid;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Grand_Exchange implements Observer {
+public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateProduct, ICreateQueuePurchase, IPlaceBid {
 
     ArrayList<Product> products;
     ArrayList<User> users;
@@ -76,7 +85,7 @@ public class Grand_Exchange implements Observer {
      *
      * @param auction :auction to be added
      */
-    public void addAuction(Auction auction) {
+    public void addAuction(Auction auction) throws RemoteException {
         if (auction == null) {
             throw new IllegalArgumentException();
         } else {
@@ -112,6 +121,7 @@ public class Grand_Exchange implements Observer {
 
     /**
      * adds queue purchase to Database
+     *
      * @param quantity : amount of items to be bought
      * @param minprice : minimum price to pay for items
      * @param maxprice : maximum price to pay for items
@@ -121,32 +131,37 @@ public class Grand_Exchange implements Observer {
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
         con.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
     }
-/**
- * adds product to database
- * @param name : name of product
- * @param description : description of product
- * @param gtin : global trading number of product
- * @return 
- */
+
+    /**
+     * adds product to database
+     *
+     * @param name : name of product
+     * @param description : description of product
+     * @param gtin : global trading number of product
+     * @return
+     */
     public int addProductToDB(String name, String description, int gtin) {
         return con.insertProduct(name, description, gtin);
     }
-/**
- * adds auction to database
- * @param sellerid : id of user who sells item
- * @param productid: id of product to be sold
- * @param currentprice : price of product at the moment
- * @param instabuyprice: price where it can be bought imedeatel
- * @param instabuyable : is the item instabuyable?
- * @param quantity     : quantity of products for sale
- * @param loweringamount: amount of the pricelowering after the specified amount of time
- * @param loweringdelay : delay for lowering the price
- * @param type  : type of auction, standard, countdown or direct
- * @param status: status of product
- * @param imgurl: urls of images splitted by ;
- * @param description : description of auction
- * @return 
- */
+
+    /**
+     * adds auction to database
+     *
+     * @param sellerid : id of user who sells item
+     * @param productid: id of product to be sold
+     * @param currentprice : price of product at the moment
+     * @param instabuyprice: price where it can be bought imedeatel
+     * @param instabuyable : is the item instabuyable?
+     * @param quantity : quantity of products for sale
+     * @param loweringamount: amount of the pricelowering after the specified
+     * amount of time
+     * @param loweringdelay : delay for lowering the price
+     * @param type : type of auction, standard, countdown or direct
+     * @param status: status of product
+     * @param imgurl: urls of images splitted by ;
+     * @param description : description of auction
+     * @return
+     */
     public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
         return con.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
     }
@@ -169,15 +184,17 @@ public class Grand_Exchange implements Observer {
      *
      * @param username : may not be empty nor null
      * @param password : may not be empty nor null
+     * @return loggedIn
      */
-    public boolean login(String username, String password) {
-        this.loggedInUser = con.getUser(username, password);
-        if (this.loggedInUser != null) {
+    public User login(String username, String password) throws RemoteException {
+        User Guest = con.getUser(username, password);
+        if (Guest != null) {
+            users.add(Guest);
             System.out.println("user with username " + loggedInUser.getUsername() + " is logged in");
-            return true;
+            return Guest;
         } else {
             System.out.println("no user is logged in");
-            return false;
+            return null;
         }
     }
 
@@ -210,7 +227,8 @@ public class Grand_Exchange implements Observer {
 
     /**
      * returns list of products with filters
-     * @param name : search terms 
+     *
+     * @param name : search terms
      * @param category : category to search in
      * @return ArrayList<Product>
      */
@@ -234,19 +252,21 @@ public class Grand_Exchange implements Observer {
 
     /**
      * returns list of all auctions available at the moment
-     * @return 
+     *
+     * @return
      */
-    public Collection<Auction> getAuctions() {
+    public Collection<Auction> getAuctions() throws RemoteException {
         return auctions;
     }
 
     /**
      * performs instabuy for user
+     *
      * @param amount : amount of items to be bought
      * @param auctionID: id of auction to buy
      * @param buyerID : id of user who buys
      * @return boolean
-     * @throws SQLException 
+     * @throws SQLException
      */
     public boolean InstabuyItem(int amount, int auctionID, int buyerID) throws SQLException {
         try {
@@ -259,26 +279,8 @@ public class Grand_Exchange implements Observer {
     }
 
     /**
-     * adds bid to auction and to db
-     * @param amount
-     * @param auctionID
-     * @param buyerID
-     * @param price
-     * @return 
-     */
-    public boolean addBid(double amount, int auctionID, int buyerID, double price) {
-        try {
-            System.out.println("amount :" + amount + " AID: " + auctionID + " BID: " + buyerID + " Price: " + price);
-            con.addBid(amount, auctionID, 1, price);
-            return true;
-        } catch (SQLException ex) {
-            return false;
-        }
-    }
-
-    /**
-     * 
-     * @param newQueuePurchases 
+     *
+     * @param newQueuePurchases
      */
     public void updateQueuePurchaseFromDB(ArrayList<Integer> newQueuePurchases) {
         Queue_Purchase tempQueuePurchase;
@@ -301,10 +303,11 @@ public class Grand_Exchange implements Observer {
             }
         }
     }
-/**
- * 
- * @param newAuctionIDs 
- */
+
+    /**
+     *
+     * @param newAuctionIDs
+     */
     public void updateAuctionsFromDB(ArrayList<Integer> newAuctionIDs) {
         Auction tempAuction;
         for (int i : newAuctionIDs) {
@@ -338,11 +341,12 @@ public class Grand_Exchange implements Observer {
             }
         }
     }
-/**
- * 
- * @param o
- * @param arg 
- */
+
+    /**
+     *
+     * @param o
+     * @param arg
+     */
     @Override
     public void update(Observable o, Object arg) {
         String type = arg.toString();
@@ -355,10 +359,12 @@ public class Grand_Exchange implements Observer {
         }
 
     }
-/**
- * updates auction from DB
- * @param auction :auction to be updated
- */
+
+    /**
+     * updates auction from DB
+     *
+     * @param auction :auction to be updated
+     */
     public void updateAuction(Auction auction) {
         con.updateAuction(auction);
     }
@@ -368,7 +374,7 @@ public class Grand_Exchange implements Observer {
      *
      * @param userName
      */
-    public User getUser(String userName) {
+    public User getUser(String userName) throws RemoteException {
         User missingUser = null;
         for (User u : this.users) {
             if (u.getUsername().equals(userName)) {
@@ -385,6 +391,122 @@ public class Grand_Exchange implements Observer {
         this.users.clear();
         for (User u : this.con.getAllUsers()) {
             this.addUser(u);
+        }
+    }
+
+    @Override
+    public List<Bid> getBids(int auctionId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addFeedback(Feedback feedback) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void sendMail(String content) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    /**
+     * updates feedbacklist of user with given username
+     * @param username
+     * @return True if succesfull, false if username doesn't exist
+     */
+    public boolean updateFeedbacklist(String username) {
+        Connection conn = new Connection();
+        conn.getConnection();
+        boolean successful = false;
+
+        if (conn.getUser(username) != null) {
+            for (User u : this.users) {
+                if (u.getUsername().equals(username)) {
+                    u.removeAllFeedback();
+                    for (Feedback f : conn.getFeedbackToSeller(username)) {
+                        u.addFeedback(f);
+                    }
+                    for (Feedback f : conn.getFeedbackFromBuyer(username)) {
+                        u.addFeedback(f);
+                    }
+                    u.sortFeedbacklistByDate();
+                    successful = true;
+                }
+            }
+        }
+        return successful;
+    }
+    
+    /**
+     * registers a new users and returns errormessage
+     * @param username
+     * @param password
+     * @param alias
+     * @param email
+     * @return message that says if it's successful or not
+     */
+    public String registerUser(String username, String password, String alias, String email)
+    {
+        String errorMsg = "Failed to register user:";
+
+        try {
+            username = username.trim();
+            password = password.trim();
+            alias = alias.trim();
+            email = email.trim();
+
+            System.out.println("Starting registration...");
+
+            if (username.isEmpty() || password.isEmpty() || email.isEmpty() || alias.isEmpty()) {
+                errorMsg += "\n -All fields must be filled";
+            } else {
+                Connection conn = new Connection();
+                boolean duplicateUsername = conn.hasDuplicateUsername(username);
+                boolean duplicateAlias = conn.hasDuplicateAlias(alias);
+                boolean duplicateEmail = conn.hasDuplicateEmail(email);
+
+                if (duplicateUsername) {
+                    errorMsg += "\n -Username is already used";
+                }
+                if (duplicateAlias) {
+                    errorMsg += "\n -Alias is already used";
+                }
+                if (duplicateEmail) {
+                    errorMsg += "\n -Email is already used";
+                }
+
+                if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
+                    conn.setUser_REGISTER(username, password, alias, email, null, 0);
+                    errorMsg = "Succesfully registered new user!";
+                }
+            }
+
+        } catch (NumberFormatException ex) {
+            errorMsg += "\n -BSN field must constain a number";
+        } finally {
+            System.out.println(errorMsg);
+            return errorMsg;
+        }
+    }
+
+    @Override
+    public boolean createProduct(int GTIN, String name, String description) throws RemoteException {
+        int newProductID = con.insertProduct(name, description, GTIN);
+        return newProductID > 0;
+    }
+
+    @Override
+    public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
+        return con.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
+    }
+
+    @Override
+    public boolean placeBid(double amount, int userID, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
+        try {
+            return con.addBid(amount, AuctionID, 1, price);
+        } catch (SQLException ex) {
+            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 }

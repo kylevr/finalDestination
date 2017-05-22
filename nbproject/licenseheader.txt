@@ -1,0 +1,9 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}This project is for PTS3 Fontys Eindhoven
+${licensePrefix}Jorian Vas, Kyle van Raaij, Pieter Beukelman, Sam Dirkx, Lesley Peeters, Robin Welten
+${licensePrefix}©2016-2017
+<#if licenseLast??>
+${licenseLast}
+</#if>

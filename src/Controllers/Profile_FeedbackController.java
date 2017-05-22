@@ -12,6 +12,7 @@ import Classes.User;
 import Database.Connection;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -68,7 +69,7 @@ public class Profile_FeedbackController implements Initializable {
         // TODO
     }    
     
-    public void setUp(Grand_Exchange GX, String feedbackOwnerUsername) {
+    public void setUp(Grand_Exchange GX, String feedbackOwnerUsername) throws RemoteException {
         this.GX = GX;
         GX.updateUsers();
         this.feedbackOwner = GX.getUser(feedbackOwnerUsername);
@@ -88,7 +89,7 @@ public class Profile_FeedbackController implements Initializable {
     @FXML
     public void refreshFeedbacklist()
     {
-        this.feedbackOwner.updateFeedbacklist();
+        this.GX.updateFeedbacklist(feedbackOwner.getUsername());
         listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
     }
     
