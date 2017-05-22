@@ -5,6 +5,7 @@
  */
 package Controllers;
 
+import Classes.Grand_Exchange;
 import Classes.User;
 import Database.Connection;
 import javafx.scene.paint.Color;
@@ -50,6 +51,7 @@ public class RegistrationController implements Initializable {
     Label label_errorMsg;
 
     String errorMsg;
+    Grand_Exchange GX;
 
     /**
      * Initializes the controller class.
@@ -61,53 +63,8 @@ public class RegistrationController implements Initializable {
 
     @FXML
     public void button_registerUser() throws IOException {
-        this.errorMsg = "Failed to register user:";
-        this.label_errorMsg.setTextFill(Color.RED);
-        try {
-
-            if (textfield_username.getText().trim().isEmpty() || textfield_password.getText().trim().isEmpty() || textfield_email.getText().trim().isEmpty() || textfield_alias.getText().trim().isEmpty()) {
-                System.out.println("-All fields must be filled");
-                this.errorMsg += "\n -All fields must be filled";
-                this.label_errorMsg.setText(errorMsg);
-                this.label_errorMsg.setVisible(true);
-            } else {
-                String username = textfield_username.getText().trim();
-                String password = textfield_password.getText().trim();
-                String alias = textfield_alias.getText().trim();
-                String email = textfield_email.getText().trim();
-
-                Connection conn = new Connection();
-                boolean duplicateUsername = conn.hasDuplicateUsername(username);
-                boolean duplicateAlias = conn.hasDuplicateAlias(alias);
-                boolean duplicateEmail = conn.hasDuplicateEmail(email);
-
-                System.out.println("Starting registration...");
-
-                if (duplicateUsername) {
-                    this.errorMsg += "\n -Username is already used";
-                }
-                if (duplicateAlias) {
-                    this.errorMsg += "\n -Alias is already used";
-                }
-                if (duplicateEmail) {
-                    this.errorMsg += "\n -Email is already used";
-                }
-                this.label_errorMsg.setText(errorMsg);
-                this.label_errorMsg.setVisible(true);
-
-                if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
-                    conn.setUser_REGISTER(username, password, alias, email, null, 0);
-                    this.label_errorMsg.setText("Succesfully registered new user!");
-                    this.label_errorMsg.setTextFill(Color.GREEN);
-                }
-            }
-
-        } catch (NumberFormatException ex) {
-            System.out.println("-BSN field must constain a number");
-            this.errorMsg += "\n -BSN field must constain a number";
-            this.label_errorMsg.setText(errorMsg);
+            this.label_errorMsg.setText(this.GX.registerUser(textfield_username.getText(), textfield_password.getText(), textfield_alias.getText(), textfield_email.getText()));
             this.label_errorMsg.setVisible(true);
-        }
     }
 
     @FXML
@@ -119,5 +76,10 @@ public class RegistrationController implements Initializable {
         newStage.show();
         Stage stage = (Stage) currentPane.getScene().getWindow();
         stage.close();
+    }
+    
+    public void Setup(Grand_Exchange GX)
+    {
+        this.GX = GX;
     }
 }
