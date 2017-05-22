@@ -25,7 +25,6 @@ import java.util.logging.Logger;
  * @author kyle_
  */
 public class UserConnection {
-
     private java.sql.Connection myConn = null;
     private PreparedStatement pstmt = null;
     private ResultSet myRs = null;
