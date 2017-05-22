@@ -127,12 +127,11 @@ public class QueuePurchaseConnection {
      * @param queueID The id of the Queue_Purchase that needs to be deleted
      * @return Queue_Purchase
      */
-    public Queue_Purchase deleteQueuePurchase(int queueID) {
+    public void deleteQueuePurchase(int queueID) {
         
         conn.getConnection();
-        Queue_Purchase queuepurchase = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultset = null;
+        PreparedStatement preparedStatement;
+        ResultSet resultset;
 
             try {
                 preparedStatement = myConn.prepareStatement(GET_QUEUEPURCHASE);
@@ -146,8 +145,6 @@ public class QueuePurchaseConnection {
 
             conn.getConnection();
             getQueuePurchase(queueID);
-        
-        return queuepurchase;
     }
     
     /**

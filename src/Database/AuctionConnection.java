@@ -327,7 +327,7 @@ public class AuctionConnection {
                     return true;
                 } catch (SQLException ex) {
                     conn.closeConnection();
-
+                    myStmt.close();
                     System.out.println(ex);
                     return false;
                 }
