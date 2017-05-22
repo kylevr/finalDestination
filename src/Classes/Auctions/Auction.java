@@ -75,10 +75,20 @@ public abstract class Auction {
         bids = new ArrayList<>();
     }
 
+    /**
+     * returns instabuy price
+     *
+     * @return double
+     */
     public double getInstabuyPrice() {
         return instabuyPrice;
     }
 
+    /**
+     * returns is instabuyable true/false
+     *
+     * @return
+     */
     public boolean isInstabuyable() {
         return instabuyable;
     }
@@ -93,7 +103,7 @@ public abstract class Auction {
     }
 
     /**
-     *
+     *adds bid to all bids of auction
      * @param bid
      */
     public boolean addBid(Bid bid) {

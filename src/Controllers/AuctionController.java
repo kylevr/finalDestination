@@ -291,6 +291,11 @@ public class AuctionController implements Initializable {
         });
     }
 
+    /**
+     * Returns textual status
+     * @param status StatusEnum
+     * @return 
+     */
     public String setStatus(StatusEnum status) {
         switch (status) {
             case New:
