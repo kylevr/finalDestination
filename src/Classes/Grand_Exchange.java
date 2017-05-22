@@ -421,4 +421,84 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction {
     public void sendMail(String content) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    /**
+     * updates feedbacklist of user with given username
+     * @param username
+     * @return True if succesfull, false if username doesn't exist
+     */
+    public boolean updateFeedbacklist(String username) {
+        Connection conn = new Connection();
+        conn.getConnection();
+        boolean successful = false;
+
+        if (conn.getUser(username) != null) {
+            for (User u : this.users) {
+                if (u.getUsername().equals(username)) {
+                    u.removeAllFeedback();
+                    for (Feedback f : conn.getFeedbackToSeller(username)) {
+                        u.addFeedback(f);
+                    }
+                    for (Feedback f : conn.getFeedbackFromBuyer(username)) {
+                        u.addFeedback(f);
+                    }
+                    u.sortFeedbacklistByDate();
+                    successful = true;
+                }
+            }
+        }
+        return successful;
+    }
+    
+    /**
+     * registers a new users and returns errormessage
+     * @param username
+     * @param password
+     * @param alias
+     * @param email
+     * @return message that says if it's successful or not
+     */
+    public String registerUser(String username, String password, String alias, String email)
+    {
+        String errorMsg = "Failed to register user:";
+
+        try {
+            username = username.trim();
+            password = password.trim();
+            alias = alias.trim();
+            email = email.trim();
+
+            System.out.println("Starting registration...");
+
+            if (username.isEmpty() || password.isEmpty() || email.isEmpty() || alias.isEmpty()) {
+                errorMsg += "\n -All fields must be filled";
+            } else {
+                Connection conn = new Connection();
+                boolean duplicateUsername = conn.hasDuplicateUsername(username);
+                boolean duplicateAlias = conn.hasDuplicateAlias(alias);
+                boolean duplicateEmail = conn.hasDuplicateEmail(email);
+
+                if (duplicateUsername) {
+                    errorMsg += "\n -Username is already used";
+                }
+                if (duplicateAlias) {
+                    errorMsg += "\n -Alias is already used";
+                }
+                if (duplicateEmail) {
+                    errorMsg += "\n -Email is already used";
+                }
+
+                if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
+                    conn.setUser_REGISTER(username, password, alias, email, null, 0);
+                    errorMsg = "Succesfully registered new user!";
+                }
+            }
+
+        } catch (NumberFormatException ex) {
+            errorMsg += "\n -BSN field must constain a number";
+        } finally {
+            System.out.println(errorMsg);
+            return errorMsg;
+        }
+    }
 }
