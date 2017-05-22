@@ -4,9 +4,11 @@ import Classes.Auctions.Auction;
 import Classes.User;
 import java.util.*;
 import Database.*;
+import Interfaces.IAuthorized;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
-public class Grand_Exchange implements Observer {
+public class Grand_Exchange implements Observer,IAuthorized {
 
     ArrayList<Product> products;
     ArrayList<User> users;
@@ -169,10 +171,12 @@ public class Grand_Exchange implements Observer {
      *
      * @param username : may not be empty nor null
      * @param password : may not be empty nor null
+     * @return loggedIn
      */
-    public boolean login(String username, String password) {
-        this.loggedInUser = con.getUser(username, password);
-        if (this.loggedInUser != null) {
+    public boolean login(String username, String password) throws RemoteException {
+        User Guest = con.getUser(username, password);
+        if (Guest != null) {
+            users.add(Guest);
             System.out.println("user with username " + loggedInUser.getUsername() + " is logged in");
             return true;
         } else {
