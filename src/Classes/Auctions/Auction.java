@@ -108,11 +108,12 @@ public abstract class Auction {
      */
     public boolean addBid(Bid bid) {
         try {
-            if (bid.getAmount() > currentPrice) {
+            double amount = bid.getAmount();
+            if (amount> currentPrice) {
                 this.bids.add(bid);
                 this.currentPrice = bid.getAmount();
                 return true;
-            } else if (bid.getAmount() == currentPrice) {
+            } else if (amount == currentPrice) {
                 this.bids.add(bid);
                 return true;
             }
@@ -187,8 +188,7 @@ public abstract class Auction {
         if (places < 0) {
             throw new IllegalArgumentException();
         }
-
-        BigDecimal bd = new BigDecimal(value);
+        BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
