@@ -387,4 +387,36 @@ public class Grand_Exchange implements Observer {
             this.addUser(u);
         }
     }
+    
+
+    /**
+     * updates feedbacklist of user with given username
+     * @param username
+     * @return True if succesfull, false if username doesn't exist
+     */
+    public boolean updateFeedbacklist(String username) {
+        Connection conn = new Connection();
+        conn.getConnection();
+        boolean successful = false;
+        
+        if (conn.getUser(username) != null)
+        {
+            for (User u : this.users)
+            {
+                if (u.getUsername().equals(username))
+                {
+                    u.removeAllFeedback();
+                    for (Feedback f : conn.getFeedbackToSeller(username)) {
+                        u.addFeedback(f);
+                    }          
+                    for (Feedback f : conn.getFeedbackFromBuyer(username)) {
+                        u.addFeedback(f);
+                    }     
+                    u.sortFeedbacklistByDate();
+                    successful = true;
+                }
+            }
+        }
+        return successful;
+    }
 }
