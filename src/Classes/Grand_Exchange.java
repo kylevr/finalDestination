@@ -4,11 +4,12 @@ import Classes.Auctions.Auction;
 import Classes.User;
 import java.util.*;
 import Database.*;
+import Interfaces.IAuction;
 import Interfaces.IAuthorized;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
-public class Grand_Exchange implements Observer,IAuthorized {
+public class Grand_Exchange implements Observer,IAuthorized,IAuction {
 
     ArrayList<Product> products;
     ArrayList<User> users;
@@ -78,7 +79,7 @@ public class Grand_Exchange implements Observer,IAuthorized {
      *
      * @param auction :auction to be added
      */
-    public void addAuction(Auction auction) {
+    public void addAuction(Auction auction)throws RemoteException {
         if (auction == null) {
             throw new IllegalArgumentException();
         } else {
@@ -240,7 +241,7 @@ public class Grand_Exchange implements Observer,IAuthorized {
      * returns list of all auctions available at the moment
      * @return 
      */
-    public Collection<Auction> getAuctions() {
+    public Collection<Auction> getAuctions() throws RemoteException {
         return auctions;
     }
 
@@ -372,7 +373,7 @@ public class Grand_Exchange implements Observer,IAuthorized {
      *
      * @param userName
      */
-    public User getUser(String userName) {
+    public User getUser(String userName) throws RemoteException {
         User missingUser = null;
         for (User u : this.users) {
             if (u.getUsername().equals(userName)) {
@@ -390,5 +391,20 @@ public class Grand_Exchange implements Observer,IAuthorized {
         for (User u : this.con.getAllUsers()) {
             this.addUser(u);
         }
+    }
+
+    @Override
+    public List<Bid> getBids(int auctionId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addFeedback(Feedback feedback) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void sendMail(String content) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

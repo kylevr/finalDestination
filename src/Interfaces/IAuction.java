@@ -9,6 +9,8 @@ import Classes.Auctions.Auction;
 import Classes.Bid;
 import Classes.Feedback;
 import Classes.User;
+import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public interface IAuction {
      *returns all auctions 
      * @return list of auctions
      */
-    List<Auction> getAuctions();
+    Collection<Auction> getAuctions() throws RemoteException;
 
     /**
      *returns list of Bids with auction id
@@ -32,26 +34,26 @@ public interface IAuction {
     
     /**
      *returns the id of the seller of the auction
-     * @param auctionId id of corresponding auction
+     * @param userName username of user to be searched
      * @return seller
      */
-    User getSeller(int auctionId);
+    User getUser(String userName) throws RemoteException ;
     
     /**
      *adds a auction tot the database
      * @param auction auction to be added
      */
-    void addAuction(Auction auction);
+   void addAuction(Auction auction)throws RemoteException ;
     
     /**
      *adds feedback to a seller
      * @param feedback feedback to be added
      */
-    void addFeedback(Feedback feedback);
+    void addFeedback(Feedback feedback)throws RemoteException;
     
     /**
      * sends a mail to the Seller
      * @param content content to be send to seller
      */
-    void sendMail(String content);
+    void sendMail(String content)throws RemoteException;
 }

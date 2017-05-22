@@ -11,6 +11,7 @@ import Classes.Grand_Exchange;
 import Classes.User;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -73,7 +74,7 @@ public class MainController implements Initializable {
         // TODO
     }
 
-    public void setUp(Grand_Exchange GX) {
+    public void setUp(Grand_Exchange GX) throws RemoteException {
         this.GX = GX;
         Pane allAuctions = new Pane();
         allAuctions.setPrefWidth(800);
@@ -242,7 +243,7 @@ public class MainController implements Initializable {
         }
     }
     
-    public void btnRefresh(){
+    public void btnRefresh() throws RemoteException{
         setUp(GX);
     }
 }
