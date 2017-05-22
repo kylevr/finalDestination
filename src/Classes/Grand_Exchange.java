@@ -4,12 +4,18 @@ import Classes.Auctions.Auction;
 import Classes.User;
 import java.util.*;
 import Database.*;
+import Exceptions.NotEnoughMoneyException;
 import Interfaces.IAuction;
 import Interfaces.IAuthorized;
+import Interfaces.ICreateProduct;
+import Interfaces.ICreateQueuePurchase;
+import Interfaces.IPlaceBid;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Grand_Exchange implements Observer, IAuthorized, IAuction {
+public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateProduct, ICreateQueuePurchase, IPlaceBid {
 
     ArrayList<Product> products;
     ArrayList<User> users;
@@ -273,25 +279,6 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction {
     }
 
     /**
-     * adds bid to auction and to db
-     *
-     * @param amount
-     * @param auctionID
-     * @param buyerID
-     * @param price
-     * @return
-     */
-    public boolean addBid(double amount, int auctionID, int buyerID, double price) {
-        try {
-            System.out.println("amount :" + amount + " AID: " + auctionID + " BID: " + buyerID + " Price: " + price);
-            con.addBid(amount, auctionID, 1, price);
-            return true;
-        } catch (SQLException ex) {
-            return false;
-        }
-    }
-
-    /**
      *
      * @param newQueuePurchases
      */
@@ -499,6 +486,27 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction {
         } finally {
             System.out.println(errorMsg);
             return errorMsg;
+        }
+    }
+
+    @Override
+    public boolean createProduct(int GTIN, String name, String description) throws RemoteException {
+        int newProductID = con.insertProduct(name, description, GTIN);
+        return newProductID > 0;
+    }
+
+    @Override
+    public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
+        return con.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
+    }
+
+    @Override
+    public boolean placeBid(double amount, int userID, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
+        try {
+            return con.addBid(amount, AuctionID, 1, price);
+        } catch (SQLException ex) {
+            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 }
