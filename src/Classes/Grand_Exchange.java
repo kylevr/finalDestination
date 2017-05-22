@@ -516,12 +516,22 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     }
 
     @Override
-    public Void logout(String username) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean logout(String username) throws RemoteException {
+        if (this.setIsAuthorized(username, true))
+        {
+            System.out.println("User with username " + username + " is logged out");
+            return true;
+        }
+        else
+        {
+            System.out.println("Failed to logout User with username " + username);
+            return false;
+        }
     }
 
     @Override
     public boolean setIsAuthorized(String username, boolean isAuthorized) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean successful = this.userConn.setAuthorized(username, isAuthorized);
+        return successful;
     }
 }

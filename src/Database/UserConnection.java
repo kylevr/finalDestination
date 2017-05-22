@@ -44,7 +44,10 @@ public class UserConnection {
     static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_FROM_USER_ALLUSERS = "SELECT * FROM user";
     static final String SET_FEEDBACK_TOSELLER = "INSERT INTO feedback(timeCreated, rating, description, sellerid, buyerid) VALUES(CURRENT_TIMESTAMP, ?, ?, ?, ?)";
-
+    static final String SET_ISAUTHORIZED = "UPDATE user SET isAuthorized = ? WHERE username = ?";
+            //alter table chatuser  add column isAuthorized bool;
+    
+    
     /**
      * Registers a new user.
      *
@@ -556,4 +559,45 @@ public class UserConnection {
             return false;
         }
     }
+    
+    /**
+     * sets if user with specified username will be authorized or not
+     * @param username username of user you want to (de)authorize
+     * @param isAuthorized 
+     * @return
+     * @throws RemoteException
+     */
+    public Boolean setAuthorized(String username, boolean isAuthorized) {
+        conn.getConnection();
+        if (myConn != null) {
+            if (getUser(username) != null) {
+                try {
+                    conn.getConnection();
+                    pstmt = myConn.prepareStatement(SET_ISAUTHORIZED);
+                    pstmt.setString(1, username);
+                    pstmt.setBoolean(2, isAuthorized);
+
+                    if (pstmt.executeUpdate() > 0) {
+                        System.out.println("User with username: " + username + " is now authorized");
+                        return true;
+                    } else {
+                        System.out.println("Can't authorize User with username: " + username + ". Rows are unaffected.");
+                        return false;
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("Can't authorize User with username: " + username + ". SQLException.");
+                    ex.printStackTrace();
+                    conn.closeConnection();
+                    return false;
+                }
+            } else {
+                System.out.println("Can't find User with username: " + username);
+                return false;
+            }
+        } else {
+            System.out.println("Can't authorize User with username: " + username + ". No connection to database.");
+            return false;
+        }
+    }
+
 }

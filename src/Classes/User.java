@@ -28,6 +28,16 @@ public class User {
     private List<Queue_Purchase> placedOrders;
     private List<Transaction> transactions;
     private List<Feedback> feedbacklist;
+    private boolean isAuthorized;
+
+    public boolean getIsAuthorized() {
+        return isAuthorized;
+    }
+
+    public void setIsAuthorized(boolean isAuthorized) {
+        this.isAuthorized = isAuthorized;
+    }
+    
 
     /**
      * constructor for a user that gets initialized by supplying his name and
@@ -41,7 +51,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.imageURL = imageURL;
-
+        this.isAuthorized = false;
         //User myUser = Database.Connection().getUser()
     }
 
@@ -62,6 +72,7 @@ public class User {
         this.placedOrders = new ArrayList<Queue_Purchase>();
         this.transactions = new ArrayList<Transaction>();
         this.feedbacklist = new ArrayList<Feedback>();
+        this.isAuthorized = false;
     }
 
     /**
@@ -82,6 +93,7 @@ public class User {
         this.placedOrders = new ArrayList<Queue_Purchase>();
         this.transactions = new ArrayList<Transaction>();
         this.feedbacklist = new ArrayList<Feedback>();
+        this.isAuthorized = false;
     }
 
     /**
