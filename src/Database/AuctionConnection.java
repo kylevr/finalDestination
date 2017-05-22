@@ -36,7 +36,6 @@ public class AuctionConnection {
     private ResultSet myRs = null;
     private Auction auction;
     private ArrayList<Auction> auctions;
-    private ArrayList<Product> products;
 
     // Connections
     private UserConnection userConn = new UserConnection();
@@ -55,6 +54,7 @@ public class AuctionConnection {
 
     /**
      * Get the Auction with the given id.
+     *
      * @param id of the Auction
      * @return Auction with the given id.
      */
@@ -63,7 +63,11 @@ public class AuctionConnection {
         Product product;
         int quantity;
         Timestamp date;
-        double price, instabuyprice, priceloweringAmount, priceloweringDelay, minprice;
+        double price;
+        double instabuyprice;
+        double priceloweringAmount;
+        double priceloweringDelay;
+        double minprice;
         StatusEnum status;
         String description;
         String imageURL;
@@ -147,6 +151,7 @@ public class AuctionConnection {
 
     /**
      * Gets an arrayList with all the auctions in the database.
+     *
      * @param selectFrom Does Nothing
      * @param where Does Nothing
      * @param is Does Nothing
@@ -246,6 +251,7 @@ public class AuctionConnection {
 
     /**
      * Gets a arrayList with all the bids in a specific auction.
+     *
      * @param id The id of the auction.
      * @return Arraylist with all the bids from a specific auction.
      */
@@ -257,7 +263,7 @@ public class AuctionConnection {
         int auctionId;
         int buyerId;
         double price;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         ResultSet resultset = null;
         try {
             conn.getConnection();
@@ -288,11 +294,13 @@ public class AuctionConnection {
     /**
      * Adds a new bid to the database. Checks if the person exists and if the
      * user has enough money on his/her account.
+     *
      * @param amount the amount of items the user wants to buy.
      * @param auctionID Id of the auction where the bid is place.
      * @param userID Id of the user placing the bid.
      * @param price the price the user is willing to pay for the bid.
-     * @return True if did successfully is added the database, false if it failed.
+     * @return True if did successfully is added the database, false if it
+     * failed.
      * @throws SQLException if failed to insert bid into the database.
      */
     public Boolean addBid(double amount, int auctionID, int userID, double price) throws SQLException {
@@ -314,6 +322,7 @@ public class AuctionConnection {
 
                     myStmt.execute();
                     System.out.println("GELUKT!!");
+                    myStmt.close();
                     conn.closeConnection();
                     return true;
                 } catch (SQLException ex) {
@@ -336,11 +345,13 @@ public class AuctionConnection {
 
     /**
      * Insert a new auction in the database.
+     *
      * @param sellerid The id of the seller.
      * @param productid The id of the product in the auction.
      * @param currentprice The current price of the products in the auction.
      * @param instabuyprice The price to buy products in the auction right away.
-     * @param instabuyable boolean to check if product can be brought right away.
+     * @param instabuyable boolean to check if product can be brought right
+     * away.
      * @param quantity The amount of products in the auction.
      * @param loweringamount The amount used to lower the price.
      * @param loweringdelay The delay used to lower the price.
@@ -386,16 +397,18 @@ public class AuctionConnection {
             return false;
         }
     }
-    
+
     /**
      * Updates the auction given in the parameter.
+     *
      * @param auction the auction that need to be updated
      */
-    public void updateAuction (Auction auction){
+    public void updateAuction(Auction auction) {
     }
-    
+
     /**
      * Buy a instabuy item and put it into the database
+     *
      * @param amount The amount the user wants to pay.
      * @param auctionID The id of the auction.
      * @param userID The id of the user.
@@ -405,26 +418,26 @@ public class AuctionConnection {
         conn.getConnection();
         User user = userConn.getUser(userID);
         Auction auction = getAuction(auctionID);
-        
+
         // Checks if User exsists
-        if(user != null) {
+        if (user != null) {
             // Checks if Saldo is high enough
-            if(user.getSaldo() >= auction.getCurrentPrice()) {
+            if (user.getSaldo() >= auction.getCurrentPrice()) {
                 try {
                     myConn = DriverManager.getConnection("jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?noAccessToProcedureBodies=true", "lesleya213_pts", "wachtwoord123");
                     CallableStatement myStmt = myConn.prepareCall("{call instabuy(?,?,?)}");
                     myStmt.setInt(1, amount);
                     myStmt.setInt(2, auctionID);
                     myStmt.setInt(3, userID);
-                    
+
                     myStmt.execute();
                     System.out.println("GELUKT!!");
                     conn.closeConnection();
                     return true;
-                } catch(SQLException ex) {
+                } catch (SQLException ex) {
                     conn.closeConnection();
-                    
-                     System.out.println(ex);
+
+                    System.out.println(ex);
                     return false;
                 }
             } else {
@@ -433,7 +446,7 @@ public class AuctionConnection {
                 return false;
             }
         } else {
-             System.out.println("User is Null");
+            System.out.println("User is Null");
             conn.closeConnection();
             return false;
         }
