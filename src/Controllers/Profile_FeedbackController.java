@@ -88,7 +88,7 @@ public class Profile_FeedbackController implements Initializable {
     @FXML
     public void refreshFeedbacklist()
     {
-        this.GX.updateFeedbacklist(this.feedbackOwner.getUsername());
+        this.feedbackOwner.updateFeedbacklist();
         listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
     }
     
