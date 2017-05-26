@@ -104,6 +104,10 @@ public class User {
     public int getUserID() {
         return userID;
     }
+    
+    public String getUserEmail(){
+        return this.email;
+    }
 
     /**
      * Adds feedback to another user.
