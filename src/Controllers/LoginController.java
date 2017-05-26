@@ -57,7 +57,7 @@ public class LoginController implements Initializable {
 
     @FXML
     public void button_loginUser() throws IOException {
-        if (GX.login(textfield_username.getText(), textfield_password.getText())) {
+        if (GX.login(textfield_username.getText(), textfield_password.getText()) != null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
             Parent root = loader.load();
 

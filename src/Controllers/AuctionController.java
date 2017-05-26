@@ -13,7 +13,9 @@ import Classes.Auctions.StatusEnum;
 import Classes.Bid;
 import Classes.Grand_Exchange;
 import Classes.User;
+import Exceptions.NotEnoughMoneyException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -347,7 +349,7 @@ public class AuctionController implements Initializable {
     }
 
     // TODO: aanpassen dat het het tweede textveld goed erin zet.
-    public void bidBuyButtonClick() throws SQLException {
+    public void bidBuyButtonClick() throws SQLException, RemoteException, NotEnoughMoneyException {
 
         if (Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuyBid.getText()) > 0 && auction != null) {
             double totalPrice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
@@ -357,7 +359,7 @@ public class AuctionController implements Initializable {
             //int getal = Integer.parseInt(txtUnitstoBuy.getText());
             if (Double.parseDouble(txtPriceToBid.getText()) > auction.getCurrentPrice()) {
                 auction.addBid(new Bid(auction.getId(), GX.loggedInUser, Double.parseDouble(txtPriceToBid.getText()))); // adds bid to auction
-                if (GX.addBid(unitsToBuy, auction.getId(), loggedInUser.getUserID(), bedrag)) {
+                if (GX.placeBid(unitsToBuy, auction.getId(), loggedInUser.getUserID(), bedrag)) {
                     System.out.println("Correct geinsert");
                 } else {
                     System.out.println("FAILED");
