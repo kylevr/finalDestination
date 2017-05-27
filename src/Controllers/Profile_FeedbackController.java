@@ -5,20 +5,14 @@
  */
 package Controllers;
 
-import Classes.CategoryEnum;
-import Classes.Feedback;
 import Classes.Grand_Exchange;
 import Classes.User;
 import Database.Connection;
+import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,14 +21,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -45,7 +33,7 @@ import javafx.stage.Stage;
 public class Profile_FeedbackController implements Initializable {
 
     Grand_Exchange GX;
-    
+    RegistryManager RM;
     User feedbackOwner;
     
     @FXML
@@ -69,10 +57,13 @@ public class Profile_FeedbackController implements Initializable {
         // TODO
     }    
     
-    public void setUp(Grand_Exchange GX, String feedbackOwnerUsername) throws RemoteException {
-        this.GX = GX;
-        GX.updateUsers();
-        this.feedbackOwner = GX.getUser(feedbackOwnerUsername);
+    public void setUp(RegistryManager RM, String userNameFeedback) throws RemoteException {
+        this.RM = RM;
+        /*
+        * Hier iets maken waardoor er een user kan worden opgehaald waar je feedback op wilt geven ?
+        */        
+        
+        // this.feedbackOwner = ?????????
         this.refreshFeedbacklist();
         this.label_owner.setText(feedbackOwner.getUsername() + "'s feedback");
         this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback to " + this.feedbackOwner.getUsername());
@@ -106,7 +97,7 @@ public class Profile_FeedbackController implements Initializable {
             Parent root = loader.load();
             
             MainController controller = (MainController) loader.getController();
-            controller.setUp(GX);
+            controller.setUp(RM);
 
             Stage inputStage = new Stage();
             Scene newScene = new Scene(root);
