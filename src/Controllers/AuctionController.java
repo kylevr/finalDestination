@@ -13,7 +13,12 @@ import Classes.Auctions.StatusEnum;
 import Classes.Bid;
 import Classes.Grand_Exchange;
 import Classes.User;
+import Exceptions.NotEnoughMoneyException;
+import Interfaces.IAuction;
+import Interfaces.IPlaceBid;
+import grandexchange.RegistryManager;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -100,12 +105,14 @@ public class AuctionController implements Initializable {
     @FXML
     private Button BidBtn;
 
+    IAuction auctionInterface;
+    IPlaceBid bid;
     Auction auction;
     Direct directAuction;
     Standard standardAuction;
     private User loggedInUser;
-    private Grand_Exchange GX;
     private String type;
+    private RegistryManager RM;
 
     Timeline timeline;
     int timeSeconds;
@@ -121,10 +128,10 @@ public class AuctionController implements Initializable {
 
     }
 
-    public void setUp(Auction auction, Grand_Exchange GX) {
-        this.GX = GX;
+    public void setUp(Auction auction, RegistryManager RM) {
+        this.RM = RM;
         this.auction = auction;
-        loggedInUser = GX.getLoggedInUser();
+        loggedInUser = RM.getUser();
         productTitle.setText(auction.getProduct().getName());
         productDescription.setText(auction.getProduct().getDescription());
         auctionDescription.setText(auction.getDescription());
@@ -210,7 +217,7 @@ public class AuctionController implements Initializable {
                     }
                     if (timeSeconds <= 0) {
                         timeline.stop();
-                        setUp(auction, GX);
+                        setUp(auction, RM);
                     }
                 }
             }));
@@ -317,18 +324,21 @@ public class AuctionController implements Initializable {
 
     public void countdownBuyButtonClick() throws SQLException {
 
+        RM.getPlaceBidInterface();
+        this.bid = RM.getBid();
+        
         if (Integer.parseInt(txtUnitstoBuy.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuy.getText()) > 0 && auction != null) {
             double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();
 
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + auction.getInstabuyPrice() + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 for (int i = 0; i < Integer.parseInt(txtUnitstoBuy.getText()); i++) {
-                    GX.InstabuyItem(Integer.valueOf(txtUnitstoBuy.getText()), auction.getId(), loggedInUser.getUserID());
+                    auctionInterface.InstabuyItem(Integer.valueOf(txtUnitstoBuy.getText()), auction.getId(), loggedInUser.getUserID());
 
                 }
                 auction.setProductQuantity(Integer.parseInt(txtUnitstoBuy.getText()));
                 setCountdownBuys(auction);
-                GX.updateAuction(auction);
+                auctionInterface.updateAuction(auction);
                 if (auction.getProductQuantity() > 1) {
                     countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
                 } else if (auction.getProductQuantity() == 1) {
@@ -347,8 +357,11 @@ public class AuctionController implements Initializable {
     }
 
     // TODO: aanpassen dat het het tweede textveld goed erin zet.
-    public void bidBuyButtonClick() throws SQLException {
+    public void bidBuyButtonClick() throws SQLException, RemoteException, NotEnoughMoneyException {
 
+        RM.getPlaceBidInterface();
+        this.bid = RM.getBid();
+        
         if (Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuyBid.getText()) > 0 && auction != null) {
             double totalPrice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
             double unitsToBuy = Double.parseDouble(txtUnitstoBuyBid.getText());
@@ -356,8 +369,8 @@ public class AuctionController implements Initializable {
 
             //int getal = Integer.parseInt(txtUnitstoBuy.getText());
             if (Double.parseDouble(txtPriceToBid.getText()) > auction.getCurrentPrice()) {
-                auction.addBid(new Bid(auction.getId(), GX.loggedInUser, Double.parseDouble(txtPriceToBid.getText()))); // adds bid to auction
-                if (GX.addBid(unitsToBuy, auction.getId(), loggedInUser.getUserID(), bedrag)) {
+                auction.addBid(new Bid(auction.getId(), RM.getUser(), Double.parseDouble(txtPriceToBid.getText()))); // adds bid to auction
+                if (bid.placeBid(unitsToBuy, auction.getId(), loggedInUser.getUserID(), bedrag)) {
                     System.out.println("Correct geinsert");
                 } else {
                     System.out.println("FAILED");
@@ -375,7 +388,7 @@ public class AuctionController implements Initializable {
             //GX.addBid(Double.valueOf(txtUnitstoBuy.getText()), auction.getId(), loggedInUser.getUserID(),auction.getCurrentPrice());
             //auction.setProductQuantity(Integer.parseInt(txtUnitstoBuyBid.getText()));
             setCountdownBuys(auction);
-            GX.updateAuction(auction);
+            auctionInterface.updateAuction(auction);
             if (auction.getProductQuantity() > 1) {
                 countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
             } else if (auction.getProductQuantity() == 1) {
