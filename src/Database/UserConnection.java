@@ -44,7 +44,12 @@ public class UserConnection {
     static final String REMOVE_USER_BYUSERNAME = "DELETE FROM user WHERE BINARY username = ?";
     static final String GET_FROM_USER_ALLUSERS = "SELECT * FROM user";
     static final String SET_FEEDBACK_TOSELLER = "INSERT INTO feedback(timeCreated, rating, description, sellerid, buyerid) VALUES(CURRENT_TIMESTAMP, ?, ?, ?, ?)";
+    static final String SET_ISAUTHORIZED = "UPDATE user SET isAuthorized = ? WHERE username = ?";
+    static final String GET_HASBOUGHT_FROM_SELLER = "SELECT * from transaction t, auction a where a.id = t.auctionID and a.buyerID = ? and t.sellerID = ?;";
 
+    //alter table chatuser  add column isAuthorized bool;
+    
+    
     /**
      * Registers a new user.
      *
@@ -517,6 +522,38 @@ public class UserConnection {
         return feedbackFromBuyer;
     }
 
+    
+    /**
+     * checks if user with buyerid has allready bought something from user with sellerid
+     * @param buyer_ID
+     * @param seller_ID
+     * @return true if that's correct, otherwise false
+     */
+    public Boolean hasBought_FromSeller(String buyer_ID, String seller_ID) {
+        Boolean hasBought = false;
+        int count = 0;
+        
+        try {
+            conn.getConnection();
+            pstmt = myConn.prepareStatement(GET_HASBOUGHT_FROM_SELLER);
+            pstmt.setString(1, buyer_ID);
+            pstmt.setString(2, seller_ID);
+            myRs = pstmt.executeQuery();
+            
+            while (myRs.next()) {
+                ++count;
+            }
+            if (count > 0) {
+                hasBought = true;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return hasBought;
+    }
+
+    
     /**
      * Submnits feedback to a buyer.
      *
@@ -529,9 +566,8 @@ public class UserConnection {
     public Boolean submitFeedback(int rating, String description, String sellerid, String buyerid) {
         conn.getConnection();
 
-        if (myConn != null) {
-            try {
-                conn.getConnection();
+        if (myConn != null && this.hasBought_FromSeller(buyerid, sellerid)) {
+            try {               
                 pstmt = myConn.prepareStatement(SET_FEEDBACK_TOSELLER);
                 pstmt.setInt(1, rating);
                 pstmt.setString(2, description);
@@ -556,4 +592,45 @@ public class UserConnection {
             return false;
         }
     }
+    
+    /**
+     * sets if user with specified username will be authorized or not
+     * @param username username of user you want to (de)authorize
+     * @param isAuthorized 
+     * @return
+     * @throws RemoteException
+     */
+    public Boolean setAuthorized(String username, boolean isAuthorized) {
+        conn.getConnection();
+        if (myConn != null) {
+            if (getUser(username) != null) {
+                try {
+                    conn.getConnection();
+                    pstmt = myConn.prepareStatement(SET_ISAUTHORIZED);
+                    pstmt.setString(1, username);
+                    pstmt.setBoolean(2, isAuthorized);
+
+                    if (pstmt.executeUpdate() > 0) {
+                        System.out.println("User with username: " + username + " is now authorized");
+                        return true;
+                    } else {
+                        System.out.println("Can't authorize User with username: " + username + ". Rows are unaffected.");
+                        return false;
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("Can't authorize User with username: " + username + ". SQLException.");
+                    ex.printStackTrace();
+                    conn.closeConnection();
+                    return false;
+                }
+            } else {
+                System.out.println("Can't find User with username: " + username);
+                return false;
+            }
+        } else {
+            System.out.println("Can't authorize User with username: " + username + ". No connection to database.");
+            return false;
+        }
+    }
+
 }

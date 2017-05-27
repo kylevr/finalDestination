@@ -29,10 +29,10 @@ public interface IAuthorized extends Remote{
      * logs user with specified username out of the application.
      * boolean isAuthorized of this user is set to false.
      * @param username
-     * @return
+     * @return success of the operation
      * @throws RemoteException
      */
-    public Void logout(String username) throws RemoteException;
+    public boolean logout(String username) throws RemoteException;
 
     /**
      * registers a new user to the application.
