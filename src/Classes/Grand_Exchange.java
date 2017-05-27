@@ -42,7 +42,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     /**
      * initialize GX
      */
-    public Grand_Exchange() {
+    public Grand_Exchange() throws RemoteException {
         products = new ArrayList<>();
         users = new ArrayList<>();
         auctions = new ArrayList<>();
@@ -513,5 +513,15 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
             Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
+
+    @Override
+    public Void logout(String username) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean setIsAuthorized(String username, boolean isAuthorized) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
