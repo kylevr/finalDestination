@@ -136,7 +136,7 @@ public class MainController implements Initializable {
 
         try
         {
-            loggedInUserImage.setImage(new Image(GX.loggedInUser.getImageURL()));
+            loggedInUserImage.setImage(new Image(GX.getUser(GX.getLoggedInUser().getUsername()).getImageURL()));
         }
         catch(NullPointerException ex)
         {
@@ -177,7 +177,7 @@ public class MainController implements Initializable {
     
     @FXML
     public void button_Logout() throws IOException {
-        GX.logout();
+        GX.logout(GX.getLoggedInUser().getUsername());
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Login.fxml"));
         Parent root = loader.load();

@@ -205,23 +205,14 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      */
     public User login(String username, String password) throws RemoteException {
         User Guest = userConn.getUser(username, password);
-        if (Guest != null) {
+        if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
             users.add(Guest);
-            System.out.println("user with username " + loggedInUser.getUsername() + " is logged in");
+            System.out.println("user with username " + Guest.getUsername() + " is logged in");
             return Guest;
         } else {
             System.out.println("no user is logged in");
             return null;
         }
-    }
-
-    /**
-     * logout of user who is logged in
-     *
-     */
-    public void logout() {
-        this.loggedInUser = null;
-        System.out.println("logged out user");
     }
 
     /**
@@ -524,7 +515,7 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
 
     @Override
     public boolean logout(String username) throws RemoteException {
-        if (this.setIsAuthorized(username, true))
+        if (this.setIsAuthorized(username, false))
         {
             System.out.println("User with username " + username + " is logged out");
             return true;
