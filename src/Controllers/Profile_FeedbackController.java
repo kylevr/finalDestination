@@ -72,9 +72,11 @@ public class Profile_FeedbackController implements Initializable {
     @FXML
     public void button_submitFeedback()
     {
-        Connection conn = new Connection();
-        conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername());
-        this.refreshFeedbacklist();
+        UserConnection conn = new UserConnection();
+        if (conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername()))
+        {
+            this.refreshFeedbacklist();
+        }
     }
     
     @FXML

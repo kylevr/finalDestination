@@ -37,7 +37,6 @@ import javafx.stage.Stage;
  */
 public class RegistrationController implements Initializable {
 
-    private Database.Connection conn = new Database.Connection();
     @FXML
     AnchorPane currentPane; //id you've given to the backgroundpane of the .FXML scene
 

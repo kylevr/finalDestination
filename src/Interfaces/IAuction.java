@@ -56,5 +56,5 @@ public interface IAuction extends Remote{
      * sends a mail to the Seller
      * @param content content to be send to seller
      */
-    void sendMail(String content)throws RemoteException;
+    void sendMail(int senderId, int receiverId, String content)throws RemoteException;
 }
