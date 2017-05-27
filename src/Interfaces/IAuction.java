@@ -9,6 +9,7 @@ import Classes.Auctions.Auction;
 import Classes.Bid;
 import Classes.Feedback;
 import Classes.User;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author piete
  */
-public interface IAuction {
+public interface IAuction extends Remote{
 
     /**
      *returns all auctions 
@@ -30,7 +31,7 @@ public interface IAuction {
      * @param auctionId id of corresponding auction
      * @return list of bids
      */
-    List<Bid> getBids(int auctionId);
+    List<Bid> getBids(int auctionId) throws RemoteException;
     
     /**
      *returns the id of the seller of the auction
