@@ -5,11 +5,13 @@
  */
 package Interfaces;
 
+import java.rmi.Remote;
+
 /**
  *
  * @author lesley
  */
- public interface ICreateQueuePurchase extends java.rmi.Remote {
+ public interface ICreateQueuePurchase extends Remote {
     /**
     * Returns a boolean if the Queue_Purchase is created or not.
     * The placerID argument specifies the id of the user that places this Queue_Purchase.

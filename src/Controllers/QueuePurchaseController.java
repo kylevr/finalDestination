@@ -8,8 +8,12 @@ package Controllers;
 import Classes.CategoryEnum;
 import Classes.Grand_Exchange;
 import Classes.Product;
+import Interfaces.ICreateProduct;
+import Interfaces.ICreateQueuePurchase;
+import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -66,7 +70,9 @@ public class QueuePurchaseController implements Initializable {
     private ComboBox<CategoryEnum> comboBoxCategory;
     
     public static int selectedProductID;
-    private Grand_Exchange GX;
+    private ICreateProduct productInterface;
+    private ICreateQueuePurchase queuePurchaseInterface;
+    private RegistryManager RM;
     private ArrayList<Product> products;
     private CategoryEnum selectedCategory;
 
@@ -81,13 +87,17 @@ public class QueuePurchaseController implements Initializable {
         // TODO
     }
 
-    public void setUp(Grand_Exchange GX) {
-        this.GX = GX;
+    public void setUp(RegistryManager RM) {
+        this.RM = RM;
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
     
     public void searchProduct(){
-        this.products = GX.getProducts(textFieldProductName.getText(),this.selectedCategory);
+        
+        RM.getProductInterface();
+        productInterface = RM.getProduct();
+        
+        this.products = productInterface.getProducts(textFieldProductName.getText(),this.selectedCategory);
         Pane allProducts = new Pane();
         allProducts.setPrefWidth(800);
         System.out.println(textFieldProductName.getText());
@@ -156,7 +166,9 @@ public class QueuePurchaseController implements Initializable {
         }
     }
 
-    public void createQueuePurchase(){
+    public void createQueuePurchase() throws RemoteException{
+        
+        
         
         if (txtQuantity.getText().equals("") || txtMinPrice.getText().equals("") || txtMaxPrice.getText().equals("") || selectedProductID == 0){
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -170,7 +182,7 @@ public class QueuePurchaseController implements Initializable {
             int quantity = Integer.parseInt(txtQuantity.getText());
             double minAmount = Double.parseDouble(txtMinPrice.getText());
             double maxAmount = Double.parseDouble(txtMaxPrice.getText());
-            GX.addQueuePurchase(quantity, minAmount, maxAmount, selectedProductID, GX.getLoggedInUser().getUserID());
+            queuePurchaseInterface.createQueuePurchase(quantity, minAmount, maxAmount, selectedProductID, RM.getUser().getUserID());
         }
     }
     

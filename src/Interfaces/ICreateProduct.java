@@ -5,11 +5,13 @@
  */
 package Interfaces;
 
+import java.rmi.Remote;
+
 /**
  *
  * @author lesley
  */
- public interface ICreateProduct extends java.rmi.Remote {
+ public interface ICreateProduct extends Remote {
     /**
     * Returns a boolean if the Product is created or not.
     * The GTIN argument specifies the specific number of a product.

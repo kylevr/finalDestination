@@ -6,6 +6,7 @@
 package Interfaces;
 
 import Exceptions.NotEnoughMoneyException;
+import java.rmi.Remote;
 
 
 
@@ -13,7 +14,7 @@ import Exceptions.NotEnoughMoneyException;
  *
  * @author lesley
  */
- public interface IPlaceBid extends java.rmi.Remote {
+ public interface IPlaceBid extends Remote {
     /**
     * Returns a boolean if the bid is placed or not.
     * The amount argument specifies the amount of money the user wants to spend for this bid.

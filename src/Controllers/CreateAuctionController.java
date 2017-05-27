@@ -8,6 +8,9 @@ package Controllers;
 import Classes.CategoryEnum;
 import Classes.Grand_Exchange;
 import static Controllers.QueuePurchaseController.selectedProductID;
+import Interfaces.IAuction;
+import Interfaces.ICreateProduct;
+import grandexchange.RegistryManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -50,8 +53,10 @@ public class CreateAuctionController implements Initializable {
     @FXML
     private Button btCreateOption;
 
-    private Grand_Exchange GX;
+    private RegistryManager RM;
     private String selectedOption;
+    private IAuction auctionInterface;
+    private ICreateProduct productInterface;
     String auctionType;
 
     /**
@@ -62,8 +67,8 @@ public class CreateAuctionController implements Initializable {
         // TODO
     }
 
-    public void setUp(Grand_Exchange GX) {
-        this.GX = GX;
+    public void setUp(RegistryManager RM) {
+        this.RM = RM;
         cbAuctionType.getItems().addAll("Standard Auction", "Countdown Auction", "Direct Auction");
         cbAuctionType.setValue("Standard Auction");
         selectedOption = "Standard Auction";
@@ -71,6 +76,11 @@ public class CreateAuctionController implements Initializable {
 
     public void createAuction() {
 
+        RM.getAuctionInterface();
+        RM.getProductInterface();
+        productInterface = RM.getProduct();
+        auctionInterface = RM.getAuction();
+        
         if ("Standard Auction".equals(selectedOption)) {
             auctionType = "standard";
         }
@@ -102,14 +112,14 @@ public class CreateAuctionController implements Initializable {
             alert.showAndWait();
         } else {
             int productid;
-            productid = GX.addProductToDB(productName, description, Gtin);
+            productid = productInterface.createProduct(Gtin, productName, description);
             if (productid != 0) {
                 int userid = GX.getLoggedInUser().getUserID();
                 int instabuyable = 0;
                 if (instabuy) {
                     instabuyable = 1;
                 }
-                GX.addAuctionToDB(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, 0, 0, auctionType, 1, imageUrl, description);
+                auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, 0, 0, auctionType, 1, imageUrl, description);
             } else {
                 System.out.print("Cant insert product to database.");
             }

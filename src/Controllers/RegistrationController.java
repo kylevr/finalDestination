@@ -8,6 +8,8 @@ package Controllers;
 import Classes.Grand_Exchange;
 import Classes.User;
 import Database.Connection;
+import Interfaces.IAuthorized;
+import grandexchange.RegistryManager;
 import javafx.scene.paint.Color;
 import static java.awt.SystemColor.text;
 import java.io.IOException;
@@ -51,7 +53,8 @@ public class RegistrationController implements Initializable {
     Label label_errorMsg;
 
     String errorMsg;
-    Grand_Exchange GX;
+    RegistryManager RM;
+    IAuthorized authorizationInterface;
 
     /**
      * Initializes the controller class.
@@ -63,7 +66,9 @@ public class RegistrationController implements Initializable {
 
     @FXML
     public void button_registerUser() throws IOException {
-            this.label_errorMsg.setText(this.GX.registerUser(textfield_username.getText(), textfield_password.getText(), textfield_alias.getText(), textfield_email.getText()));
+            RM.getAuthorizationInterface();
+            this.authorizationInterface = RM.getAuthorization();                    
+            this.label_errorMsg.setText(this.authorizationInterface.registerUser(textfield_username.getText(), textfield_password.getText(), textfield_alias.getText(), textfield_email.getText()));
             this.label_errorMsg.setVisible(true);
     }
 
@@ -78,8 +83,8 @@ public class RegistrationController implements Initializable {
         stage.close();
     }
     
-    public void Setup(Grand_Exchange GX)
+    public void Setup(RegistryManager RM)
     {
-        this.GX = GX;
+        this.RM = RM;
     }
 }
