@@ -7,13 +7,11 @@ package Controllers;
 
 import Classes.Grand_Exchange;
 import Classes.User;
+import Interfaces.IAuthorized;
+import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,13 +19,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import static javafx.scene.input.KeyCode.T;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javax.annotation.Resource;
-import javax.swing.event.DocumentEvent;
 
 /**
  *
@@ -37,15 +30,18 @@ public class LoginController implements Initializable {
 
     @FXML
     AnchorPane currentPane;
-
-    Grand_Exchange GX;
+    
+    private User user;
+    private RegistryManager RM;
+    private IAuthorized authorization;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        GX = new Grand_Exchange();
+        RM = new RegistryManager();
+        authorization = RM.getAuthorization();
     }
 
     @FXML
@@ -57,12 +53,15 @@ public class LoginController implements Initializable {
 
     @FXML
     public void button_loginUser() throws IOException {
-        if (GX.login(textfield_username.getText(), textfield_password.getText())) {
+        user = authorization.login(textfield_username.getText(), textfield_password.getText());
+        
+        if (user != null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
             Parent root = loader.load();
 
             MainController controller = (MainController) loader.getController();
-            controller.setUp(GX);
+            RM.setUser(user);
+            controller.setUp(RM);
 
             Stage inputStage = new Stage();
             Scene newScene = new Scene(root);
