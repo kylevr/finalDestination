@@ -9,6 +9,8 @@ import Classes.Auctions.Auction;
 import Classes.CategoryEnum;
 import Classes.Grand_Exchange;
 import Classes.User;
+import Interfaces.IAuction;
+import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -63,8 +65,9 @@ public class MainController implements Initializable {
     private Button btnQueuePurchase;
     @FXML
     private TextField textField_usernameOfFeedbackOwner;
-
-    private Grand_Exchange GX;
+    
+    private IAuction auctionInterface;
+    private RegistryManager RM;
 
     /**
      * Initializes the controller class.
@@ -74,13 +77,15 @@ public class MainController implements Initializable {
         // TODO
     }
 
-    public void setUp(Grand_Exchange GX) throws RemoteException {
-        this.GX = GX;
+    public void setUp(RegistryManager RM) throws RemoteException {
+        RM.getAuctionInterface();
+        this.auctionInterface = RM.getAuction();
+        
         Pane allAuctions = new Pane();
         allAuctions.setPrefWidth(800);
-        allAuctions.setPrefHeight(150 * GX.getAuctions().size());
+        allAuctions.setPrefHeight(150 * auctionInterface.getAuctions().size());
         int i = 0;
-        for (Auction a : GX.getAuctions()) {
+        for (Auction a : auctionInterface.getAuctions()) {
             Pane Auction = new Pane();
             Auction.setPrefWidth(800);
             Auction.setPrefHeight(150);
@@ -136,7 +141,7 @@ public class MainController implements Initializable {
 
         try
         {
-            loggedInUserImage.setImage(new Image(GX.loggedInUser.getImageURL()));
+            loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
         }
         catch(NullPointerException ex)
         {
@@ -150,7 +155,7 @@ public class MainController implements Initializable {
         Scene newScene;
         newScene = new Scene(loader.load());
         AuctionController controller = loader.<AuctionController>getController();
-        controller.setUp(a, GX);
+        controller.setUp(a, RM);
         Stage inputStage = new Stage();
         inputStage.setScene(newScene);
         inputStage.showAndWait();
@@ -177,7 +182,7 @@ public class MainController implements Initializable {
     
     @FXML
     public void button_Logout() throws IOException {
-        GX.logout();
+        RM.getAuthorization().logout(RM.getUser().getUsername());
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Login.fxml"));
         Parent root = loader.load();
@@ -194,7 +199,7 @@ public class MainController implements Initializable {
         Scene newScene;
         newScene = new Scene(loader.load());
         QueuePurchaseController controller = loader.<QueuePurchaseController>getController();
-        controller.setUp(GX);
+        controller.setUp(RM);
         Stage inputStage = new Stage();
         inputStage.setScene(newScene);
         inputStage.showAndWait();
@@ -208,7 +213,7 @@ public class MainController implements Initializable {
         Scene newScene;
         newScene = new Scene(loader.load());
         CreateAuctionController controller = loader.<CreateAuctionController>getController();
-        controller.setUp(GX);
+        controller.setUp(RM);
         Stage inputStage = new Stage();
         inputStage.setScene(newScene);
         inputStage.showAndWait();}
@@ -223,7 +228,7 @@ public class MainController implements Initializable {
 
                 Profile_FeedbackController controller = (Profile_FeedbackController) loader.getController();
 
-                controller.setUp(GX, textField_usernameOfFeedbackOwner.getText());
+                controller.setUp(RM , textField_usernameOfFeedbackOwner.getText());
 
                 Stage inputStage = new Stage();
                 Scene newScene = new Scene(root);
@@ -244,6 +249,6 @@ public class MainController implements Initializable {
     }
     
     public void btnRefresh() throws RemoteException{
-        setUp(GX);
+        setUp(RM);
     }
 }
