@@ -38,7 +38,6 @@ public class ProductConnection {
 
     // Constructor
     public ProductConnection() {
-        conn.getMyConn();
     }
 
     /**

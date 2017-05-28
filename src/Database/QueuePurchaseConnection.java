@@ -58,7 +58,7 @@ public class QueuePurchaseConnection {
         ResultSet resultset = null;
         try {
             conn.getConnection();
-            pstmt = myConn.prepareStatement(GET_ALL_QUEUEPURCHASE);
+            pstmt = conn.getMyConn().prepareStatement(GET_ALL_QUEUEPURCHASE);
             myRs = pstmt.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -75,12 +75,13 @@ public class QueuePurchaseConnection {
                 queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
                 queuepurchase.setID(id);
                 queuepurchases.add(queuepurchase);
+                conn.closeConnection();
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("Product ding connection ophalen failed ofzo.");
         }
-        conn.closeConnection();
+        
         return queuepurchases;
     }
 
@@ -98,7 +99,7 @@ public class QueuePurchaseConnection {
 
         try {
             //INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID
-            pstmt = myConn.prepareStatement(SET_QUEUEPURCHASE_NEW);
+            pstmt = conn.getMyConn().prepareStatement(SET_QUEUEPURCHASE_NEW);
             pstmt.setInt(1, quantity);
             pstmt.setDouble(2, minprice);
             pstmt.setDouble(3, maxprice);
@@ -134,7 +135,7 @@ public class QueuePurchaseConnection {
         ResultSet resultset;
 
             try {
-                preparedStatement = myConn.prepareStatement(GET_QUEUEPURCHASE);
+                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);
                 preparedStatement.setInt(1, queueID);
                 resultset = preparedStatement.executeQuery();
                 resultset.next();
@@ -166,7 +167,7 @@ public class QueuePurchaseConnection {
         ResultSet resultset = null;
 
             try {
-                preparedStatement = myConn.prepareStatement(GET_QUEUEPURCHASE);
+                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);
                 preparedStatement.setInt(1, queueID);
                 resultset = preparedStatement.executeQuery();
                 resultset.next();
