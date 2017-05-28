@@ -276,7 +276,8 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
      * @return boolean
      * @throws SQLException
      */
-    public boolean InstabuyItem(int amount, int auctionID, int buyerID) throws SQLException {
+    @Override
+    public boolean InstabuyItem(int amount, int auctionID, int buyerID) throws RemoteException {
         try {
             System.out.println("amount :" + amount + " AID: " + auctionID + "BID: " + buyerID);
             auctionConn.InstabuyItem(amount, auctionID, 1);
@@ -493,9 +494,9 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     }
 
     @Override
-    public boolean createProduct(int GTIN, String name, String description) throws RemoteException {
+    public int createProduct(int GTIN, String name, String description) throws RemoteException {
         int newProductID = productConn.insertProduct(name, description, GTIN);
-        return newProductID > 0;
+        return newProductID;
     }
 
     @Override
@@ -568,4 +569,10 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 		transport.close();
 	}
+
+    
+    @Override
+    public void addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -8,6 +8,7 @@ package Controllers;
 import Classes.Grand_Exchange;
 import Classes.User;
 import Database.Connection;
+import Database.UserConnection;
 import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;

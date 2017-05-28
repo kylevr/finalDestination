@@ -322,7 +322,7 @@ public class AuctionController implements Initializable {
         }
     }
 
-    public void countdownBuyButtonClick() throws SQLException {
+    public void countdownBuyButtonClick() throws SQLException, RemoteException {
 
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();

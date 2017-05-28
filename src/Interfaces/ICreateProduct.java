@@ -5,7 +5,10 @@
  */
 package Interfaces;
 
+import Classes.CategoryEnum;
+import Classes.Product;
 import java.rmi.Remote;
+import java.util.ArrayList;
 
 /**
  *
@@ -30,5 +33,16 @@ import java.rmi.Remote;
     */
     public int createProduct(int GTIN, String name, String description)
             throws java.rmi.RemoteException;
+    
+    
+    /**
+     * This method returns a products with the given parameter values.
+     * @param productName The name of the product
+     * @param type The type of product
+     * @return List with products that contains the productname and category
+     * @throws java.rmi.RemoteException 
+     */
+    public ArrayList<Product> getProducts(String productName, CategoryEnum type) throws java.rmi.RemoteException;
+    
 
 }

@@ -92,7 +92,7 @@ public class QueuePurchaseController implements Initializable {
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
     
-    public void searchProduct(){
+    public void searchProduct() throws RemoteException{
         
         RM.getProductInterface();
         productInterface = RM.getProduct();
