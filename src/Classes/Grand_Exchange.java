@@ -59,6 +59,8 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
         auctions = new ArrayList<>();
         queuepurchases = new ArrayList<>();
         con = new Connection();
+
+        // Connections
         auctionConn = new AuctionConnection();
         productConn = new ProductConnection();
         qPConn = new QueuePurchaseConnection();
@@ -413,9 +415,10 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     public void addFeedback(Feedback feedback) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     /**
      * updates feedbacklist of user with given username
+     *
      * @param username
      * @return True if succesfull, false if username doesn't exist
      */
@@ -441,17 +444,17 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
         }
         return successful;
     }
-    
+
     /**
      * registers a new users and returns errormessage
+     *
      * @param username
      * @param password
      * @param alias
      * @param email
      * @return message that says if it's successful or not
      */
-    public String registerUser(String username, String password, String alias, String email)
-    {
+    public String registerUser(String username, String password, String alias, String email) {
         String errorMsg = "Failed to register user:";
 
         try {
@@ -517,13 +520,10 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
 
     @Override
     public boolean logout(String username) throws RemoteException {
-        if (this.setIsAuthorized(username, false))
-        {
+        if (this.setIsAuthorized(username, false)) {
             System.out.println("User with username " + username + " is logged out");
             return true;
-        }
-        else
-        {
+        } else {
             System.out.println("Failed to logout User with username " + username);
             return false;
         }
@@ -545,34 +545,34 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
             Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void generateAndSendEmail(String senderUsername, String receiverEmail, String message) throws AddressException, MessagingException {
- 
-		// Step1
-		mailServerProperties = System.getProperties();
-		mailServerProperties.put("mail.smtp.port", "587");
-		mailServerProperties.put("mail.smtp.auth", "true");
-		mailServerProperties.put("mail.smtp.starttls.enable", "true");
- 
-		// Step2
-		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
-		generateMailMessage = new MimeMessage(getMailSession);
-		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
-		generateMailMessage.setSubject("Message from GrandExchange user: " + senderUsername);
-		generateMailMessage.setContent(message, "text/html");
- 
-		// Step3
-		Transport transport = getMailSession.getTransport("smtp");
- 
-		// Enter your correct gmail UserID and Password
-		// if you have 2FA enabled then provide App Specific Password
-		transport.connect("smtp.gmail.com", "grandexchangemail@gmail.com", "Wachtwoord123");
-		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-		transport.close();
-	}
+
+        // Step1
+        mailServerProperties = System.getProperties();
+        mailServerProperties.put("mail.smtp.port", "587");
+        mailServerProperties.put("mail.smtp.auth", "true");
+        mailServerProperties.put("mail.smtp.starttls.enable", "true");
+
+        // Step2
+        getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+        generateMailMessage = new MimeMessage(getMailSession);
+        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
+        generateMailMessage.setSubject("Message from GrandExchange user: " + senderUsername);
+        generateMailMessage.setContent(message, "text/html");
+
+        // Step3
+        Transport transport = getMailSession.getTransport("smtp");
+
+        // Enter your correct gmail UserID and Password
+        // if you have 2FA enabled then provide App Specific Password
+        transport.connect("smtp.gmail.com", "grandexchangemail@gmail.com", "Wachtwoord123");
+        transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+        transport.close();
+    }
 
     @Override
     public void addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Nog niet geïmplementeerd");
     }
-    }
+}
