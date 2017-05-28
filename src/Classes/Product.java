@@ -64,7 +64,7 @@ public class Product {
             this.category = CategoryEnum.Vehicles;
         }
         else{
-        this.category = CategoryEnum.values()[pick];
+        this.category = CategoryEnum.Electronics;
         }           
     }
 }

@@ -54,14 +54,18 @@ public class Connection {
      */
     public boolean closeConnection() {
         try {
-            myRs.close();
-            myConn.close();
-            pstmt.close();
+            if(myRs != null){
+                myRs.close();
+            }
+            myConn.close(); 
+            if(pstmt != null){
+                pstmt.close();
+            }
             System.out.println("Closing connection to database...");
             return true;
         } catch (SQLException ex) {
-            //System.out.println(ex.getMessage());
-            //Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }

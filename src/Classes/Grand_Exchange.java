@@ -500,6 +500,11 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     @Override
     public int createProduct(int GTIN, String name, String description) throws RemoteException {
         int newProductID = productConn.insertProduct(name, description, GTIN);
+        productConn = new ProductConnection();
+        if (newProductID != 0) {
+            Product newProduct = productConn.getProduct(newProductID);
+            products.add(newProduct);
+        }
         return newProductID;
     }
 
