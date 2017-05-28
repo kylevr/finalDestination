@@ -30,9 +30,9 @@ public class UserConnection {
     private ResultSet myRs = null;
 
     // Connections
-    private UserConnection userConn = new UserConnection();
+    //private UserConnection userConn = new UserConnection();
     private Connection conn = new Connection();
-    private ProductConnection productConn = new ProductConnection();
+    //private ProductConnection productConn = new ProductConnection();
 
     // SQL codes
     static final String GET_FROM_USER_BYLOGININFO = "SELECT * FROM user WHERE BINARY username = ? and BINARY password = ?";
