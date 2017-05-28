@@ -62,9 +62,9 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
         auctionConn = new AuctionConnection();
 
         //Gets all existing auctions.
-        auctions = auctionConn.getAuctions("*", "auction", "''");
-        products = productConn.getProducts();
-        queuepurchases = qPConn.getQueuePurchases();
+        //auctions = auctionConn.getAuctions("*", "auction", "''");
+        //products = productConn.getProducts();
+        //queuepurchases = qPConn.getQueuePurchases();
 
         dbListener = new DatabaseListener();
         dbListener.addObserver(this);
