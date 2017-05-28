@@ -53,4 +53,12 @@ public interface IAuthorized extends Remote{
      * @throws RemoteException
      */
     public boolean setIsAuthorized(String username, boolean isAuthorized) throws RemoteException;
+    
+    
+    /**
+     * Get the current logged in user.
+     * @return User that is logged in at this moment
+     * @throws RemoteException 
+     */
+    public User getLoggedInUser() throws RemoteException;
 }

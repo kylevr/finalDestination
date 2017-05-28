@@ -46,6 +46,14 @@ public interface IAuction extends Remote{
      */
    void addAuction(Auction auction)throws RemoteException ;
     
+   
+   /**
+     *adds a auction tot the database
+     * //TODO: er staat 3 keer "iets" in. Dit moet nog veranderd worden naar een betere naam.
+     * @param auction auction to be added
+     */
+   void addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int  iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription)throws RemoteException ;
+   
     /**
      *adds feedback to a seller
      * @param feedback feedback to be added
@@ -57,4 +65,22 @@ public interface IAuction extends Remote{
      * @param content content to be send to seller
      */
     void sendMail(int senderId, int receiverId, String content)throws RemoteException;
+    
+    /**
+     * Buy a instabuy item and put it into the database
+     *
+     * @param amount The amount the user wants to pay.
+     * @param auctionID The id of the auction.
+     * @param userID The id of the user.
+     * @return True if instabuy item is be brought, false if its not.
+     */
+    public Boolean InstabuyItem(int amount, int auctionID, int userID);
+    
+    /**
+     * Updates the auction given in the parameter.
+     *
+     * @param auction the auction that need to be updated
+     */
+    public void updateAuction(Auction auction);
+    
 }

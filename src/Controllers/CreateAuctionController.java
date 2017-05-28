@@ -9,9 +9,11 @@ import Classes.CategoryEnum;
 import Classes.Grand_Exchange;
 import static Controllers.QueuePurchaseController.selectedProductID;
 import Interfaces.IAuction;
+import Interfaces.IAuthorized;
 import Interfaces.ICreateProduct;
 import grandexchange.RegistryManager;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -57,6 +59,7 @@ public class CreateAuctionController implements Initializable {
     private String selectedOption;
     private IAuction auctionInterface;
     private ICreateProduct productInterface;
+    private IAuthorized authorizedInterface;
     String auctionType;
 
     /**
@@ -74,7 +77,7 @@ public class CreateAuctionController implements Initializable {
         selectedOption = "Standard Auction";
     }
 
-    public void createAuction() {
+    public void createAuction() throws RemoteException {
 
         RM.getAuctionInterface();
         RM.getProductInterface();
@@ -114,7 +117,7 @@ public class CreateAuctionController implements Initializable {
             int productid;
             productid = productInterface.createProduct(Gtin, productName, description);
             if (productid != 0) {
-                int userid = GX.getLoggedInUser().getUserID();
+                int userid = authorizedInterface.getLoggedInUser().getUserID();
                 int instabuyable = 0;
                 if (instabuy) {
                     instabuyable = 1;

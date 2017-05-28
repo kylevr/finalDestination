@@ -28,6 +28,7 @@ import java.rmi.Remote;
     * @return            true if the product is created or false if the product isn't created
     * @exception java.rmi.RemoteException  this method can throw a RemoteException since it uses RMI
     */
-    public boolean createProduct(int GTIN, String name, String description)
+    public int createProduct(int GTIN, String name, String description)
             throws java.rmi.RemoteException;
+
 }
