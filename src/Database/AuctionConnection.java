@@ -178,7 +178,7 @@ public class AuctionConnection {
             myRs = pstmt.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
