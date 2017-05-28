@@ -14,15 +14,14 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//imports for sending emails
 import java.util.Properties;
-//import javax.mail.Message;
-//import javax.mail.MessagingException;
-//import javax.mail.Session;
-//import javax.mail.Transport;
-//import javax.mail.internet.AddressException;
-//import javax.mail.internet.InternetAddress;
-//import javax.mail.internet.MimeMessage;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateProduct, ICreateQueuePurchase, IPlaceBid {
 
@@ -37,8 +36,8 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     UserConnection userConn;
     DatabaseListener dbListener;
     static Properties mailServerProperties;
-    //static Session getMailSession;
-    //static MimeMessage generateMailMessage;
+    static Session getMailSession;
+    static MimeMessage generateMailMessage;
 
     public User loggedInUser;
 
@@ -534,50 +533,44 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
         return successful;
     }
 
-//    @Override
-//    public void sendMail(int senderId, int receiverId, String content) throws RemoteException {
-//        User sender = userConn.getUser(senderId);
-//        User receiver = userConn.getUser(receiverId);
-//        try {
-//            generateAndSendEmail(sender.getUsername(), receiver.getUserEmail(), content);
-//        } catch (MessagingException ex) {
-//            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    @Override
+    public void sendMail(int senderId, int receiverId, String content) throws RemoteException {
+        User sender = userConn.getUser(senderId);
+        User receiver = userConn.getUser(receiverId);
+        try {
+            generateAndSendEmail(sender.getUsername(), receiver.getUserEmail(), content);
+        } catch (MessagingException ex) {
+            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
-//    public static void generateAndSendEmail(String senderUsername, String receiverEmail, String message) throws AddressException, MessagingException {
-// 
-//		// Step1
-//		mailServerProperties = System.getProperties();
-//		mailServerProperties.put("mail.smtp.port", "587");
-//		mailServerProperties.put("mail.smtp.auth", "true");
-//		mailServerProperties.put("mail.smtp.starttls.enable", "true");
-// 
-//		// Step2
-//		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
-//		generateMailMessage = new MimeMessage(getMailSession);
-//		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
-//		generateMailMessage.setSubject("Message from GrandExchange user: " + senderUsername);
-//		generateMailMessage.setContent(message, "text/html");
-// 
-//		// Step3
-//		Transport transport = getMailSession.getTransport("smtp");
-// 
-//		// Enter your correct gmail UserID and Password
-//		// if you have 2FA enabled then provide App Specific Password
-//		transport.connect("smtp.gmail.com", "grandexchangemail@gmail.com", "Wachtwoord123");
-//		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-//		transport.close();
-//	}
+    public static void generateAndSendEmail(String senderUsername, String receiverEmail, String message) throws AddressException, MessagingException {
+ 
+		// Step1
+		mailServerProperties = System.getProperties();
+		mailServerProperties.put("mail.smtp.port", "587");
+		mailServerProperties.put("mail.smtp.auth", "true");
+		mailServerProperties.put("mail.smtp.starttls.enable", "true");
+ 
+		// Step2
+		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+		generateMailMessage = new MimeMessage(getMailSession);
+		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
+		generateMailMessage.setSubject("Message from GrandExchange user: " + senderUsername);
+		generateMailMessage.setContent(message, "text/html");
+ 
+		// Step3
+		Transport transport = getMailSession.getTransport("smtp");
+ 
+		// Enter your correct gmail UserID and Password
+		// if you have 2FA enabled then provide App Specific Password
+		transport.connect("smtp.gmail.com", "grandexchangemail@gmail.com", "Wachtwoord123");
+		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+		transport.close();
+	}
 
-    
     @Override
     public void addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public void sendMail(int senderId, int receiverId, String content) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-}
