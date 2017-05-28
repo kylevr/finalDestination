@@ -29,6 +29,7 @@ public class ProductConnection {
 
     // Connections
     private Connection conn = new Connection();
+   
 
     // SQL codes
     static final String GET_FROM_PRODUCT = "SELECT * FROM product WHERE id = ?";
@@ -37,6 +38,7 @@ public class ProductConnection {
 
     // Constructor
     public ProductConnection() {
+        conn.getMyConn();
     }
 
     /**
@@ -55,10 +57,10 @@ public class ProductConnection {
         PreparedStatement preparedStatement = null;
         ResultSet resultset = null;
 
-        if (myConn != null) {
+        if (conn.getMyConn() != null) {
 
             try {
-                preparedStatement = myConn.prepareStatement(GET_FROM_PRODUCT);
+                preparedStatement = conn.getMyConn().prepareStatement(GET_FROM_PRODUCT);
                 preparedStatement.setInt(1, productID);
                 resultset = preparedStatement.executeQuery();
                 resultset.next();
@@ -98,7 +100,7 @@ public class ProductConnection {
     public int insertProduct(String name, String description, int gtin) {
         conn.getConnection();
         try {
-            pstmt = myConn.prepareStatement(SET_PRODUCT_NEW, Statement.RETURN_GENERATED_KEYS);
+            pstmt = conn.getMyConn().prepareStatement(SET_PRODUCT_NEW, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, name);
             pstmt.setString(2, description);
             pstmt.setInt(3, gtin);
@@ -140,7 +142,7 @@ public class ProductConnection {
         String gtin;
         try {
             conn.getConnection();
-            pstmt = myConn.prepareStatement(GET_FROM_PRODUCTS);
+            pstmt = conn.getMyConn().prepareStatement(GET_FROM_PRODUCTS);
 
             myRs = pstmt.executeQuery();
         } catch (SQLException ex) {

@@ -44,6 +44,10 @@ public class Connection {
         }
     }
     
+    public java.sql.Connection getMyConn(){
+        return this.myConn;
+    }
+    
     /**
      * Closes the connection with the database
      * @return true if the connection is closed, false if it failed.
