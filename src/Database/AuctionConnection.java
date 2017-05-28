@@ -50,6 +50,7 @@ public class AuctionConnection {
 
     // Constructor
     public AuctionConnection() {
+        myConn = conn.getMyConn();
     }
 
     /**
@@ -174,7 +175,7 @@ public class AuctionConnection {
 
         try {
             conn.getConnection();
-            pstmt = myConn.prepareStatement(GET_FROM_AUCTIONS);
+            pstmt = conn.getMyConn().prepareStatement(GET_FROM_AUCTIONS);
             myRs = pstmt.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -245,7 +246,12 @@ public class AuctionConnection {
             System.out.println(ex.getMessage());
         }
 
-        conn.closeConnection();
+        try {
+            conn.closeConnection();
+        } catch(Exception ex) {
+            
+        }
+        
         return auctions;
     }
 
