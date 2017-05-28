@@ -158,11 +158,12 @@ public class ProductConnection {
                 product = new Product(id, gtin, name, description);
 
                 products.add(product);
+                conn.closeConnection();
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        conn.closeConnection();
+        
         return products;
     }
 }
