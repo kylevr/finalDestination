@@ -12,6 +12,7 @@ import Interfaces.ICreateQueuePurchase;
 import Interfaces.IPlaceBid;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateProduct, ICreateQueuePurchase, IPlaceBid, Serializable {
+public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAuthorized, IAuction, ICreateProduct, ICreateQueuePurchase, IPlaceBid {
 
     ArrayList<Product> products;
     ArrayList<User> users;
