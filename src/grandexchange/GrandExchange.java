@@ -34,7 +34,7 @@ import java.util.ArrayList;
  *
  * @author piete
  */
-public class GrandExchange extends Application implements Serializable  {
+public class GrandExchange extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {

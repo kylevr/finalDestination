@@ -7,6 +7,7 @@ package Classes.Auctions;
 
 import Classes.Product;
 import Classes.User;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -14,10 +15,10 @@ import java.util.Date;
  *
  * @author piete
  */
-public class Standard extends Auction {
+public class Standard extends Auction implements Serializable{
 
-    private Timestamp creationDate;
-    private Timestamp timeEnd;
+    private  Timestamp creationDate;
+    private  Timestamp timeEnd;
 
     public Standard(int id, User seller, Product product, double price, int quantity, Timestamp beginTime, Timestamp timeEnd,StatusEnum status, String description,String imageURLs, double instabuy) {
         super(id, seller, product, price, quantity,status,description,imageURLs,instabuy);

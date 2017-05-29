@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ProductConnection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Database</a> &gt; <span class="el_source">ProductConnection.java</span></div><h1>ProductConnection.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Database;
+
+import Classes.Auctions.Auction;
+import Classes.Product;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import Database.Connection;
+
+/**
+ *
+ * @author kyle_
+ */
+public class ProductConnection {
+
+<span class="nc" id="L25">    private java.sql.Connection myConn = null;</span>
+<span class="nc" id="L26">    private PreparedStatement pstmt = null;</span>
+<span class="nc" id="L27">    private ResultSet myRs = null;</span>
+    private ArrayList&lt;Product&gt; products;
+
+    // Connections
+<span class="nc" id="L31">    private Connection conn = new Connection();</span>
+   
+
+    // SQL codes
+    static final String GET_FROM_PRODUCT = &quot;SELECT * FROM product WHERE id = ?&quot;;
+    static final String GET_FROM_PRODUCTS = &quot;SELECT * FROM product&quot;;
+    static final String SET_PRODUCT_NEW = &quot;INSERT INTO product(name, description, gtin) VALUES (?,?,?)&quot;;
+
+    // Constructor
+<span class="nc" id="L40">    public ProductConnection() {</span>
+<span class="nc" id="L41">    }</span>
+
+    /**
+     * Get a product with a given id.
+     *
+     * @param productID The id of the product.
+     * @return Product with the given id.
+     */
+    public Product getProduct(int productID) {
+
+<span class="nc" id="L51">        Product product = null;</span>
+        int id;
+        String name;
+        String description;
+        String gtin;
+<span class="nc" id="L56">        PreparedStatement preparedStatement = null;</span>
+<span class="nc" id="L57">        ResultSet resultset = null;</span>
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (conn.getMyConn() != null) {</span>
+
+            try {
+<span class="nc" id="L62">                preparedStatement = conn.getMyConn().prepareStatement(GET_FROM_PRODUCT);</span>
+<span class="nc" id="L63">                preparedStatement.setInt(1, productID);</span>
+<span class="nc" id="L64">                resultset = preparedStatement.executeQuery();</span>
+<span class="nc" id="L65">                resultset.next();</span>
+<span class="nc" id="L66">            } catch (SQLException ex) {</span>
+<span class="nc" id="L67">                System.out.println(ex.getMessage());</span>
+<span class="nc" id="L68">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L69">            }</span>
+
+            try {
+<span class="nc" id="L72">                id = resultset.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L73">                name = resultset.getString(&quot;name&quot;);</span>
+<span class="nc" id="L74">                description = resultset.getString(&quot;description&quot;);</span>
+<span class="nc" id="L75">                gtin = resultset.getString(&quot;gtin&quot;);</span>
+
+<span class="nc" id="L77">                product = new Product(id, gtin, name, description);</span>
+
+<span class="nc" id="L79">                return product;</span>
+<span class="nc" id="L80">            } catch (SQLException ex) {</span>
+<span class="nc" id="L81">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L82">            }</span>
+
+        } else {
+<span class="nc" id="L85">            conn.getConnection();</span>
+<span class="nc" id="L86">            getProduct(productID);</span>
+        }
+<span class="nc" id="L88">        return product;</span>
+    }
+
+    /**
+     * Used to insert a new product in the database.
+     *
+     * @param name The name of the product.
+     * @param description Text used to describe the product.
+     * @param gtin Number used to insert product.
+     * @return 1 if successfully inserted, 0 if it failed.
+     */
+    public int insertProduct(String name, String description, int gtin) {
+<span class="nc" id="L100">        conn.getConnection();</span>
+        try {
+<span class="nc" id="L102">            pstmt = conn.getMyConn().prepareStatement(SET_PRODUCT_NEW, Statement.RETURN_GENERATED_KEYS);</span>
+<span class="nc" id="L103">            pstmt.setString(1, name);</span>
+<span class="nc" id="L104">            pstmt.setString(2, description);</span>
+<span class="nc" id="L105">            pstmt.setInt(3, gtin);</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L108">                int productid = 0;</span>
+<span class="nc" id="L109">                System.out.println(&quot;succesfully registered new product &quot;);</span>
+<span class="nc" id="L110">                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                    if (generatedKeys.next()) {</span>
+<span class="nc" id="L112">                        productid = (int) generatedKeys.getLong(1);</span>
+                    } else {
+<span class="nc" id="L114">                        throw new SQLException(&quot;Creating user failed, no ID obtained.&quot;);</span>
+                    }
+<span class="nc bnc" id="L116" title="All 8 branches missed.">                }</span>
+<span class="nc" id="L117">                conn.closeConnection();</span>
+<span class="nc" id="L118">                return productid;</span>
+            } else {
+<span class="nc" id="L120">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L121">                conn.closeConnection();</span>
+<span class="nc" id="L122">                return 0;</span>
+            }
+<span class="nc" id="L124">        } catch (SQLException ex) {</span>
+<span class="nc" id="L125">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L126">            conn.closeConnection();</span>
+<span class="nc" id="L127">            return 0;</span>
+        }
+    }
+
+    /**
+     * Get an arrayList with all products in the database.
+     * @return ArrayList with products
+     */
+    public ArrayList&lt;Product&gt; getProducts() {
+<span class="nc" id="L136">        this.products = new ArrayList&lt;&gt;();</span>
+        Product product;
+        int id;
+        String name;
+        String description;
+        String gtin;
+        try {
+<span class="nc" id="L143">            conn.getConnection();</span>
+<span class="nc" id="L144">            pstmt = conn.getMyConn().prepareStatement(GET_FROM_PRODUCTS);</span>
+
+<span class="nc" id="L146">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L147">        } catch (SQLException ex) {</span>
+<span class="nc" id="L148">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L149">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L150">        }</span>
+        try {
+<span class="nc bnc" id="L152" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L153">                id = myRs.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L154">                name = myRs.getString(&quot;name&quot;);</span>
+<span class="nc" id="L155">                description = myRs.getString(&quot;description&quot;);</span>
+<span class="nc" id="L156">                gtin = myRs.getString(&quot;gtin&quot;);</span>
+<span class="nc" id="L157">                product = new Product(id, gtin, name, description);</span>
+
+<span class="nc" id="L159">                products.add(product);</span>
+<span class="nc" id="L160">                conn.closeConnection();</span>
+            }
+<span class="nc" id="L162">        } catch (Exception ex) {</span>
+<span class="nc" id="L163">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L164">        }</span>
+        
+<span class="nc" id="L166">        return products;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

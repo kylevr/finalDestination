@@ -7,6 +7,7 @@ package Classes.Auctions;
 
 import Classes.Product;
 import Classes.User;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -16,13 +17,13 @@ import java.util.Date;
  *
  * @author piete
  */
-public class Countdown extends Auction {
+public class Countdown extends Auction implements Serializable {
 
     private double priceloweringAmount;
     private double priceloweringDelay;
     private double minPrice;
     private double startingPrice;
-    private Timestamp creationDate;
+    private  Timestamp creationDate;
 
     public Countdown(User seller, Product product, int quantity, double price, double instabuyprice, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, Timestamp creatDate) {
         super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);

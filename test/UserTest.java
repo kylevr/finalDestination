@@ -33,7 +33,7 @@ public class UserTest {
     @Before
     public void setUp() {
         //gebruiker wachtwoord
-        TestUser = new User("Robin", "test");
+        TestUser = new User("Robin", "test","");
 
     }
 

@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>UserConnection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Database</a> &gt; <span class="el_source">UserConnection.java</span></div><h1>UserConnection.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Database;
+
+import Classes.Auctions.Auction;
+import Classes.Feedback;
+import Classes.Product;
+import Classes.User;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author kyle_
+ */
+<span class="nc" id="L27">public class UserConnection {</span>
+<span class="nc" id="L28">    private java.sql.Connection myConn = null;</span>
+<span class="nc" id="L29">    private PreparedStatement pstmt = null;</span>
+<span class="nc" id="L30">    private ResultSet myRs = null;</span>
+
+    // Connections
+    //private UserConnection userConn = new UserConnection();
+<span class="nc" id="L34">    private Connection conn = new Connection();</span>
+    //private ProductConnection productConn = new ProductConnection();
+
+    // SQL codes
+    static final String GET_FROM_USER_BYLOGININFO = &quot;SELECT * FROM user WHERE BINARY username = ? and BINARY password = ?&quot;;
+    static final String GET_FROM_USER_BYUSERNAME = &quot;SELECT * FROM user WHERE BINARY username = ?&quot;;
+    static final String GET_FROM_USER_ID = &quot;SELECT * FROM user WHERE id = ?&quot;;
+    static final String SET_USER_NEW = &quot;INSERT INTO user(username, password, alias, email, verified, imageURL, saldo) VALUES (?, ?, ?, ?, ?, ?, ?)&quot;;
+    static final String GET_FROM_FEEDBACK_TOSELLER = &quot;SELECT * FROM feedback WHERE sellerid = ?&quot;;
+    static final String GET_FROM_FEEDBACK_FROMBUYER = &quot;SELECT * FROM feedback WHERE buyerid = ?&quot;;
+    static final String REMOVE_USER_BYUSERNAME = &quot;DELETE FROM user WHERE BINARY username = ?&quot;;
+    static final String GET_FROM_USER_ALLUSERS = &quot;SELECT * FROM user&quot;;
+    static final String SET_FEEDBACK_TOSELLER = &quot;INSERT INTO feedback(timeCreated, rating, description, sellerid, buyerid) VALUES(CURRENT_TIMESTAMP, ?, ?, ?, ?)&quot;;
+    static final String SET_ISAUTHORIZED = &quot;UPDATE user SET isAuthorized = ? WHERE username = ?&quot;;
+    static final String GET_HASBOUGHT_FROM_SELLER = &quot;SELECT * from transaction t, auction a where a.id = t.auctionID and a.buyerID = ? and t.sellerID = ?;&quot;;
+
+    //alter table chatuser  add column isAuthorized bool;
+    
+    
+    /**
+     * Registers a new user.
+     *
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @param alias The alias of the user.
+     * @param email The email of the user.
+     * @param imageUrl The url of the image of the user.
+     * @param saldo The saldo of the user.
+     * @return True if user is successfully registered, failed if not.
+     */
+    public Boolean setUser_REGISTER(String username, String password, String alias, String email, String imageUrl, double saldo) {
+<span class="nc" id="L65">        conn.getConnection();</span>
+<span class="nc" id="L66">        myConn = conn.getMyConn();</span>
+        
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (myConn != null) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (getUser(username, password) == null) {</span>
+                try {
+<span class="nc" id="L71">                    conn.getConnection();</span>
+<span class="nc" id="L72">                    myConn = conn.getMyConn();</span>
+<span class="nc" id="L73">                    boolean verified = false;</span>
+<span class="nc" id="L74">                    pstmt = myConn.prepareStatement(SET_USER_NEW);</span>
+<span class="nc" id="L75">                    pstmt.setString(1, username);</span>
+<span class="nc" id="L76">                    pstmt.setString(2, password);</span>
+<span class="nc" id="L77">                    pstmt.setString(3, alias);</span>
+<span class="nc" id="L78">                    pstmt.setString(4, email);</span>
+<span class="nc" id="L79">                    pstmt.setBoolean(5, verified);</span>
+<span class="nc" id="L80">                    pstmt.setString(6, imageUrl);</span>
+<span class="nc" id="L81">                    pstmt.setDouble(7, saldo);</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                    if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L84">                        System.out.println(&quot;succesfully registered new user with username: &quot; + username);</span>
+<span class="nc" id="L85">                        return true;</span>
+                    } else {
+<span class="nc" id="L87">                        System.out.println(&quot;Couldn't insert new user. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L88">                        return false;</span>
+                    }
+<span class="nc" id="L90">                } catch (SQLException ex) {</span>
+<span class="nc" id="L91">                    System.out.println(&quot;failed to register new user. SQLException&quot;);</span>
+<span class="nc" id="L92">                    ex.printStackTrace();</span>
+<span class="nc" id="L93">                    conn.closeConnection();</span>
+<span class="nc" id="L94">                    return false;</span>
+                }
+            } else {
+<span class="nc" id="L97">                System.out.println(&quot;Registration of duplicate user isn't allowed.&quot;);</span>
+<span class="nc" id="L98">                return false;</span>
+            }
+        } else {
+<span class="nc" id="L101">            System.out.println(&quot;failed to register new user. No connection to database.&quot;);</span>
+<span class="nc" id="L102">            return false;</span>
+        }
+    }
+
+    /**
+     * Gets a user with a specific id.
+     *
+     * @param id The id of the user.
+     * @return User with the given id.
+     */
+    public User getUser(int id) {
+<span class="nc" id="L113">        User user = null;</span>
+        int userID;
+        //removed  int bsn;
+        String username;
+        String password;
+        String alias;
+        String email;
+        boolean verified;
+        float saldo;
+
+        PreparedStatement preparedStatement;
+<span class="nc" id="L124">        ResultSet resultset = null;</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (myConn != null) {</span>
+            try {
+<span class="nc" id="L127">                preparedStatement = myConn.prepareStatement(GET_FROM_USER_ID);</span>
+<span class="nc" id="L128">                preparedStatement.setInt(1, id);</span>
+<span class="nc" id="L129">                resultset = preparedStatement.executeQuery();</span>
+<span class="nc" id="L130">                preparedStatement.close();</span>
+<span class="nc" id="L131">                resultset.next();</span>
+<span class="nc" id="L132">            } catch (SQLException ex) {</span>
+<span class="nc" id="L133">                System.out.println(ex.getMessage());</span>
+<span class="nc" id="L134">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L135">            }</span>
+            try {
+<span class="nc" id="L137">                userID = resultset.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L138">                username = resultset.getString(&quot;username&quot;);</span>
+<span class="nc" id="L139">                password = resultset.getString(&quot;password&quot;);</span>
+<span class="nc" id="L140">                alias = resultset.getString(&quot;alias&quot;);</span>
+<span class="nc" id="L141">                email = resultset.getString(&quot;email&quot;);</span>
+<span class="nc" id="L142">                verified = resultset.getBoolean(&quot;verified&quot;);</span>
+<span class="nc" id="L143">                saldo = resultset.getFloat(&quot;saldo&quot;);</span>
+<span class="nc" id="L144">                String imgURL = resultset.getString(&quot;imageUrl&quot;);</span>
+
+<span class="nc" id="L146">                user = new User(userID, username, password, alias, email, verified, saldo, imgURL);</span>
+
+<span class="nc" id="L148">                return user;</span>
+<span class="nc" id="L149">            } catch (SQLException ex) {</span>
+<span class="nc" id="L150">                System.out.println(ex.getMessage());</span>
+<span class="nc" id="L151">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L152">            }</span>
+        } else {
+<span class="nc" id="L154">            System.out.println(&quot;There is no existing connection&quot;);</span>
+        }
+<span class="nc" id="L156">        return user;</span>
+    }
+
+    /**
+     * Get a user from the database.
+     *
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @return User with the given username and password
+     */
+    public User getUser(String username, String password) {
+<span class="nc" id="L167">        User user = null;</span>
+        try {
+<span class="nc" id="L169">            conn.getConnection();</span>
+<span class="nc" id="L170">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L171">            pstmt = myConn.prepareStatement(GET_FROM_USER_BYLOGININFO);</span>
+<span class="nc" id="L172">            pstmt.setString(1, username);</span>
+<span class="nc" id="L173">            pstmt.setString(2, password);</span>
+
+<span class="nc" id="L175">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L176">            myRs.next();</span>
+<span class="nc" id="L177">        } catch (SQLException ex) {</span>
+<span class="nc" id="L178">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L179">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L180">        }</span>
+        try {
+<span class="nc" id="L182">            int userID = myRs.getInt(&quot;id&quot;);</span>
+            //removed  int bsn = myRs.getInt(&quot;bsn&quot;);
+<span class="nc" id="L184">            String usernm = myRs.getString(&quot;username&quot;);</span>
+<span class="nc" id="L185">            String pass = myRs.getString(&quot;password&quot;);</span>
+<span class="nc" id="L186">            String alias = myRs.getString(&quot;alias&quot;);</span>
+<span class="nc" id="L187">            String email = myRs.getString(&quot;email&quot;);</span>
+<span class="nc" id="L188">            boolean verified = myRs.getBoolean(&quot;verified&quot;);</span>
+<span class="nc" id="L189">            double saldo = myRs.getDouble(&quot;saldo&quot;);</span>
+<span class="nc" id="L190">            String imgURL = myRs.getString(&quot;imageUrl&quot;);</span>
+
+<span class="nc" id="L192">            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);</span>
+<span class="nc" id="L193">            conn.closeConnection();</span>
+<span class="nc" id="L194">        } catch (SQLException ex) {</span>
+<span class="nc" id="L195">            System.out.println(&quot;User not found&quot;);</span>
+<span class="nc" id="L196">            conn.closeConnection();</span>
+<span class="nc" id="L197">        }</span>
+<span class="nc" id="L198">        return user;</span>
+    }
+
+    /**
+     * Get a user with the given username
+     *
+     * @param username The username of the user.
+     * @return a user with the given username.
+     */
+    public User getUser(String username) {
+<span class="nc" id="L208">        User user = null;</span>
+
+        try {
+<span class="nc" id="L211">            conn.getConnection();</span>
+<span class="nc" id="L212">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L213">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L214">            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);</span>
+<span class="nc" id="L215">            pstmt.setString(1, username);</span>
+
+<span class="nc" id="L217">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L218">            myRs.next();</span>
+<span class="nc" id="L219">        } catch (SQLException ex) {</span>
+<span class="nc" id="L220">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L221">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L222">        }</span>
+
+        try {
+<span class="nc" id="L225">            int userID = myRs.getInt(&quot;id&quot;);</span>
+            //removed  int bsn = myRs.getInt(&quot;bsn&quot;);
+<span class="nc" id="L227">            String usernm = myRs.getString(&quot;username&quot;);</span>
+<span class="nc" id="L228">            String pass = myRs.getString(&quot;password&quot;);</span>
+<span class="nc" id="L229">            String alias = myRs.getString(&quot;alias&quot;);</span>
+<span class="nc" id="L230">            String email = myRs.getString(&quot;email&quot;);</span>
+<span class="nc" id="L231">            boolean verified = myRs.getBoolean(&quot;verified&quot;);</span>
+<span class="nc" id="L232">            double saldo = myRs.getDouble(&quot;saldo&quot;);</span>
+<span class="nc" id="L233">            String imgURL = myRs.getString(&quot;imageUrl&quot;);            </span>
+
+<span class="nc" id="L235">            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);</span>
+<span class="nc" id="L236">            conn.closeConnection();</span>
+<span class="nc" id="L237">        } catch (SQLException ex) {</span>
+<span class="nc" id="L238">            System.out.println(&quot;User not found&quot;);</span>
+<span class="nc" id="L239">            conn.closeConnection();</span>
+<span class="nc" id="L240">        }</span>
+
+<span class="nc" id="L242">        return user;</span>
+    }
+    
+    /**
+     * Gets all the users in the database.
+     *
+     * @return all users
+     */
+    public ArrayList&lt;User&gt; getAllUsers() {
+<span class="nc" id="L251">        ArrayList&lt;User&gt; users = new ArrayList&lt;User&gt;();</span>
+        String username;
+        String password;
+        String alias;
+        String email;
+        boolean verified;
+        float saldo;
+<span class="nc" id="L258">        PreparedStatement preparedStatement = null;</span>
+<span class="nc" id="L259">        ResultSet resultset = null;</span>
+
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (myConn != null) {</span>
+
+            try {
+<span class="nc" id="L264">                conn.getConnection();</span>
+<span class="nc" id="L265">                myConn = conn.getMyConn();</span>
+<span class="nc" id="L266">                myConn = conn.getMyConn();</span>
+<span class="nc" id="L267">                preparedStatement = myConn.prepareStatement(GET_FROM_USER_ALLUSERS);</span>
+<span class="nc" id="L268">                resultset = preparedStatement.executeQuery();</span>
+
+<span class="nc bnc" id="L270" title="All 2 branches missed.">                while (resultset.next()) {</span>
+<span class="nc" id="L271">                    username = resultset.getString(&quot;username&quot;);</span>
+<span class="nc" id="L272">                    password = resultset.getString(&quot;password&quot;);</span>
+<span class="nc" id="L273">                    alias = resultset.getString(&quot;alias&quot;);</span>
+<span class="nc" id="L274">                    email = resultset.getString(&quot;email&quot;);</span>
+<span class="nc" id="L275">                    verified = resultset.getBoolean(&quot;verified&quot;);</span>
+<span class="nc" id="L276">                    saldo = resultset.getFloat(&quot;saldo&quot;);</span>
+<span class="nc" id="L277">                    String imgURL = resultset.getString(&quot;imageUrl&quot;);</span>
+
+<span class="nc" id="L279">                    User foundUser = new User(username, password, alias, email, verified, saldo, imgURL);</span>
+<span class="nc" id="L280">                    users.add(foundUser);</span>
+<span class="nc" id="L281">                }</span>
+<span class="nc" id="L282">            } catch (SQLException ex) {</span>
+<span class="nc" id="L283">                System.out.println(ex.getMessage());</span>
+<span class="nc" id="L284">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L285">            }</span>
+        } else {
+<span class="nc" id="L287">            System.out.println(&quot;There is no existing connection&quot;);</span>
+        }
+<span class="nc" id="L289">        return users;</span>
+    }
+
+    /**
+     * Checks if the username is already known in the database.
+     *
+     * @param checkValue Value to check if the username is double
+     * @return True if username is a duplicate, false if not.
+     */
+    public boolean hasDuplicateUsername(String checkValue) {
+<span class="nc" id="L299">        Boolean hasDuplicate = false;</span>
+<span class="nc" id="L300">        int count = 0;</span>
+
+        try {
+<span class="nc" id="L303">            conn.getConnection();</span>
+<span class="nc" id="L304">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L305">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L306">            pstmt = myConn.prepareStatement(&quot;SELECT * FROM user WHERE username = ?&quot;);</span>
+<span class="nc" id="L307">            pstmt.setString(1, checkValue);</span>
+<span class="nc" id="L308">            myRs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L310" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L311">                ++count;</span>
+            }
+<span class="nc bnc" id="L313" title="All 2 branches missed.">            if (count &gt; 0) {</span>
+<span class="nc" id="L314">                hasDuplicate = true;</span>
+            }
+<span class="nc" id="L316">        } catch (SQLException ex) {</span>
+<span class="nc" id="L317">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L318">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L319">        }</span>
+
+        try {
+<span class="nc" id="L322">            String username = myRs.getString(&quot;username&quot;);</span>
+<span class="nc" id="L323">            conn.closeConnection();</span>
+<span class="nc" id="L324">            hasDuplicate = true;</span>
+<span class="nc" id="L325">        } catch (SQLException ex) {</span>
+<span class="nc" id="L326">            conn.closeConnection();</span>
+<span class="nc" id="L327">        }</span>
+
+<span class="nc" id="L329">        return hasDuplicate;</span>
+    }
+
+    /**
+     * Checks if the email is already known in the database.
+     *
+     * @param checkValue Value to check if the email is double
+     * @return True if email is a duplicate, false if not.
+     */
+    public boolean hasDuplicateEmail(String checkValue) {
+<span class="nc" id="L339">        Boolean hasDuplicate = false;</span>
+<span class="nc" id="L340">        int count = 0;</span>
+
+        try {
+<span class="nc" id="L343">            conn.getConnection();</span>
+<span class="nc" id="L344">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L345">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L346">            pstmt = myConn.prepareStatement(&quot;SELECT * FROM user WHERE email = ?&quot;);</span>
+<span class="nc" id="L347">            pstmt.setString(1, checkValue);</span>
+<span class="nc" id="L348">            myRs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L350" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L351">                ++count;</span>
+            }
+<span class="nc bnc" id="L353" title="All 2 branches missed.">            if (count &gt; 0) {</span>
+<span class="nc" id="L354">                hasDuplicate = true;</span>
+            }
+<span class="nc" id="L356">        } catch (SQLException ex) {</span>
+<span class="nc" id="L357">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L358">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L359">        }</span>
+
+        try {
+<span class="nc" id="L362">            String email = myRs.getString(&quot;email&quot;);</span>
+<span class="nc" id="L363">            conn.closeConnection();</span>
+<span class="nc" id="L364">            hasDuplicate = true;</span>
+<span class="nc" id="L365">        } catch (SQLException ex) {</span>
+<span class="nc" id="L366">            conn.closeConnection();</span>
+<span class="nc" id="L367">        }</span>
+
+<span class="nc" id="L369">        return hasDuplicate;</span>
+    }
+
+    /**
+     * Checks if the alias is already known in the database.
+     *
+     * @param checkValue Value to check if the alias is double
+     * @return True if alias is a duplicate, false if not.
+     */
+    public boolean hasDuplicateAlias(String checkValue) {
+<span class="nc" id="L379">        Boolean hasDuplicate = false;</span>
+<span class="nc" id="L380">        int count = 0;</span>
+
+        try {
+<span class="nc" id="L383">            conn.getConnection();</span>
+<span class="nc" id="L384">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L385">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L386">            pstmt = myConn.prepareStatement(&quot;SELECT * FROM user WHERE alias = ?&quot;);</span>
+<span class="nc" id="L387">            pstmt.setString(1, checkValue);</span>
+<span class="nc" id="L388">            myRs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L390" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L391">                ++count;</span>
+            }
+<span class="nc bnc" id="L393" title="All 2 branches missed.">            if (count &gt; 0) {</span>
+<span class="nc" id="L394">                hasDuplicate = true;</span>
+            }
+<span class="nc" id="L396">        } catch (SQLException ex) {</span>
+<span class="nc" id="L397">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L398">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L399">        }</span>
+        try {
+<span class="nc" id="L401">            String alias = myRs.getString(&quot;alias&quot;);</span>
+<span class="nc" id="L402">            conn.closeConnection();</span>
+<span class="nc" id="L403">            hasDuplicate = true;</span>
+<span class="nc" id="L404">        } catch (SQLException ex) {</span>
+<span class="nc" id="L405">            conn.closeConnection();</span>
+<span class="nc" id="L406">        }</span>
+
+<span class="nc" id="L408">        return hasDuplicate;</span>
+    }
+
+    /**
+     * removes a user with given username note: doesn't delete any objects yet
+     * that the user created (e.g. auctions, bids, feedbacks)
+     *
+     * @param username
+     * @return
+     */
+    public Boolean removeUser_BYUSERNAME(String username) {
+<span class="nc" id="L419">        conn.getConnection();</span>
+<span class="nc" id="L420">        myConn = conn.getMyConn();</span>
+
+<span class="nc bnc" id="L422" title="All 2 branches missed.">        if (myConn != null) {</span>
+            try {
+<span class="nc" id="L424">                pstmt = myConn.prepareStatement(REMOVE_USER_BYUSERNAME);</span>
+<span class="nc" id="L425">                pstmt.setString(1, username);</span>
+
+<span class="nc bnc" id="L427" title="All 2 branches missed.">                if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L428">                    System.out.println(&quot;succesfully deleted user with username: &quot; + username);</span>
+<span class="nc" id="L429">                    return true;</span>
+                } else {
+<span class="nc" id="L431">                    System.out.println(&quot;Couldn't delete user because User with username: &quot; + username + &quot; doesn't exist in the database&quot;);</span>
+<span class="nc" id="L432">                    return true;</span>
+                }
+<span class="nc" id="L434">            } catch (SQLException ex) {</span>
+<span class="nc" id="L435">                System.out.println(&quot;failed to remove with username: &quot; + username + &quot;. SQLException&quot;);</span>
+<span class="nc" id="L436">                ex.printStackTrace();</span>
+<span class="nc" id="L437">                conn.closeConnection();</span>
+<span class="nc" id="L438">                return false;</span>
+            }
+        } else {
+<span class="nc" id="L441">            System.out.println(&quot;failed to remove user with username: &quot; + username + &quot;. No connection to database.&quot;);</span>
+<span class="nc" id="L442">            return false;</span>
+        }
+    }
+
+    /**
+     * gets a list with all the feedback the seller from a auction has gotten.
+     *
+     * @param sellerid The id of the seller
+     * @return a List with the feedback from an user.
+     */
+    public List&lt;Feedback&gt; getFeedbackToSeller(String sellerid) {
+<span class="nc" id="L453">        List&lt;Feedback&gt; feedbackToSeller = new ArrayList&lt;Feedback&gt;();</span>
+
+        try {
+<span class="nc" id="L456">            conn.getConnection();</span>
+<span class="nc" id="L457">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L458">            pstmt = myConn.prepareStatement(GET_FROM_FEEDBACK_TOSELLER);</span>
+<span class="nc" id="L459">            pstmt.setString(1, sellerid);</span>
+<span class="nc" id="L460">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L461">        } catch (SQLException ex) {</span>
+<span class="nc" id="L462">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L463">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L464">        }</span>
+
+        try {
+<span class="nc bnc" id="L467" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L468">                String sellerUsername = myRs.getString(&quot;sellerid&quot;);</span>
+<span class="nc" id="L469">                String buyerUsername = myRs.getString(&quot;buyerid&quot;); //in tabel user is id nu varchar(20) ipv int. met username wordt nu het id ingevuld</span>
+<span class="nc" id="L470">                int rating = myRs.getInt(&quot;rating&quot;);</span>
+<span class="nc" id="L471">                String description = myRs.getString(&quot;description&quot;);</span>
+
+                //gets date from 
+<span class="nc" id="L474">                Date timeCreated = null;</span>
+<span class="nc" id="L475">                timeCreated = myRs.getDate(&quot;timeCreated&quot;);</span>
+<span class="nc" id="L476">                Timestamp timestamp = myRs.getTimestamp(&quot;timeCreated&quot;);</span>
+<span class="nc bnc" id="L477" title="All 2 branches missed.">                if (timestamp != null) {</span>
+<span class="nc" id="L478">                    timeCreated = new Date(timestamp.getTime());</span>
+                }
+
+<span class="nc" id="L481">                Feedback f = new Feedback(timeCreated, buyerUsername, sellerUsername, rating, description);</span>
+<span class="nc" id="L482">                feedbackToSeller.add(f);</span>
+<span class="nc" id="L483">            }</span>
+<span class="nc" id="L484">            conn.closeConnection();</span>
+<span class="nc" id="L485">        } catch (SQLException ex) {</span>
+<span class="nc" id="L486">            System.out.println(&quot;SQLException at getFeedbackToSeller&quot;);</span>
+<span class="nc" id="L487">            ex.printStackTrace();</span>
+<span class="nc" id="L488">            conn.closeConnection();</span>
+<span class="nc" id="L489">        }</span>
+
+<span class="nc" id="L491">        return feedbackToSeller;</span>
+    }
+
+    /**
+     * gets a list with all the feedback the buyer from a auction has gotten.
+     *
+     * @param buyerid The id of the buyer
+     * @return a List with the feedback from an user.
+     */
+    public List&lt;Feedback&gt; getFeedbackFromBuyer(String buyerid) {
+<span class="nc" id="L501">        List&lt;Feedback&gt; feedbackFromBuyer = new ArrayList&lt;Feedback&gt;();</span>
+
+        try {
+<span class="nc" id="L504">            conn.getConnection();</span>
+<span class="nc" id="L505">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L506">            pstmt = myConn.prepareStatement(GET_FROM_FEEDBACK_FROMBUYER);</span>
+<span class="nc" id="L507">            pstmt.setString(1, buyerid);</span>
+<span class="nc" id="L508">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L509">        } catch (SQLException ex) {</span>
+<span class="nc" id="L510">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L511">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L512">        }</span>
+
+        try {
+<span class="nc bnc" id="L515" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L516">                String sellerUsername = myRs.getString(&quot;sellerid&quot;);</span>
+<span class="nc" id="L517">                String buyerUsername = myRs.getString(&quot;buyerid&quot;); //in tabel user is id nu varchar(20) ipv int. met username wordt nu het id ingevuld</span>
+<span class="nc" id="L518">                int rating = myRs.getInt(&quot;rating&quot;);</span>
+<span class="nc" id="L519">                String description = myRs.getString(&quot;description&quot;);</span>
+
+                //gets date from 
+<span class="nc" id="L522">                Date timeCreated = null;</span>
+<span class="nc" id="L523">                timeCreated = myRs.getDate(&quot;timeCreated&quot;);</span>
+<span class="nc" id="L524">                Timestamp timestamp = myRs.getTimestamp(&quot;timeCreated&quot;);</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">                if (timestamp != null) {</span>
+<span class="nc" id="L526">                    timeCreated = new Date(timestamp.getTime());</span>
+                }
+
+<span class="nc" id="L529">                Feedback f = new Feedback(timeCreated, buyerUsername, sellerUsername, rating, description);</span>
+<span class="nc" id="L530">                feedbackFromBuyer.add(f);</span>
+<span class="nc" id="L531">            }</span>
+<span class="nc" id="L532">            conn.closeConnection();</span>
+<span class="nc" id="L533">        } catch (SQLException ex) {</span>
+<span class="nc" id="L534">            System.out.println(&quot;SQLException at getFeedbackToSeller&quot;);</span>
+<span class="nc" id="L535">            ex.printStackTrace();</span>
+<span class="nc" id="L536">            conn.closeConnection();</span>
+<span class="nc" id="L537">        }</span>
+<span class="nc" id="L538">        return feedbackFromBuyer;</span>
+    }
+
+    
+    /**
+     * checks if user with buyerid has allready bought something from user with sellerid
+     * @param buyer_ID
+     * @param seller_ID
+     * @return true if that's correct, otherwise false
+     */
+    public Boolean hasBought_FromSeller(String buyer_ID, String seller_ID) {
+<span class="nc" id="L549">        Boolean hasBought = false;</span>
+<span class="nc" id="L550">        int count = 0;</span>
+        
+        try {
+<span class="nc" id="L553">            conn.getConnection();</span>
+<span class="nc" id="L554">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L555">            pstmt = myConn.prepareStatement(GET_HASBOUGHT_FROM_SELLER);</span>
+<span class="nc" id="L556">            pstmt.setString(1, buyer_ID);</span>
+<span class="nc" id="L557">            pstmt.setString(2, seller_ID);</span>
+<span class="nc" id="L558">            myRs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L560" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L561">                ++count;</span>
+            }
+<span class="nc bnc" id="L563" title="All 2 branches missed.">            if (count &gt; 0) {</span>
+<span class="nc" id="L564">                hasBought = true;</span>
+            }
+<span class="nc" id="L566">        } catch (SQLException ex) {</span>
+<span class="nc" id="L567">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L568">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L569">        }</span>
+<span class="nc" id="L570">        return hasBought;</span>
+    }
+
+    
+    /**
+     * Submnits feedback to a buyer.
+     *
+     * @param rating Rating of the feedback.
+     * @param description Description of the feedback.
+     * @param sellerid The id of the seller.
+     * @param buyerid The id of the buyer.
+     * @return True if feedback successfully is submited, false if its not.
+     */
+    public Boolean submitFeedback(int rating, String description, String sellerid, String buyerid) {
+<span class="nc" id="L584">        conn.getConnection();</span>
+<span class="nc" id="L585">        myConn = conn.getMyConn();</span>
+
+<span class="nc bnc" id="L587" title="All 4 branches missed.">        if (myConn != null &amp;&amp; this.hasBought_FromSeller(buyerid, sellerid)) {</span>
+            try {               
+<span class="nc" id="L589">                pstmt = myConn.prepareStatement(SET_FEEDBACK_TOSELLER);</span>
+<span class="nc" id="L590">                pstmt.setInt(1, rating);</span>
+<span class="nc" id="L591">                pstmt.setString(2, description);</span>
+<span class="nc" id="L592">                pstmt.setString(3, sellerid);</span>
+<span class="nc" id="L593">                pstmt.setString(4, buyerid);</span>
+
+<span class="nc bnc" id="L595" title="All 2 branches missed.">                if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L596">                    System.out.println(&quot;succesfully submitted new feedback from &quot; + buyerid + &quot; to &quot; + sellerid);</span>
+<span class="nc" id="L597">                    return true;</span>
+                } else {
+<span class="nc" id="L599">                    System.out.println(&quot;Couldn't insert new feedback from &quot; + buyerid + &quot; to &quot; + sellerid + &quot;. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L600">                    return false;</span>
+                }
+<span class="nc" id="L602">            } catch (SQLException ex) {</span>
+<span class="nc" id="L603">                System.out.println(&quot;failed to submit new feedback from &quot; + buyerid + &quot; to &quot; + sellerid + &quot;. SQLException&quot;);</span>
+<span class="nc" id="L604">                ex.printStackTrace();</span>
+<span class="nc" id="L605">                conn.closeConnection();</span>
+<span class="nc" id="L606">                return false;</span>
+            }
+        } else {
+<span class="nc" id="L609">            System.out.println(&quot;Registration of duplicate user isn't allowed.&quot;);</span>
+<span class="nc" id="L610">            return false;</span>
+        }
+    }
+    
+    /**
+     * sets if user with specified username will be authorized or not
+     * @param username username of user you want to (de)authorize
+     * @param isAuthorized 
+     * @return
+     * @throws RemoteException
+     */
+    public Boolean setAuthorized(String username, boolean isAuthorized) {
+<span class="nc" id="L622">        conn.getConnection();</span>
+<span class="nc" id="L623">        myConn = conn.getMyConn();</span>
+<span class="nc bnc" id="L624" title="All 2 branches missed.">        if (myConn != null) {</span>
+<span class="nc bnc" id="L625" title="All 2 branches missed.">            if (getUser(username) != null) {</span>
+                try {
+<span class="nc" id="L627">                    conn.getConnection();</span>
+<span class="nc" id="L628">                    myConn = conn.getMyConn();</span>
+<span class="nc" id="L629">                    pstmt = myConn.prepareStatement(SET_ISAUTHORIZED);</span>
+<span class="nc" id="L630">                    pstmt.setString(1, username);</span>
+<span class="nc" id="L631">                    pstmt.setBoolean(2, isAuthorized);</span>
+
+<span class="nc bnc" id="L633" title="All 2 branches missed.">                    if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L634">                        System.out.println(&quot;User with username: &quot; + username + &quot; is now authorized&quot;);</span>
+<span class="nc" id="L635">                        return true;</span>
+                    } else {
+<span class="nc" id="L637">                        System.out.println(&quot;Can't authorize User with username: &quot; + username + &quot;. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L638">                        return false;</span>
+                    }
+<span class="nc" id="L640">                } catch (SQLException ex) {</span>
+<span class="nc" id="L641">                    System.out.println(&quot;Can't authorize User with username: &quot; + username + &quot;. SQLException.&quot;);</span>
+<span class="nc" id="L642">                    ex.printStackTrace();</span>
+<span class="nc" id="L643">                    conn.closeConnection();</span>
+<span class="nc" id="L644">                    return false;</span>
+                }
+            } else {
+<span class="nc" id="L647">                System.out.println(&quot;Can't find User with username: &quot; + username);</span>
+<span class="nc" id="L648">                return false;</span>
+            }
+        } else {
+<span class="nc" id="L651">            System.out.println(&quot;Can't authorize User with username: &quot; + username + &quot;. No connection to database.&quot;);</span>
+<span class="nc" id="L652">            return false;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

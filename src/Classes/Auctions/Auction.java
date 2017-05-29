@@ -3,12 +3,13 @@ package Classes.Auctions;
 import Classes.Bid;
 import Classes.Product;
 import Classes.User;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class Auction {
+public abstract class Auction implements Serializable{
 
     User seller;
     private int id;

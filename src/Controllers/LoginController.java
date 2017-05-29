@@ -55,11 +55,11 @@ public class LoginController implements Initializable {
     @FXML
     public void button_loginUser() throws IOException {
         
-        //user = authorization.login(username, password);
+        //user = authorization.login(textfield_username.getText(), textfield_password.getText());
         
         //tijdelijke oplossing user getten
         UserConnection userConn = new UserConnection();
-        user = userConn.getUser(textfield_username.getText(), textfield_password.getText());
+       user = userConn.getUser(textfield_username.getText(), textfield_password.getText());
         
         
         if (user != null) {

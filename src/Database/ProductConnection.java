@@ -55,7 +55,7 @@ public class ProductConnection {
         String gtin;
         PreparedStatement preparedStatement = null;
         ResultSet resultset = null;
-
+        conn.getConnection();
         if (conn.getMyConn() != null) {
 
             try {
@@ -83,8 +83,9 @@ public class ProductConnection {
 
         } else {
             conn.getConnection();
-            getProduct(productID);
+            product = getProduct(productID);
         }
+        conn.closeConnection();
         return product;
     }
 
@@ -157,12 +158,12 @@ public class ProductConnection {
                 product = new Product(id, gtin, name, description);
 
                 products.add(product);
-                conn.closeConnection();
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         
+                conn.closeConnection();
         return products;
     }
 }

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MainController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Controllers</a> &gt; <span class="el_source">MainController.java</span></div><h1>MainController.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controllers;
+
+import Classes.Auctions.Auction;
+import Classes.CategoryEnum;
+import Classes.Grand_Exchange;
+import Classes.User;
+import Interfaces.IAuction;
+import grandexchange.RegistryManager;
+import java.io.IOException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+
+/**
+ * FXML Controller class
+ *
+ * @author piete
+ */
+<span class="nc" id="L50">public class MainController implements Initializable {</span>
+
+    @FXML
+    private ScrollPane auctionsPane;
+    @FXML
+    private ImageView loggedInUserImage;
+    @FXML
+    private ComboBox&lt;CategoryEnum&gt; comboBoxCategory;
+    @FXML
+    private ListView lstCategory;
+    @FXML
+    private ScrollPane scrollPaneBiddedAuctions;
+    @FXML
+    private ScrollPane scrollPaneWonBought;
+    @FXML
+    private Button btnQueuePurchase;
+    @FXML
+    private TextField textField_usernameOfFeedbackOwner;
+    
+    private IAuction auctionInterface;
+    private RegistryManager RM;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+<span class="nc" id="L78">    }</span>
+
+    public void setUp(RegistryManager RM) throws RemoteException {
+<span class="nc" id="L81">        RM.getAuctionInterface();</span>
+<span class="nc" id="L82">        this.auctionInterface = RM.getAuction();</span>
+        
+<span class="nc" id="L84">        Pane allAuctions = new Pane();</span>
+<span class="nc" id="L85">        allAuctions.setPrefWidth(800);</span>
+<span class="nc" id="L86">        allAuctions.setPrefHeight(150 * auctionInterface.getAuctions().size());</span>
+<span class="nc" id="L87">        int i = 0;</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        for (Auction a : auctionInterface.getAuctions()) {</span>
+<span class="nc" id="L89">            Pane Auction = new Pane();</span>
+<span class="nc" id="L90">            Auction.setPrefWidth(800);</span>
+<span class="nc" id="L91">            Auction.setPrefHeight(150);</span>
+<span class="nc" id="L92">            Auction.relocate(0, 150 * i);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            if ((i % 2) == 0) {</span>
+<span class="nc" id="L94">                Auction.setStyle(&quot;-fx-background-color: lightgrey &quot;);</span>
+            }
+<span class="nc" id="L96">            Label productName = new Label();</span>
+<span class="nc" id="L97">            productName.setText(a.getProduct().getName());</span>
+<span class="nc" id="L98">            productName.setFont(new Font(&quot;Arial&quot;, 25));</span>
+<span class="nc" id="L99">            productName.relocate(150, 25);</span>
+
+<span class="nc" id="L101">            Label price = new Label();</span>
+<span class="nc" id="L102">            price.setText(&quot;€&quot; + a.getCurrentPrice());</span>
+<span class="nc" id="L103">            price.setFont(new Font(&quot;Arial&quot;, 20));</span>
+<span class="nc" id="L104">            price.relocate(550, 120);</span>
+
+<span class="nc" id="L106">            Label seller = new Label();</span>
+<span class="nc" id="L107">            seller.setText(a.getSeller().getUsername());</span>
+<span class="nc" id="L108">            seller.setFont(new Font(&quot;Arial&quot;, 15));</span>
+<span class="nc" id="L109">            seller.relocate(550, 20);</span>
+
+<span class="nc" id="L111">            TextArea description = new TextArea();</span>
+<span class="nc" id="L112">            description.setPrefSize(200, 60);</span>
+<span class="nc" id="L113">            description.relocate(150, 65);</span>
+<span class="nc" id="L114">            description.setText(a.getDescription());</span>
+<span class="nc" id="L115">            description.wrapTextProperty().setValue(Boolean.TRUE);</span>
+<span class="nc" id="L116">            description.setEditable(false);</span>
+
+<span class="nc" id="L118">            ImageView image = new ImageView(new Image(a.getImageURLs()[0]));</span>
+<span class="nc" id="L119">            image.setFitWidth(100);</span>
+<span class="nc" id="L120">            image.setFitHeight(100);</span>
+<span class="nc" id="L121">            image.relocate(25, 25);</span>
+<span class="nc" id="L122">            image.addEventHandler(MouseEvent.MOUSE_CLICKED,</span>
+<span class="nc" id="L123">                    new EventHandler&lt;MouseEvent&gt;() {</span>
+                @Override
+                public void handle(MouseEvent e) {
+<span class="nc" id="L126">                    ImageView i = (ImageView) e.getSource();</span>
+                    try {
+<span class="nc" id="L128">                        showAuction(a);</span>
+<span class="nc" id="L129">                    } catch (IOException ex) {</span>
+<span class="nc" id="L130">                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L131">                    }</span>
+<span class="nc" id="L132">                }</span>
+            });
+
+<span class="nc" id="L135">            Auction.getChildren().addAll(productName, image, price, seller, description);</span>
+<span class="nc" id="L136">            allAuctions.getChildren().add(Auction);</span>
+
+<span class="nc" id="L138">            i++;</span>
+<span class="nc" id="L139">        }</span>
+<span class="nc" id="L140">        auctionsPane.setContent(allAuctions);</span>
+
+        try
+        {
+<span class="nc" id="L144">            loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));</span>
+        }
+<span class="nc" id="L146">        catch(NullPointerException ex)</span>
+        {
+<span class="nc" id="L148">            System.out.println(&quot;LoggedInUser doesn't have an imageURL yet&quot;);</span>
+<span class="nc" id="L149">        }</span>
+<span class="nc" id="L150">        comboBoxCategory.getItems().setAll(CategoryEnum.values());</span>
+<span class="nc" id="L151">    }</span>
+
+    public void showAuction(Auction a) throws IOException {
+<span class="nc" id="L154">        FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Auction.fxml&quot;));</span>
+        Scene newScene;
+<span class="nc" id="L156">        newScene = new Scene(loader.load());</span>
+<span class="nc" id="L157">        AuctionController controller = loader.&lt;AuctionController&gt;getController();</span>
+<span class="nc" id="L158">        controller.setUp(a, RM);</span>
+<span class="nc" id="L159">        Stage inputStage = new Stage();</span>
+<span class="nc" id="L160">        inputStage.setScene(newScene);</span>
+<span class="nc" id="L161">        inputStage.showAndWait();</span>
+<span class="nc" id="L162">    }</span>
+
+    public void CategorySelected(Event E) {
+<span class="nc" id="L165">        ComboBox C = (ComboBox) E.getSource();</span>
+<span class="nc" id="L166">        int i = C.getSelectionModel().getSelectedIndex();</span>
+
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (!lstCategory.getItems().contains(CategoryEnum.values()[i])) {</span>
+<span class="nc" id="L169">            lstCategory.getItems().add(CategoryEnum.values()[i]);</span>
+
+<span class="nc" id="L171">            Collections.sort(lstCategory.getItems());</span>
+        }
+<span class="nc" id="L173">    }</span>
+
+    public void CategoryDelete(Event E) {
+<span class="nc" id="L176">        ListView lst = (ListView) E.getSource();</span>
+<span class="nc" id="L177">        int selected = lstCategory.getSelectionModel().getSelectedIndex();</span>
+<span class="nc bnc" id="L178" title="All 4 branches missed.">        if (selected &gt;= 0 &amp;&amp; selected &lt; lstCategory.getItems().size()) {</span>
+<span class="nc" id="L179">            lstCategory.getItems().remove(selected);</span>
+        }
+<span class="nc" id="L181">    }</span>
+    
+    @FXML
+    public void button_Logout() throws IOException {
+<span class="nc" id="L185">        RM.getAuthorization().logout(RM.getUser().getUsername());</span>
+        
+<span class="nc" id="L187">        FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Login.fxml&quot;));</span>
+<span class="nc" id="L188">        Parent root = loader.load();</span>
+<span class="nc" id="L189">        Stage newStage = new Stage();</span>
+<span class="nc" id="L190">        newStage.setScene(new Scene(root));</span>
+<span class="nc" id="L191">        newStage.show();</span>
+<span class="nc" id="L192">        Stage stage = (Stage) auctionsPane.getScene().getWindow();</span>
+<span class="nc" id="L193">        stage.close();</span>
+<span class="nc" id="L194">    }</span>
+    
+    @FXML
+    public void queuePurchaseClicked() throws IOException{
+<span class="nc" id="L198">        FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/queuePurchase.fxml&quot;));</span>
+        Scene newScene;
+<span class="nc" id="L200">        newScene = new Scene(loader.load());</span>
+<span class="nc" id="L201">        QueuePurchaseController controller = loader.&lt;QueuePurchaseController&gt;getController();</span>
+<span class="nc" id="L202">        controller.setUp(RM);</span>
+<span class="nc" id="L203">        Stage inputStage = new Stage();</span>
+<span class="nc" id="L204">        inputStage.setScene(newScene);</span>
+<span class="nc" id="L205">        inputStage.showAndWait();</span>
+<span class="nc" id="L206">    }</span>
+    
+    @FXML
+    public void createAuction() throws IOException{
+        try{
+            
+<span class="nc" id="L212">        FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/CreateAuction.fxml&quot;));</span>
+        Scene newScene;
+<span class="nc" id="L214">        newScene = new Scene(loader.load());</span>
+<span class="nc" id="L215">        CreateAuctionController controller = loader.&lt;CreateAuctionController&gt;getController();</span>
+<span class="nc" id="L216">        controller.setUp(RM);</span>
+<span class="nc" id="L217">        Stage inputStage = new Stage();</span>
+<span class="nc" id="L218">        inputStage.setScene(newScene);</span>
+<span class="nc" id="L219">        inputStage.showAndWait();}</span>
+<span class="nc" id="L220">        catch(Exception e){e.printStackTrace();}</span>
+<span class="nc" id="L221">    }</span>
+    
+    public void button_goToFeedbackOf() throws IOException {
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (!textField_usernameOfFeedbackOwner.getText().isEmpty()) {</span>
+            try {
+<span class="nc" id="L226">                FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Profile_Feedback.fxml&quot;));</span>
+<span class="nc" id="L227">                Parent root = loader.load();</span>
+
+<span class="nc" id="L229">                Profile_FeedbackController controller = (Profile_FeedbackController) loader.getController();</span>
+
+<span class="nc" id="L231">                controller.setUp(RM , textField_usernameOfFeedbackOwner.getText());</span>
+
+<span class="nc" id="L233">                Stage inputStage = new Stage();</span>
+<span class="nc" id="L234">                Scene newScene = new Scene(root);</span>
+<span class="nc" id="L235">                inputStage.setScene(newScene);</span>
+<span class="nc" id="L236">                inputStage.setTitle(&quot;Grand Exchange&quot;);</span>
+<span class="nc" id="L237">                inputStage.show();</span>
+<span class="nc" id="L238">                Stage stage = (Stage) auctionsPane.getScene().getWindow();</span>
+<span class="nc" id="L239">                stage.close();</span>
+<span class="nc" id="L240">            } catch (Exception ex) {</span>
+<span class="nc" id="L241">                System.out.println(&quot;Failed to open feedback screen&quot;);</span>
+<span class="nc" id="L242">                ex.printStackTrace();</span>
+<span class="nc" id="L243">            }</span>
+        }
+        else
+        {
+<span class="nc" id="L247">            System.out.println(&quot;textField_usernameOfFeedbackOwner may not be empty when trying to open profile feedback&quot;);</span>
+        }
+<span class="nc" id="L249">    }</span>
+    
+    public void btnRefresh() throws RemoteException{
+<span class="nc" id="L252">        setUp(RM);</span>
+<span class="nc" id="L253">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>
