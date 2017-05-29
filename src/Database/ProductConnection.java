@@ -55,7 +55,7 @@ public class ProductConnection {
         String gtin;
         PreparedStatement preparedStatement = null;
         ResultSet resultset = null;
-
+        conn.getConnection();
         if (conn.getMyConn() != null) {
 
             try {

@@ -131,7 +131,7 @@ public class AuctionController implements Initializable {
     public void setUp(Auction auction, RegistryManager RM) {
         this.RM = RM;
         this.auction = auction;
-        loggedInUser = RM.getUser();
+//        loggedInUser = RM.getUser();
         productTitle.setText(auction.getProduct().getName());
         productDescription.setText(auction.getProduct().getDescription());
         auctionDescription.setText(auction.getDescription());

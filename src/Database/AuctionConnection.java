@@ -237,12 +237,15 @@ public class AuctionConnection {
                     default:
                         break;
                 }
-
+                
                 auctions.add(auction);
                 auction = null;
             }
+            System.out.println("Auctions retrieved from DB");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            System.out.println("Auctions NOT retrieved from DB");
+            
         }
 
         try {

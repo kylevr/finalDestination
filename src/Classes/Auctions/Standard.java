@@ -17,8 +17,8 @@ import java.util.Date;
  */
 public class Standard extends Auction implements Serializable{
 
-    private transient Timestamp creationDate;
-    private transient Timestamp timeEnd;
+    private  Timestamp creationDate;
+    private  Timestamp timeEnd;
 
     public Standard(int id, User seller, Product product, double price, int quantity, Timestamp beginTime, Timestamp timeEnd,StatusEnum status, String description,String imageURLs, double instabuy) {
         super(id, seller, product, price, quantity,status,description,imageURLs,instabuy);

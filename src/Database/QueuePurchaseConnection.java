@@ -79,7 +79,7 @@ public class QueuePurchaseConnection {
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            System.out.println("Product ding connection ophalen failed ofzo.");
+            System.out.println("Queuepurchases not retrieved from database");
         }
         
         return queuepurchases;

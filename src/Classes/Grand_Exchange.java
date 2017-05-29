@@ -60,8 +60,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         users = new ArrayList<>();
         auctions = new ArrayList<>();
         queuepurchases = new ArrayList<>();
-        con = new Connection();
-        con.getConnection();
+        //con = new Connection();
+        //con.getConnection();
 
         // Connections
         auctionConn = new AuctionConnection();

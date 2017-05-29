@@ -23,7 +23,7 @@ public class Countdown extends Auction implements Serializable {
     private double priceloweringDelay;
     private double minPrice;
     private double startingPrice;
-    private transient Timestamp creationDate;
+    private  Timestamp creationDate;
 
     public Countdown(User seller, Product product, int quantity, double price, double instabuyprice, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, Timestamp creatDate) {
         super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);
