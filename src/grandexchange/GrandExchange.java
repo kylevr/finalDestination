@@ -27,13 +27,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import Database.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author piete
  */
-public class GrandExchange extends Application {
+public class GrandExchange extends Application implements Serializable  {
 
     @Override
     public void start(Stage primaryStage) throws IOException {

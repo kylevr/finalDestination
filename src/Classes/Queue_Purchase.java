@@ -1,6 +1,8 @@
 package Classes;
 
-public class Queue_Purchase {
+import java.io.Serializable;
+
+public class Queue_Purchase implements Serializable {
 
     private int id;
     private int quantity;

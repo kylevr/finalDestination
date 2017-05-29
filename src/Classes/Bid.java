@@ -1,9 +1,10 @@
 package Classes;
 
 import Classes.Auctions.Auction;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Bid {
+public class Bid implements Serializable {
 
     private double amount;
     private Date timeCreated;

@@ -5,10 +5,12 @@
  */
 package Classes;
 
+import java.io.Serializable;
+
 /**
  *
  * @author piete
  */
-public enum CategoryEnum {
+public enum CategoryEnum implements Serializable {
     Art,Books,Collectibles,Electronics,Fashion,Food,Games,Gardening,Home,Music,Sports,Toys,Vehicles,
 }

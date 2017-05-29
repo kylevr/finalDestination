@@ -1,9 +1,10 @@
 package Classes;
 
 import Classes.Auctions.Auction;
+import java.io.Serializable;
 import java.util.*;
 
-public class Transaction {
+public class Transaction implements Serializable {
 
     private double amount;
     Bid bid;

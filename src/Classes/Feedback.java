@@ -1,9 +1,10 @@
 package Classes;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Feedback {
+public class Feedback implements Serializable {
 
     private Date timeCreated;
     private int rating;

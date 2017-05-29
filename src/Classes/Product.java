@@ -1,8 +1,9 @@
 package Classes;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Product {
+public class Product implements Serializable {
 
     private int id;
 

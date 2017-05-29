@@ -4,6 +4,7 @@ import Classes.Auctions.Auction;
 import java.util.*;
 import Exceptions.*;
 import Database.*;
+import java.io.Serializable;
 
 /**
  * The User class represents a user from our application.
@@ -11,7 +12,7 @@ import Database.*;
  * @author Lesley Peters
  * @version 0.1, March 27
  */
-public class User {
+public class User implements Serializable {
 
     //Grand_Exchange manages;
     private int userID;
