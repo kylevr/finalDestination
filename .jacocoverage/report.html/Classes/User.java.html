@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Classes</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package Classes;
+
+import Classes.Auctions.Auction;
+import java.util.*;
+import Exceptions.*;
+import Database.*;
+import java.io.Serializable;
+
+/**
+ * The User class represents a user from our application.
+ *
+ * @author Lesley Peters
+ * @version 0.1, March 27
+ */
+public class User implements Serializable {
+
+    //Grand_Exchange manages;
+    private int userID;
+    //removed private int BSN;
+    private String username;
+    private String password;
+    private String alias;
+    private String email;
+    private boolean verified;
+    private double saldo;
+    private String imageURL;
+    private List&lt;Bid&gt; bids;
+    private List&lt;Auction&gt; placedAuctions;
+    private List&lt;Queue_Purchase&gt; placedOrders;
+    private List&lt;Transaction&gt; transactions;
+    private List&lt;Feedback&gt; feedbacklist;
+    private boolean isAuthorized;
+
+    public boolean getIsAuthorized() {
+<span class="nc" id="L35">        return isAuthorized;</span>
+    }
+
+    public void setIsAuthorized(boolean isAuthorized) {
+<span class="nc" id="L39">        this.isAuthorized = isAuthorized;</span>
+<span class="nc" id="L40">    }</span>
+    
+
+    /**
+     * constructor for a user that gets initialized by supplying his name and
+     * password.
+     *
+     * @param username
+     * @param password
+     * @param imageURL
+     */
+<span class="nc" id="L51">    public User(String username, String password, String imageURL) {</span>
+<span class="nc" id="L52">        this.username = username;</span>
+<span class="nc" id="L53">        this.password = password;</span>
+<span class="nc" id="L54">        this.imageURL = imageURL;</span>
+<span class="nc" id="L55">        this.isAuthorized = false;</span>
+        //User myUser = Database.Connection().getUser()
+<span class="nc" id="L57">    }</span>
+
+    /**
+     * constructor for a user with everything manually inputted.
+     */
+<span class="nc" id="L62">    public User(int userID, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {</span>
+        //removed  this.BSN = BSN;
+<span class="nc" id="L64">        this.username = username;</span>
+<span class="nc" id="L65">        this.password = password;</span>
+<span class="nc" id="L66">        this.alias = alias;</span>
+<span class="nc" id="L67">        this.email = email;</span>
+<span class="nc" id="L68">        this.verified = verified;</span>
+<span class="nc" id="L69">        this.saldo = saldo;</span>
+<span class="nc" id="L70">        this.imageURL = imageURL;</span>
+<span class="nc" id="L71">        this.bids = new ArrayList&lt;Bid&gt;();</span>
+<span class="nc" id="L72">        this.placedAuctions = new ArrayList&lt;Auction&gt;();</span>
+<span class="nc" id="L73">        this.placedOrders = new ArrayList&lt;Queue_Purchase&gt;();</span>
+<span class="nc" id="L74">        this.transactions = new ArrayList&lt;Transaction&gt;();</span>
+<span class="nc" id="L75">        this.feedbacklist = new ArrayList&lt;Feedback&gt;();</span>
+<span class="nc" id="L76">        this.isAuthorized = false;</span>
+<span class="nc" id="L77">    }</span>
+
+    /**
+     * constructor for a user with everything manually inputted. userid isn't
+     * given here because that's a database thing
+     */
+<span class="nc" id="L83">    public User(String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {</span>
+        //removed   this.BSN = BSN;
+<span class="nc" id="L85">        this.username = username;</span>
+<span class="nc" id="L86">        this.password = password;</span>
+<span class="nc" id="L87">        this.alias = alias;</span>
+<span class="nc" id="L88">        this.email = email;</span>
+<span class="nc" id="L89">        this.verified = verified;</span>
+<span class="nc" id="L90">        this.saldo = saldo;</span>
+<span class="nc" id="L91">        this.imageURL = imageURL;</span>
+<span class="nc" id="L92">        this.bids = new ArrayList&lt;Bid&gt;();</span>
+<span class="nc" id="L93">        this.placedAuctions = new ArrayList&lt;Auction&gt;();</span>
+<span class="nc" id="L94">        this.placedOrders = new ArrayList&lt;Queue_Purchase&gt;();</span>
+<span class="nc" id="L95">        this.transactions = new ArrayList&lt;Transaction&gt;();</span>
+<span class="nc" id="L96">        this.feedbacklist = new ArrayList&lt;Feedback&gt;();</span>
+<span class="nc" id="L97">        this.isAuthorized = false;</span>
+<span class="nc" id="L98">    }</span>
+
+    /**
+     * returns userid
+     *
+     * @return int
+     */
+    public int getUserID() {
+<span class="nc" id="L106">        return userID;</span>
+    }
+    
+    public String getUserEmail(){
+<span class="nc" id="L110">        return this.email;</span>
+    }
+
+    /**
+     * Adds feedback to another user.
+     *
+     * @param receiver is the username from the feedback receiver
+     * @param description is the string that contains the feedback message
+     * @exception EmptyFieldException is thrown when the receiver or description
+     * String is empty
+     */
+    public void sendFeedback(String receiver, int rating, String description) throws EmptyFieldException {
+        // TODO: send feedback to other user
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (receiver == &quot;&quot;) {</span>
+<span class="nc" id="L125">            throw new EmptyFieldException(&quot;Feedback receiver can't be empty.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (description == &quot;&quot;) {</span>
+<span class="nc" id="L129">            throw new EmptyFieldException(&quot;Feedback description can't be empty.&quot;);</span>
+        }
+
+<span class="nc" id="L132">        throw new UnsupportedOperationException(&quot;Not implemented yet.&quot;);</span>
+    }
+
+    /**
+     * Creates a new auction for this user
+     *
+     * @param auction is the new auction added to the user
+     */
+    public void addAuction(Auction auction) {
+<span class="nc" id="L141">        this.placedAuctions.add(auction);</span>
+<span class="nc" id="L142">    }</span>
+
+    /**
+     * Adds feedback to another user.
+     *
+     * @param auction is the auction that needs be removed from the user's lists
+     */
+    public void removeAuction(Auction auction) {
+<span class="nc" id="L150">        this.placedAuctions.remove(auction);</span>
+<span class="nc" id="L151">    }</span>
+
+    /**
+     * Adds feedback to another user.
+     *
+     * @param auction is the auction where the user wants to place the bid
+     * @param bid is the bid that the user wants to place
+     */
+    public void requestPlaceBid(Auction auction, Bid bid) {
+        // TODO: place the bid to the given auction, then return if the bid succeeded or not
+<span class="nc" id="L161">        throw new UnsupportedOperationException(&quot;Not implemented yet.&quot;);</span>
+    }
+
+    // Het lijkt me logisch dat we een bieding niet kunnen removen, mocht je dit wel logisch vinden, vul hem dan maar in :P
+    public void requestRemoveBid() {
+<span class="nc" id="L166">        throw new UnsupportedOperationException(&quot;Not implemented yet.&quot;);</span>
+    }
+
+    /**
+     * Adds or removes momey from the user's saldo
+     *
+     * @param amount is the amount of money to be added or removed from the user
+     * @exception NotEnoughMoneyException is thrown when the user doesn't have
+     * enough money
+     */
+    public void addSaldo(double amount) throws NotEnoughMoneyException {
+<span class="nc" id="L177">        double oldSaldo = this.saldo;</span>
+<span class="nc" id="L178">        this.saldo += amount;</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (this.saldo &lt; 0) {</span>
+<span class="nc" id="L180">            throw new NotEnoughMoneyException(&quot;Not enough money.&quot;);</span>
+        }
+<span class="nc" id="L182">    }</span>
+
+    /**
+     * Returns the amount of money the user has
+     *
+     * @return the amount of money the user has
+     */
+    public double getSaldo() {
+<span class="nc" id="L190">        return this.saldo;</span>
+    }
+
+    /**
+     * Receives the transaction history from this user
+     *
+     * @return a list with transaction objects
+     */
+    public List&lt;Transaction&gt; getTransactionHistory() {
+<span class="nc" id="L199">        return this.transactions;</span>
+    }
+
+    /**
+     * Adds a queue purchase
+     *
+     * @param purchase is the purchase that needs to be added to the list
+     */
+    public void addQueuePurchase(Queue_Purchase purchase) {
+<span class="nc" id="L208">        this.placedOrders.add(purchase);</span>
+<span class="nc" id="L209">    }</span>
+
+    /**
+     * removes a queue purchase
+     *
+     * @param purchase is the purchase that needs to be removed from the list
+     */
+    public void removeQueuePurchase(Queue_Purchase purchase) {
+<span class="nc" id="L217">        this.placedOrders.remove(purchase);</span>
+<span class="nc" id="L218">    }</span>
+
+    /**
+     * Method that sends a request to verify the user's account
+     */
+    public void requestVerification() {
+        // TODO: implement the method to verify a user.
+<span class="nc" id="L225">        throw new UnsupportedOperationException(&quot;Not implemented yet.&quot;);</span>
+    }
+
+    /**
+     * returns username of user
+     *
+     * @return String
+     */
+    public String getUsername() {
+<span class="nc" id="L234">        return username;</span>
+    }
+
+    /**
+     * returns image url of profile picture
+     *
+     * @return string
+     */
+    public String getImageURL() {
+<span class="nc" id="L243">        return imageURL;</span>
+    }
+
+    /**
+     * adds feedback to user
+     *
+     * @param feedback : feedback to be added
+     */
+    public void addFeedback(Feedback feedback) {
+<span class="nc bnc" id="L252" title="All 2 branches missed.">        if (!this.feedbacklist.contains(feedback)) {</span>
+<span class="nc" id="L253">            this.feedbacklist.add(feedback);</span>
+        }
+<span class="nc" id="L255">    }</span>
+
+    /**
+     * removes feedback from users feedback
+     *
+     * @param feedback : feedback to be removed
+     */
+    public void removeFeedback(Feedback feedback) {
+<span class="nc" id="L263">        this.feedbacklist.remove(feedback);</span>
+<span class="nc" id="L264">    }</span>
+
+    /**
+     * Receives the list with feedback addressed to user object
+     *
+     * @return a list with feedback objects
+     */
+    public List&lt;Feedback&gt; getFeedbackToMe() {
+<span class="nc" id="L272">        this.sortFeedbacklistByDate();</span>
+<span class="nc" id="L273">        List&lt;Feedback&gt; feedbackToMeList = new ArrayList&lt;Feedback&gt;();</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        for (Feedback f : this.feedbacklist) {</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">            if (f.getUserTo_Username().equals(this.username)) {</span>
+<span class="nc" id="L276">                feedbackToMeList.add(f);</span>
+            }
+<span class="nc" id="L278">        }</span>
+<span class="nc" id="L279">        return feedbackToMeList;</span>
+    }
+
+    /**
+     * Receives the list with feedback sended by user object
+     *
+     * @return a list with feedback objects
+     */
+    public List&lt;Feedback&gt; getFeedbackFromMe() {
+<span class="nc" id="L288">        this.sortFeedbacklistByDate();</span>
+<span class="nc" id="L289">        List&lt;Feedback&gt; feedbackFromMeList = new ArrayList&lt;Feedback&gt;();</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        for (Feedback f : this.feedbacklist) {</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">            if (f.getUserFrom_Username().equals(this.username)) {</span>
+<span class="nc" id="L292">                feedbackFromMeList.add(f);</span>
+            }
+<span class="nc" id="L294">        }</span>
+<span class="nc" id="L295">        return feedbackFromMeList;</span>
+    }
+
+    /**
+     * Receives the list with all feedback related to user object
+     *
+     * @return a list with feedback objects
+     */
+    public List&lt;Feedback&gt; getFeedbacklist() {
+<span class="nc" id="L304">        this.sortFeedbacklistByDate();</span>
+<span class="nc" id="L305">        return this.feedbacklist;</span>
+    }
+
+    /**
+     * sorts feedbacklist by timecreated descending so the most recent date is
+     * on top
+     */
+    public void sortFeedbacklistByDate() {
+<span class="nc" id="L313">        Collections.sort(this.feedbacklist, new Comparator&lt;Feedback&gt;() {</span>
+            public int compare(Feedback o1, Feedback o2) {
+<span class="nc bnc" id="L315" title="All 4 branches missed.">                if (o1.getTimeCreated() == null || o2.getTimeCreated() == null) {</span>
+<span class="nc" id="L316">                    return 0;</span>
+                }
+<span class="nc" id="L318">                return o2.getTimeCreated().compareTo(o1.getTimeCreated());</span>
+            }
+        });
+<span class="nc" id="L321">    }</span>
+
+    /**
+     * clears feedbacklist of user
+     * @param feedbacklist 
+     */
+    public void removeAllFeedback() {
+<span class="nc" id="L328">        this.feedbacklist.clear();</span>
+<span class="nc" id="L329">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

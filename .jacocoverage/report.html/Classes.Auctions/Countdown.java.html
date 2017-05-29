@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Countdown.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Classes.Auctions</a> &gt; <span class="el_source">Countdown.java</span></div><h1>Countdown.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Classes.Auctions;
+
+import Classes.Product;
+import Classes.User;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.util.Date;
+
+/**
+ *
+ * @author piete
+ */
+public class Countdown extends Auction {
+
+    private double priceloweringAmount;
+    private double priceloweringDelay;
+    private double minPrice;
+    private double startingPrice;
+    private Timestamp creationDate;
+
+    public Countdown(User seller, Product product, int quantity, double price, double instabuyprice, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, Timestamp creatDate) {
+<span class="nc" id="L28">        super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);</span>
+<span class="nc" id="L29">        this.priceloweringAmount = priceloweringAmount;</span>
+<span class="nc" id="L30">        this.priceloweringDelay = priceloweringDelay;</span>
+<span class="nc" id="L31">        this.startingPrice = price;</span>
+<span class="nc" id="L32">        this.minPrice = minprice;</span>
+<span class="nc" id="L33">        this.creationDate = creatDate;</span>
+<span class="nc" id="L34">        setPrice();</span>
+<span class="nc" id="L35">    }</span>
+
+    public Countdown(int id, User seller, Product product, int quantity, double price, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, double instabuy, Timestamp creatDate) {
+<span class="nc" id="L38">        super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);</span>
+<span class="nc" id="L39">        this.priceloweringAmount = priceloweringAmount;</span>
+<span class="nc" id="L40">        this.priceloweringDelay = priceloweringDelay;</span>
+<span class="nc" id="L41">        this.startingPrice = price;</span>
+<span class="nc" id="L42">        this.minPrice = minprice;</span>
+<span class="nc" id="L43">        this.creationDate = creatDate;</span>
+<span class="nc" id="L44">        setPrice();</span>
+
+<span class="nc" id="L46">    }</span>
+
+    public Timestamp getCreationDate() {
+<span class="nc" id="L49">        return creationDate;</span>
+    }
+
+    public double getPriceLoweringAmount() {
+<span class="nc" id="L53">        return priceloweringAmount;</span>
+    }
+
+    public double getPriceLoweringDelay() {
+<span class="nc" id="L57">        return priceloweringDelay;</span>
+    }
+
+    public void setPrice() {
+<span class="nc" id="L61">        long now = System.currentTimeMillis();</span>
+<span class="nc" id="L62">        long then = creationDate.getTime();</span>
+<span class="nc" id="L63">        long periods = (now - then) / 60000 / (long) priceloweringDelay;</span>
+<span class="nc" id="L64">        double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);</span>
+<span class="nc" id="L65">        setCurrentPrice(newPrice);</span>
+<span class="nc" id="L66">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

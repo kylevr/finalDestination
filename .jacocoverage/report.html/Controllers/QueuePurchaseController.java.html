@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>QueuePurchaseController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Controllers</a> &gt; <span class="el_source">QueuePurchaseController.java</span></div><h1>QueuePurchaseController.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controllers;
+
+import Classes.CategoryEnum;
+import Classes.Grand_Exchange;
+import Classes.Product;
+import Interfaces.ICreateProduct;
+import Interfaces.ICreateQueuePurchase;
+import grandexchange.RegistryManager;
+import java.io.IOException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+
+/**
+ * FXML Controller class
+ *
+ * @author SwekLord420
+ */
+<span class="nc" id="L46">public class QueuePurchaseController implements Initializable {</span>
+    
+    @FXML
+    private ListView lstCategory;
+    
+    @FXML
+    private Label lblProductName;
+    
+    @FXML
+    private ScrollPane productsPane;
+    
+    @FXML
+    private TextField textFieldProductName;
+    
+    @FXML
+    private TextField txtQuantity;
+    
+    @FXML
+    private TextField txtMinPrice;
+    
+    @FXML
+    private TextField txtMaxPrice;
+    
+    @FXML
+    private ComboBox&lt;CategoryEnum&gt; comboBoxCategory;
+    
+    public static int selectedProductID;
+    private ICreateProduct productInterface;
+    private ICreateQueuePurchase queuePurchaseInterface;
+    private RegistryManager RM;
+    private ArrayList&lt;Product&gt; products;
+    private CategoryEnum selectedCategory;
+
+    /**
+     * Initializes the controller class.
+     *
+     * @param url
+     * @param rb
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+<span class="nc" id="L88">    }</span>
+
+    public void setUp(RegistryManager RM) {
+<span class="nc" id="L91">        this.RM = RM;</span>
+<span class="nc" id="L92">        comboBoxCategory.getItems().setAll(CategoryEnum.values());</span>
+<span class="nc" id="L93">    }</span>
+    
+    public void searchProduct() throws RemoteException{
+        
+<span class="nc" id="L97">        RM.getProductInterface();</span>
+<span class="nc" id="L98">        productInterface = RM.getProduct();</span>
+        
+<span class="nc" id="L100">        this.products = productInterface.getProducts(textFieldProductName.getText(),this.selectedCategory);</span>
+<span class="nc" id="L101">        Pane allProducts = new Pane();</span>
+<span class="nc" id="L102">        allProducts.setPrefWidth(800);</span>
+<span class="nc" id="L103">        System.out.println(textFieldProductName.getText());</span>
+<span class="nc" id="L104">        allProducts.setPrefHeight(150 * this.products.size());</span>
+<span class="nc" id="L105">        int i = 0;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        for (Product p : this.products) {</span>
+<span class="nc" id="L107">            Pane Product = new Pane();</span>
+<span class="nc" id="L108">            Product.setPrefWidth(800);</span>
+<span class="nc" id="L109">            Product.setPrefHeight(150);</span>
+<span class="nc" id="L110">            Product.relocate(0, 150 * i);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if ((i % 2) == 0) {</span>
+<span class="nc" id="L112">                Product.setStyle(&quot;-fx-background-color: lightgrey &quot;);</span>
+            }
+<span class="nc" id="L114">            Label productName = new Label();</span>
+<span class="nc" id="L115">            productName.setText(p.getName());</span>
+<span class="nc" id="L116">            productName.setFont(new Font(&quot;Arial&quot;, 25));</span>
+<span class="nc" id="L117">            productName.relocate(150, 25);</span>
+
+<span class="nc" id="L119">            TextArea description = new TextArea();</span>
+<span class="nc" id="L120">            description.setPrefSize(200, 60);</span>
+<span class="nc" id="L121">            description.relocate(150, 65);</span>
+<span class="nc" id="L122">            description.setText(p.getDescription());</span>
+<span class="nc" id="L123">            description.wrapTextProperty().setValue(Boolean.TRUE);</span>
+<span class="nc" id="L124">            description.setEditable(false);</span>
+
+<span class="nc" id="L126">            ImageView image = new ImageView(new Image(&quot;https://cdn3.iconfinder.com/data/icons/modern-future-technology/128/3d-512.png&quot;));</span>
+<span class="nc" id="L127">            image.setFitWidth(100);</span>
+<span class="nc" id="L128">            image.setFitHeight(100);</span>
+<span class="nc" id="L129">            image.relocate(25, 25);</span>
+<span class="nc" id="L130">            image.addEventHandler(MouseEvent.MOUSE_CLICKED,</span>
+<span class="nc" id="L131">                    new EventHandler&lt;MouseEvent&gt;() {</span>
+                @Override
+                public void handle(MouseEvent e) {
+<span class="nc" id="L134">                    ImageView i = (ImageView) e.getSource();</span>
+<span class="nc" id="L135">                    lblProductName.setText(p.getName() + &quot; &quot; + p.getGTIN());</span>
+<span class="nc" id="L136">                    selectedProductID = p.getId();</span>
+<span class="nc" id="L137">                    System.out.println(p.getId());</span>
+<span class="nc" id="L138">                }</span>
+            });
+
+<span class="nc" id="L141">            Product.getChildren().addAll(productName, image, description);</span>
+<span class="nc" id="L142">            allProducts.getChildren().add(Product);</span>
+
+<span class="nc" id="L144">            i++;</span>
+<span class="nc" id="L145">        }</span>
+<span class="nc" id="L146">        productsPane.setContent(allProducts);</span>
+<span class="nc" id="L147">    }</span>
+
+    public void CategoryDelete(Event E) {
+<span class="nc" id="L150">        ListView lst = (ListView) E.getSource();</span>
+<span class="nc" id="L151">        int selected = lstCategory.getSelectionModel().getSelectedIndex();</span>
+<span class="nc bnc" id="L152" title="All 4 branches missed.">        if (selected &gt;= 0 &amp;&amp; selected &lt; lstCategory.getItems().size()) {</span>
+<span class="nc" id="L153">            lstCategory.getItems().remove(selected);</span>
+<span class="nc" id="L154">            lstCategory.setUserData(lst);</span>
+        }
+<span class="nc" id="L156">    }</span>
+
+    public void CategorySelected(Event E) {
+<span class="nc" id="L159">        ComboBox C = (ComboBox) E.getSource();</span>
+<span class="nc" id="L160">        int i = C.getSelectionModel().getSelectedIndex();</span>
+
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (!lstCategory.getItems().contains(CategoryEnum.values()[i])) {</span>
+<span class="nc" id="L163">            lstCategory.getItems().add(CategoryEnum.values()[i]);</span>
+
+<span class="nc" id="L165">            Collections.sort(lstCategory.getItems());</span>
+        }
+<span class="nc" id="L167">    }</span>
+
+    public void createQueuePurchase() throws RemoteException{
+        
+        
+        
+<span class="nc bnc" id="L173" title="All 8 branches missed.">        if (txtQuantity.getText().equals(&quot;&quot;) || txtMinPrice.getText().equals(&quot;&quot;) || txtMaxPrice.getText().equals(&quot;&quot;) || selectedProductID == 0){</span>
+<span class="nc" id="L174">            Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L175">            alert.setTitle(&quot;Wat de F doe jij nou weer&quot;);</span>
+<span class="nc" id="L176">            alert.setHeaderText(&quot;This is a header WOO !&quot;);</span>
+<span class="nc" id="L177">            alert.setContentText(&quot;There are still empty fields ! fgt&quot;);</span>
+
+<span class="nc" id="L179">            alert.showAndWait();</span>
+<span class="nc" id="L180">        }</span>
+        else{
+<span class="nc" id="L182">            int quantity = Integer.parseInt(txtQuantity.getText());</span>
+<span class="nc" id="L183">            double minAmount = Double.parseDouble(txtMinPrice.getText());</span>
+<span class="nc" id="L184">            double maxAmount = Double.parseDouble(txtMaxPrice.getText());</span>
+<span class="nc" id="L185">            queuePurchaseInterface.createQueuePurchase(quantity, minAmount, maxAmount, selectedProductID, RM.getUser().getUserID());</span>
+        }
+<span class="nc" id="L187">    }</span>
+    
+    
+    
+    public void handleComboBoxAction(ActionEvent event) {
+<span class="nc" id="L192">        selectedCategory = comboBoxCategory.getSelectionModel().getSelectedItem();</span>
+<span class="nc" id="L193"> }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

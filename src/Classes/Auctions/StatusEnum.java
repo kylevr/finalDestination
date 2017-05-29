@@ -5,10 +5,12 @@
  */
 package Classes.Auctions;
 
+import java.io.Serializable;
+
 /**
  *
  * @author piete
  */
-public enum StatusEnum {
+public enum StatusEnum implements Serializable {
     New, GoodAsNew, Refurbished, Used_Good, Used_Bad, Broken
 }

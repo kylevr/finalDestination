@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Connection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Database</a> &gt; <span class="el_source">Connection.java</span></div><h1>Connection.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Database;
+
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author Jorian
+ */
+public class Connection {
+
+    private java.sql.Connection myConn;
+    private PreparedStatement pstmt;
+    private ResultSet myRs;
+   
+<span class="nc" id="L26">    public Connection() {</span>
+
+<span class="nc" id="L28">    }</span>
+
+    /**
+     * Connects with the database.
+     * @return true if connected, false if failed to connect.
+     */
+    public boolean getConnection() {
+        try {
+<span class="nc" id="L36">            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</span>
+<span class="nc" id="L37">            myConn = DriverManager.getConnection(&quot;jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?zeroDateTimeBehavior=convertToNull&quot;, &quot;lesleya213_pts&quot;, &quot;wachtwoord123&quot;);</span>
+<span class="nc" id="L38">            System.out.println(&quot;started connection to database...&quot;);</span>
+<span class="nc" id="L39">            return true;</span>
+<span class="nc" id="L40">        } catch (ClassNotFoundException | SQLException ex) {</span>
+<span class="nc" id="L41">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L42">            System.out.println(&quot;Failed to start connection to database...&quot;);</span>
+<span class="nc" id="L43">            return false;</span>
+        }
+    }
+    
+    public java.sql.Connection getMyConn(){
+<span class="nc" id="L48">        return this.myConn;</span>
+    }
+    
+    /**
+     * Closes the connection with the database
+     * @return true if the connection is closed, false if it failed.
+     */
+    public boolean closeConnection() {
+        try {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">            if(myRs != null){</span>
+<span class="nc" id="L58">                myRs.close();</span>
+            }
+<span class="nc" id="L60">            myConn.close(); </span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            if(pstmt != null){</span>
+<span class="nc" id="L62">                pstmt.close();</span>
+            }
+<span class="nc" id="L64">            System.out.println(&quot;Closing connection to database...&quot;);</span>
+<span class="nc" id="L65">            return true;</span>
+<span class="nc" id="L66">        } catch (SQLException ex) {</span>
+<span class="nc" id="L67">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L68">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L69">            return false;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

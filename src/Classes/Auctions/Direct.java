@@ -7,6 +7,7 @@ package Classes.Auctions;
 
 import Classes.Product;
 import Classes.User;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -14,9 +15,9 @@ import java.util.Date;
  *
  * @author piete
  */
-public class Direct extends Auction {
+public class Direct extends Auction implements Serializable{
 
-    private Timestamp creationDate;
+    private transient Timestamp creationDate;
 
     public Direct(int id, User seller, Product product, double price, Timestamp beginTime, int quantity, StatusEnum status, String description, String imageURLs, double instabuy) {
         super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);

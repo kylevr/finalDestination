@@ -25,6 +25,7 @@ import java.util.logging.Logger;
  * @author kyle_
  */
 public class UserConnection {
+
     private java.sql.Connection myConn = null;
     private PreparedStatement pstmt = null;
     private ResultSet myRs = null;
@@ -48,8 +49,6 @@ public class UserConnection {
     static final String GET_HASBOUGHT_FROM_SELLER = "SELECT * from transaction t, auction a where a.id = t.auctionID and a.buyerID = ? and t.sellerID = ?;";
 
     //alter table chatuser  add column isAuthorized bool;
-    
-    
     /**
      * Registers a new user.
      *
@@ -64,7 +63,7 @@ public class UserConnection {
     public Boolean setUser_REGISTER(String username, String password, String alias, String email, String imageUrl, double saldo) {
         conn.getConnection();
         myConn = conn.getMyConn();
-        
+
         if (myConn != null) {
             if (getUser(username, password) == null) {
                 try {
@@ -122,18 +121,12 @@ public class UserConnection {
 
         PreparedStatement preparedStatement;
         ResultSet resultset = null;
-        if (myConn != null) {
+        if (conn.getMyConn() != null) {
             try {
-                preparedStatement = myConn.prepareStatement(GET_FROM_USER_ID);
+                preparedStatement = conn.getMyConn().prepareStatement(GET_FROM_USER_ID);
                 preparedStatement.setInt(1, id);
                 resultset = preparedStatement.executeQuery();
-                preparedStatement.close();
                 resultset.next();
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
                 userID = resultset.getInt("id");
                 username = resultset.getString("username");
                 password = resultset.getString("password");
@@ -151,7 +144,9 @@ public class UserConnection {
                 Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.out.println("There is no existing connection");
+            System.out.println("no connection retrying");
+            conn.getConnection();
+            user = getUser(id);
         }
         return user;
     }
@@ -230,7 +225,7 @@ public class UserConnection {
             String email = myRs.getString("email");
             boolean verified = myRs.getBoolean("verified");
             double saldo = myRs.getDouble("saldo");
-            String imgURL = myRs.getString("imageUrl");            
+            String imgURL = myRs.getString("imageUrl");
 
             user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             conn.closeConnection();
@@ -241,7 +236,7 @@ public class UserConnection {
 
         return user;
     }
-    
+
     /**
      * Gets all the users in the database.
      *
@@ -538,9 +533,10 @@ public class UserConnection {
         return feedbackFromBuyer;
     }
 
-    
     /**
-     * checks if user with buyerid has allready bought something from user with sellerid
+     * checks if user with buyerid has allready bought something from user with
+     * sellerid
+     *
      * @param buyer_ID
      * @param seller_ID
      * @return true if that's correct, otherwise false
@@ -548,7 +544,7 @@ public class UserConnection {
     public Boolean hasBought_FromSeller(String buyer_ID, String seller_ID) {
         Boolean hasBought = false;
         int count = 0;
-        
+
         try {
             conn.getConnection();
             myConn = conn.getMyConn();
@@ -556,7 +552,7 @@ public class UserConnection {
             pstmt.setString(1, buyer_ID);
             pstmt.setString(2, seller_ID);
             myRs = pstmt.executeQuery();
-            
+
             while (myRs.next()) {
                 ++count;
             }
@@ -570,7 +566,6 @@ public class UserConnection {
         return hasBought;
     }
 
-    
     /**
      * Submnits feedback to a buyer.
      *
@@ -585,7 +580,7 @@ public class UserConnection {
         myConn = conn.getMyConn();
 
         if (myConn != null && this.hasBought_FromSeller(buyerid, sellerid)) {
-            try {               
+            try {
                 pstmt = myConn.prepareStatement(SET_FEEDBACK_TOSELLER);
                 pstmt.setInt(1, rating);
                 pstmt.setString(2, description);
@@ -610,11 +605,12 @@ public class UserConnection {
             return false;
         }
     }
-    
+
     /**
      * sets if user with specified username will be authorized or not
+     *
      * @param username username of user you want to (de)authorize
-     * @param isAuthorized 
+     * @param isAuthorized
      * @return
      * @throws RemoteException
      */
