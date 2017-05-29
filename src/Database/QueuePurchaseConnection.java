@@ -65,21 +65,29 @@ public class QueuePurchaseConnection {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
+            System.out.println("DOET NIKS");
             while (myRs.next()) {
-                id = resultset.getInt("id");
-                quantity = resultset.getInt("quantity");
-                minPrice = resultset.getDouble("minprice");
-                maxPrice = resultset.getDouble("maxprice");
-                productID = resultset.getInt("productid");
-                placerID = resultset.getInt("placerID");
-                queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
-                queuepurchase.setID(id);
-                queuepurchases.add(queuepurchase);
-                conn.closeConnection();
+                    id = myRs.getInt("id");
+                    quantity = myRs.getInt("quantity");
+                    minPrice = myRs.getDouble("minprice");
+                    maxPrice = myRs.getDouble("maxprice");
+                    productID = myRs.getInt("productid");
+                    placerID = myRs.getInt("placerID");
+                    queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
+                    queuepurchase.setID(id);
+                    queuepurchases.add(queuepurchase);
+                
             }
-        } catch (Exception ex) {
+            
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Queuepurchases not retrieved from database");
+        }
+        
+        try{ 
+            conn.closeConnection();
+        } catch( Exception ex) {
+            System.out.println("Cant close");
         }
         
         return queuepurchases;

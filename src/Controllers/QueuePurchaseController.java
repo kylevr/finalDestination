@@ -88,12 +88,12 @@ public class QueuePurchaseController implements Initializable {
     }
 
     public void setUp(RegistryManager RM) {
-        this.RM = RM;
+        this.RM = new RegistryManager();
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
     
     public void searchProduct() throws RemoteException{
-        
+
         RM.getProductInterface();
         productInterface = RM.getProduct();
         
