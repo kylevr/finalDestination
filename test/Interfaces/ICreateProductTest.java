@@ -31,7 +31,7 @@ public class ICreateProductTest {
     }
 
     /**
-     * Test of createProduct method, of class ICreateProduct.
+     * Test of succesfull use of the createProduct method, of class ICreateProduct.
      */
     @Test
     public void testCreateProduct() throws Exception {
@@ -45,6 +45,23 @@ public class ICreateProductTest {
             result = true;
         }
         assertTrue(result);
+    }
+    
+    /**
+     * Test of createProduct method with an empty name value, of class ICreateProduct.
+     */
+    @Test
+    public void testCreateProductWithEmptyName() throws Exception {
+        System.out.println("createProduct");
+        int random = (int )(Math.random() * 100000000 + 899999999);
+        int GTIN = random;
+        String name = "";
+        String description = "This product is for unittests";
+        boolean result = false;
+        if(instance.createProduct(GTIN, name, description) != 0){
+            result = true;
+        }
+        assertFalse(result);
     }
 
     /**

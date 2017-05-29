@@ -76,7 +76,7 @@ public class AuctionConnection {
 
         try {
             conn.getConnection();
-            pstmt = myConn.prepareStatement(GET_AUCTION_BY_ID);
+            pstmt = conn.getMyConn().prepareStatement(GET_AUCTION_BY_ID);
             pstmt.setInt(1, id);
 
             myRs = pstmt.executeQuery();
