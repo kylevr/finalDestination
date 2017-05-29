@@ -7,6 +7,7 @@ package Controllers;
 
 import Classes.Grand_Exchange;
 import Classes.User;
+import Database.UserConnection;
 import Interfaces.IAuthorized;
 import grandexchange.RegistryManager;
 import java.io.IOException;
@@ -53,9 +54,16 @@ public class LoginController implements Initializable {
 
     @FXML
     public void button_loginUser() throws IOException {
-        user = authorization.login(textfield_username.getText(), textfield_password.getText());
+        
+        //user = authorization.login(username, password);
+        
+        //tijdelijke oplossing user getten
+        UserConnection userConn = new UserConnection();
+        user = userConn.getUser(textfield_username.getText(), textfield_password.getText());
+        
         
         if (user != null) {
+            user.setIsAuthorized(true);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
             Parent root = loader.load();
 
