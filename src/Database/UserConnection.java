@@ -63,11 +63,13 @@ public class UserConnection {
      */
     public Boolean setUser_REGISTER(String username, String password, String alias, String email, String imageUrl, double saldo) {
         conn.getConnection();
-
+        myConn = conn.getMyConn();
+        
         if (myConn != null) {
             if (getUser(username, password) == null) {
                 try {
                     conn.getConnection();
+                    myConn = conn.getMyConn();
                     boolean verified = false;
                     pstmt = myConn.prepareStatement(SET_USER_NEW);
                     pstmt.setString(1, username);
@@ -165,6 +167,7 @@ public class UserConnection {
         User user = null;
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement(GET_FROM_USER_BYLOGININFO);
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -206,6 +209,8 @@ public class UserConnection {
 
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);
             pstmt.setString(1, username);
 
@@ -225,7 +230,7 @@ public class UserConnection {
             String email = myRs.getString("email");
             boolean verified = myRs.getBoolean("verified");
             double saldo = myRs.getDouble("saldo");
-            String imgURL = myRs.getString("imageUrl");
+            String imgURL = myRs.getString("imageUrl");            
 
             user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
             conn.closeConnection();
@@ -257,6 +262,8 @@ public class UserConnection {
 
             try {
                 conn.getConnection();
+                myConn = conn.getMyConn();
+                myConn = conn.getMyConn();
                 preparedStatement = myConn.prepareStatement(GET_FROM_USER_ALLUSERS);
                 resultset = preparedStatement.executeQuery();
 
@@ -294,6 +301,8 @@ public class UserConnection {
 
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement("SELECT * FROM user WHERE username = ?");
             pstmt.setString(1, checkValue);
             myRs = pstmt.executeQuery();
@@ -332,6 +341,8 @@ public class UserConnection {
 
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement("SELECT * FROM user WHERE email = ?");
             pstmt.setString(1, checkValue);
             myRs = pstmt.executeQuery();
@@ -370,6 +381,8 @@ public class UserConnection {
 
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement("SELECT * FROM user WHERE alias = ?");
             pstmt.setString(1, checkValue);
             myRs = pstmt.executeQuery();
@@ -404,6 +417,7 @@ public class UserConnection {
      */
     public Boolean removeUser_BYUSERNAME(String username) {
         conn.getConnection();
+        myConn = conn.getMyConn();
 
         if (myConn != null) {
             try {
@@ -440,6 +454,7 @@ public class UserConnection {
 
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement(GET_FROM_FEEDBACK_TOSELLER);
             pstmt.setString(1, sellerid);
             myRs = pstmt.executeQuery();
@@ -487,6 +502,7 @@ public class UserConnection {
 
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement(GET_FROM_FEEDBACK_FROMBUYER);
             pstmt.setString(1, buyerid);
             myRs = pstmt.executeQuery();
@@ -535,6 +551,7 @@ public class UserConnection {
         
         try {
             conn.getConnection();
+            myConn = conn.getMyConn();
             pstmt = myConn.prepareStatement(GET_HASBOUGHT_FROM_SELLER);
             pstmt.setString(1, buyer_ID);
             pstmt.setString(2, seller_ID);
@@ -565,6 +582,7 @@ public class UserConnection {
      */
     public Boolean submitFeedback(int rating, String description, String sellerid, String buyerid) {
         conn.getConnection();
+        myConn = conn.getMyConn();
 
         if (myConn != null && this.hasBought_FromSeller(buyerid, sellerid)) {
             try {               
@@ -602,10 +620,12 @@ public class UserConnection {
      */
     public Boolean setAuthorized(String username, boolean isAuthorized) {
         conn.getConnection();
+        myConn = conn.getMyConn();
         if (myConn != null) {
             if (getUser(username) != null) {
                 try {
                     conn.getConnection();
+                    myConn = conn.getMyConn();
                     pstmt = myConn.prepareStatement(SET_ISAUTHORIZED);
                     pstmt.setString(1, username);
                     pstmt.setBoolean(2, isAuthorized);
