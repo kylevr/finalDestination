@@ -36,8 +36,7 @@ public class RegistryManager {
     private IPlaceBid bid;
     private ICreateProduct product;
     private ICreateQueuePurchase queuePurchase;
-    
-    
+
     // Set port number
     private static final int portNumber = 1099;
 
@@ -53,7 +52,7 @@ public class RegistryManager {
         getLocalHostIp();
         setupRegistry();
     }
-    
+
     public IPlaceBid getBid() {
         return bid;
     }
@@ -65,7 +64,7 @@ public class RegistryManager {
     public ICreateQueuePurchase getQueuePurchase() {
         return queuePurchase;
     }
-    
+
     public User getUser() {
         return user;
     }
@@ -73,7 +72,7 @@ public class RegistryManager {
     public void setUser(User user) {
         this.user = user;
     }
-    
+
     public IAuthorized getAuthorization() {
         return authorization;
     }
@@ -81,7 +80,6 @@ public class RegistryManager {
     public IAuction getAuction() {
         return auction;
     }
-
 
     public void getAuthorizationInterface() {
         if (registry != null) {
@@ -101,14 +99,13 @@ public class RegistryManager {
             }
         }
     }
-    
+
     public void getPlaceBidInterface() {
         if (registry != null) {
             try {
                 System.out.println("Trying to lookup Bid Interface...");
                 this.bid = (IPlaceBid) registry.lookup(bindingName);
                 System.out.println("Interface reference IS bound.");
-
 
             } catch (RemoteException | NotBoundException ex) {
                 System.out.println("Client: Cannot bind Bid Interface");
@@ -121,38 +118,41 @@ public class RegistryManager {
     }
 
     public void getAuctionInterface() {
-        if (registry != null) {
-            try {
-                System.out.println("Trying to lookup Auction Interface...");
-                auction = (IAuction) registry.lookup(bindingName);
-                System.out.println("Interface reference IS bound.");
+        if (auction == null) {
+            if (registry != null) {
+                try {
+                    System.out.println("Trying to lookup Auction Interface...");
+                    auction = (IAuction) registry.lookup(bindingName);
+                    System.out.println("Interface reference IS bound.");
 
-
-            } catch (RemoteException | NotBoundException ex) {
-                System.out.println("Client: Cannot bind Auction Interface");
-                System.out.println("Client: RemoteException: " + ex.getMessage());
-                System.out.println("Interface reference is NOT bound");
-                this.auction = null;
+                } catch (RemoteException | NotBoundException ex) {
+                    System.out.println("Client: Cannot bind Auction Interface");
+                    System.out.println("Client: RemoteException: " + ex.getMessage());
+                    System.out.println("Interface reference is NOT bound");
+                    this.auction = null;
+                }
             }
         }
     }
-        
+
     public void getProductInterface() {
-        if (registry != null) {
-            try {
-                System.out.println("Trying to lookup Product Interface...");
-                this.product = (ICreateProduct) registry.lookup(bindingName);
-                System.out.println("Interface reference IS bound.");
+        if (product == null) {
+            if (registry != null) {
+                try {
+                    System.out.println("Trying to lookup Product Interface...");
+                    this.product = (ICreateProduct) registry.lookup(bindingName);
+                    System.out.println("Interface reference IS bound.");
 
-            } catch (RemoteException | NotBoundException ex) {
-                System.out.println("Client: Cannot bind Product Interface");
-                System.out.println("Client: RemoteException: " + ex.getMessage());
-                System.out.println("Interface reference is NOT bound");
-                this.product = null;
+                } catch (RemoteException | NotBoundException ex) {
+                    System.out.println("Client: Cannot bind Product Interface");
+                    System.out.println("Client: RemoteException: " + ex.getMessage());
+                    System.out.println("Interface reference is NOT bound");
+                    this.product = null;
+                }
             }
         }
     }
-     
+
     public void getQueuePurchaseInterface() {
         if (registry != null) {
             try {
@@ -168,6 +168,7 @@ public class RegistryManager {
             }
         }
     }
+
     public void getLocalHostIp() {
 
         try {

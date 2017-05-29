@@ -78,6 +78,7 @@ public class MainController implements Initializable {
     }
 
     public void setUp(RegistryManager RM) throws RemoteException {
+        this.RM = RM;
         RM.getAuctionInterface();
         this.auctionInterface = RM.getAuction();
         
