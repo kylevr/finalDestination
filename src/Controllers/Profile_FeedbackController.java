@@ -5,6 +5,7 @@
  */
 package Controllers;
 
+import Classes.Feedback;
 import Classes.Grand_Exchange;
 import Classes.User;
 import Database.Connection;
@@ -35,7 +36,7 @@ public class Profile_FeedbackController implements Initializable {
 
     Grand_Exchange GX;
     RegistryManager RM;
-    User feedbackOwner;
+    String feedbackOwnerUserName;
     
     @FXML
     AnchorPane currentPane;
@@ -59,32 +60,34 @@ public class Profile_FeedbackController implements Initializable {
     }    
     
     public void setUp(RegistryManager RM, String userNameFeedback) throws RemoteException {
-        this.RM = RM;
-        /*
-        * Hier iets maken waardoor er een user kan worden opgehaald waar je feedback op wilt geven ?
-        */        
-        
-        // this.feedbackOwner = ?????????
+        this.RM = RM;        
+        this.feedbackOwnerUserName = userNameFeedback;
         this.refreshFeedbacklist();
-        this.label_owner.setText(feedbackOwner.getUsername() + "'s feedback");
-        this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback to " + this.feedbackOwner.getUsername());
+        this.label_owner.setText(this.feedbackOwnerUserName + "'s feedback");
+        this.label_submitter.setText(GX.loggedInUser.getUsername() + "'s feedback to " + this.feedbackOwnerUserName);
     }
     
     @FXML
     public void button_submitFeedback()
     {
-        UserConnection conn = new UserConnection();
-        if (conn.submitFeedback((int)Math.round(slider_rating.getValue()), textfield_description.getText(), feedbackOwner.getUsername(), GX.loggedInUser.getUsername()))
+        Feedback myFeedback = new Feedback(GX.loggedInUser.getUsername(), this.feedbackOwnerUserName, (int)Math.round(slider_rating.getValue()), textfield_description.getText());
+        if (GX.submitFeedbackToDB(myFeedback))
         {
+            System.out.println("submitted new feedback");
             this.refreshFeedbacklist();
+            System.out.println("refreshed feedbacklist");
+        }
+        else
+        {
+            System.out.println("cannot submit feedback");
         }
     }
     
     @FXML
     public void refreshFeedbacklist()
     {
-        this.GX.updateFeedbacklist(feedbackOwner.getUsername());
-        listview_profile_feedback.getItems().setAll(feedbackOwner.getFeedbackToMe());
+        this.GX.updateFeedbacklist(this.feedbackOwnerUserName);
+        listview_profile_feedback.getItems().setAll(this.feedbackOwnerUserName);
     }
     
     @FXML

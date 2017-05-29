@@ -417,6 +417,22 @@ public class Grand_Exchange implements Observer, IAuthorized, IAuction, ICreateP
     }
 
     /**
+     * submits userfeedback to the database.
+     * @param feedback
+     * @return true if successful, false if not successful
+     */
+    public boolean submitFeedbackToDB(Feedback feedback)
+    {
+        boolean success = false;
+        UserConnection conn = new UserConnection();
+        if (conn.submitFeedback(feedback.getRating(), feedback.getDescription(), feedback.getUserFrom_Username(), feedback.getUserTo_Username()))
+        {
+            success = true;
+        }
+        return success;
+    }
+    
+    /**
      * updates feedbacklist of user with given username
      *
      * @param username
