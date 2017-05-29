@@ -33,10 +33,17 @@ public class Connection {
      */
     public boolean getConnection() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            myConn = DriverManager.getConnection("jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?zeroDateTimeBehavior=convertToNull", "lesleya213_pts", "wachtwoord123");
-            System.out.println("started connection to database...");
-            return true;
+            
+            if(myConn != null) {
+                System.out.println("Already connected to the database..");
+                return false;
+            } else {
+                Class.forName("com.mysql.jdbc.Driver");
+                myConn = DriverManager.getConnection("jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?zeroDateTimeBehavior=convertToNull", "lesleya213_pts", "wachtwoord123");
+                System.out.println("started connection to database...");
+                return true;
+            }
+
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Failed to start connection to database...");
@@ -57,7 +64,9 @@ public class Connection {
             if(myRs != null){
                 myRs.close();
             }
-            myConn.close(); 
+            if(myConn != null) {
+              myConn.close();  
+            }
             if(pstmt != null){
                 pstmt.close();
             }
