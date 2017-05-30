@@ -32,6 +32,7 @@
         <Button fx:id="closeButton" layoutX="26.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#closeButtonClick" text="Close" />
         <ImageView id="productImage" fx:id="bigProductImage" fitHeight="243.9888421056013" fitWidth="367.0" layoutX="19.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true" />
         <ScrollPane fx:id="imagesPane" content="$null" hbarPolicy="AS_NEEDED" layoutX="20.0" layoutY="351.0" prefHeight="85.0" prefWidth="366.99977792969" vbarPolicy="NEVER" />
+        <Button id="closeButton" layoutX="314.0" layoutY="15.0" minHeight="19.951171875" mnemonicParsing="false" onMouseClicked="#update" prefHeight="19.951171875" text="Refresh" />
       </children>
     </Pane>
     <Pane id="countdownPane" layoutX="400.0" layoutY="0.0" prefHeight="800.0" prefWidth="400.0">
@@ -47,7 +48,7 @@
           </font>
         </Label>
         <Label fx:id="countdownAvailableUnits" layoutX="15.0" layoutY="104.0" text="units" />
-        <Button fx:id="countdownBuyBtn" layoutX="15.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#countdownBuyButtonClick" prefWidth="76.0" text="Instabuy" />
+        <Button fx:id="countdownBuyBtn" layoutX="15.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#instabuyButtonClick" prefWidth="76.0" text="Instabuy" />
         <TextField fx:id="txtUnitstoBuy" layoutX="15.0" layoutY="210.0" prefWidth="76.0" />
         <Label id="instabuyTextid" layoutX="18.0" layoutY="194.0" text="Units to buy:" />
         <Label fx:id="auctiontype" layoutX="14.0" layoutY="14.0" text="Auction">
@@ -64,13 +65,14 @@
         </Label>
         <Label id="countdownAvailableUnits" layoutX="15.0" layoutY="120.0" text="Time To Go:" />
         <ProgressBar fx:id="minutesBar" layoutX="17.0" layoutY="168.0" prefHeight="26.6015625" prefWidth="366.999755859375" progress="0.0" visible="false" />
-        <Button id="countdownBidBuyBtn" fx:id="BidBtn" layoutX="210.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#bidBuyButtonClick" prefWidth="76.0" text="Bid" />
+        <Button id="countdownBidBuyBtn" fx:id="BidBtn" layoutX="208.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#bidButtonClick" prefWidth="76.0" text="Bid" />
         <TextField fx:id="txtUnitstoBuyBid" layoutX="121.0" layoutY="210.0" prefWidth="76.0" />
         <Label id="BidTextid" fx:id="lblUnits" layoutX="121.0" layoutY="194.0" text="Units to buy:" />
         <TextField id="txtBidPrice" fx:id="txtPriceToBid" layoutX="208.0" layoutY="211.0" prefWidth="76.0" />
         <Label id="instabuyTextid" fx:id="lblBid" layoutX="210.0" layoutY="195.0" text="Bid price:" />
         <Label font="$x2" layoutX="197.0" layoutY="51.0" text="Instabuy price:" />
         <Label id="instabuyPrice" fx:id="InstabuyCurrentPrice" font="$x3" layoutX="197.0" layoutY="71.0" text="..." />
+        <Button id="countdownBidBuyBtn" fx:id="buyButton" layoutX="121.0" layoutY="237.0" mnemonicParsing="false" onMouseClicked="#buyButtonClick" prefWidth="76.0" text="Buy" />
       </children>
     </Pane>
     <Pane layoutX="800.0" layoutY="0.0" prefHeight="800.0" prefWidth="400.0" style="-fx-background-color: lightgrey;">

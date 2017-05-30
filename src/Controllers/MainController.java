@@ -156,7 +156,7 @@ public class MainController implements Initializable {
         Scene newScene;
         newScene = new Scene(loader.load());
         AuctionController controller = loader.<AuctionController>getController();
-        controller.setUp(a, RM);
+        controller.setUp(a, this.RM);
         Stage inputStage = new Stage();
         inputStage.setScene(newScene);
         inputStage.showAndWait();

@@ -24,6 +24,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -104,6 +106,8 @@ public class AuctionController implements Initializable {
     private TextField txtPriceToBid;
     @FXML
     private Button BidBtn;
+    @FXML
+    private Button buyButton;
 
     IAuction auctionInterface;
     IPlaceBid bid;
@@ -131,7 +135,18 @@ public class AuctionController implements Initializable {
     public void setUp(Auction auction, RegistryManager RM) {
         this.RM = RM;
         this.auction = auction;
-//        loggedInUser = RM.getUser();
+        loggedInUser = RM.getUser();
+        update();
+
+    }
+
+    public void update() {
+        int updateid = auction.getId();
+        try {
+            auction = RM.getAuction().getAuction(updateid);
+        } catch (RemoteException ex) {
+            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         productTitle.setText(auction.getProduct().getName());
         productDescription.setText(auction.getProduct().getDescription());
         auctionDescription.setText(auction.getDescription());
@@ -168,8 +183,8 @@ public class AuctionController implements Initializable {
             txtUnitstoBuy.setDisable(false);
 
         } else {
-            //countdownBuyBtn.setDisable(true);
-            //txtUnitstoBuy.setDisable(true);
+            countdownBuyBtn.setDisable(true);
+            txtUnitstoBuy.setDisable(true);
         }
 
         //Checks if auction is of instance Countdown
@@ -182,9 +197,11 @@ public class AuctionController implements Initializable {
             //setting buttons etc:
             txtPriceToBid.setVisible(false);
             txtPriceToBid.setText(countdownAuction.getCurrentPrice() + "");
-            BidBtn.setText("Buy");
-            BidBtn.relocate(121, 237);
+            BidBtn.setVisible(false);
             lblBid.setVisible(false);
+            txtUnitstoBuyBid.setVisible(true);
+            buyButton.setVisible(true);
+            lblUnits.setVisible(true);
 
             countdownCurrentPrice.setText("€" + countdownAuction.getCurrentPrice());
             InstabuyCurrentPrice.setText("€" + countdownAuction.getInstabuyPrice());
@@ -217,7 +234,7 @@ public class AuctionController implements Initializable {
                     }
                     if (timeSeconds <= 0) {
                         timeline.stop();
-                        setUp(auction, RM);
+                        update();
                     }
                 }
             }));
@@ -240,8 +257,11 @@ public class AuctionController implements Initializable {
 
         if (auction instanceof Standard) {
             //setting correct buttons:           
+            txtPriceToBid.setVisible(true);
+            BidBtn.setVisible(true);
+            lblBid.setVisible(true);
             txtUnitstoBuyBid.setVisible(false);
-            txtUnitstoBuyBid.setText("1");
+            buyButton.setVisible(false);
             lblUnits.setVisible(false);
 
             this.type = "standard";
@@ -300,8 +320,9 @@ public class AuctionController implements Initializable {
 
     /**
      * Returns textual status
+     *
      * @param status StatusEnum
-     * @return 
+     * @return
      */
     public String setStatus(StatusEnum status) {
         switch (status) {
@@ -322,11 +343,44 @@ public class AuctionController implements Initializable {
         }
     }
 
-    public void countdownBuyButtonClick() throws SQLException, RemoteException {
-
+    public void buyButtonClick() throws RemoteException, NotEnoughMoneyException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
-        
+        double price = auction.getCurrentPrice();
+        if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
+            double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText())*auction.getCurrentPrice();
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                int units = Integer.parseInt(txtUnitstoBuyBid.getText());
+                bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(),auction.getCurrentPrice());
+                update();
+                JOptionPane.showMessageDialog(null, "Your order has been placed");
+            } else {
+                JOptionPane.showMessageDialog(null, "Canceled");
+            }
+        }
+
+    }
+
+    public void bidButtonClick() throws RemoteException, NotEnoughMoneyException {
+        RM.getPlaceBidInterface();
+        this.bid = RM.getBid();
+        if (auction.getCurrentPrice() < Double.parseDouble(txtPriceToBid.getText())) {
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Bid " + txtPriceToBid.getText(), "Are You Sure?", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                bid.placeBid(1, loggedInUser.getUsername(), auction.getId(), Double.parseDouble(txtPriceToBid.getText()));
+                update();
+                JOptionPane.showMessageDialog(null, "Your bid has been placed");
+            } else {
+                JOptionPane.showMessageDialog(null, "Canceled");
+            }
+        }
+    }
+
+    public void instabuyButtonClick() throws RemoteException {
+        RM.getPlaceBidInterface();
+        this.bid = RM.getBid();
+
         if (Integer.parseInt(txtUnitstoBuy.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuy.getText()) > 0 && auction != null) {
             double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();
 
@@ -335,7 +389,7 @@ public class AuctionController implements Initializable {
                 for (int i = 0; i < Integer.parseInt(txtUnitstoBuy.getText()); i++) {
                     auctionInterface.InstabuyItem(Integer.valueOf(txtUnitstoBuy.getText()), auction.getId(), loggedInUser.getUserID());
                 }
-                auction.setProductQuantity(Integer.parseInt(txtUnitstoBuy.getText()));
+                auction.setProductQuantity(auction.getProductQuantity() - Integer.parseInt(txtUnitstoBuy.getText()));
                 setCountdownBuys(auction);
                 auctionInterface.updateAuction(auction);
                 if (auction.getProductQuantity() > 1) {
@@ -349,53 +403,6 @@ public class AuctionController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
         } else if (Integer.parseInt(txtUnitstoBuy.getText()) <= 0) {
-            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
-        } else {
-            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
-        }
-    }
-
-    // TODO: aanpassen dat het het tweede textveld goed erin zet.
-    public void bidBuyButtonClick() throws SQLException, RemoteException, NotEnoughMoneyException {
-
-        RM.getPlaceBidInterface();
-        this.bid = RM.getBid();
-        
-        if (Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuyBid.getText()) > 0 && auction != null) {
-            double totalPrice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
-            double unitsToBuy = Double.parseDouble(txtUnitstoBuyBid.getText());
-            double bedrag = Double.parseDouble(txtPriceToBid.getText());
-
-            //int getal = Integer.parseInt(txtUnitstoBuy.getText());
-            if (Double.parseDouble(txtPriceToBid.getText()) > auction.getCurrentPrice()) {
-                auction.addBid(new Bid(auction.getId(), RM.getUser(), Double.parseDouble(txtPriceToBid.getText()))); // adds bid to auction
-                if (bid.placeBid(unitsToBuy, auction.getId(), loggedInUser.getUserID(), bedrag)) {
-                    System.out.println("Correct geinsert");
-                } else {
-                    System.out.println("FAILED");
-                }
-                System.out.println("Units To buy: " + unitsToBuy);
-                System.out.println("Auction ID : " + auction.getId());
-                System.out.println("User ID : " + loggedInUser.getUserID());
-                System.out.println("Price To pay: " + bedrag);
-                auction.setCurrentPrice(Double.parseDouble(txtPriceToBid.getText()));
-                countdownCurrentPrice.setText("€" + Double.parseDouble(txtPriceToBid.getText()));
-
-            }
-
-            //Voegt bid to aan de auction
-            //GX.addBid(Double.valueOf(txtUnitstoBuy.getText()), auction.getId(), loggedInUser.getUserID(),auction.getCurrentPrice());
-            //auction.setProductQuantity(Integer.parseInt(txtUnitstoBuyBid.getText()));
-            setCountdownBuys(auction);
-            auctionInterface.updateAuction(auction);
-            if (auction.getProductQuantity() > 1) {
-                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
-            } else if (auction.getProductQuantity() == 1) {
-                countdownAvailableUnits.setText("There is just 1 item left");
-            } else if (auction.getProductQuantity() == 0) {
-                countdownAvailableUnits.setText("There are no items left, you missed it");
-            }
-        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) <= 0) {
             JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
         } else {
             JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
@@ -421,7 +428,11 @@ public class AuctionController implements Initializable {
             name.setText(b.getPlacerUsername());
             name.setFont(new Font("Arial", 17));
             Label price = new Label();
-            price.setText("Bought at a price of: €" + b.getAmount());
+            if (auction instanceof Countdown || auction instanceof Direct) {
+                price.setText("Bought at a price of: €" + b.getAmount());
+            } else {
+                price.setText("Bidded: €" + b.getAmount() + " for this item");
+            }
             price.setFont(new Font("Arial", 14));
             name.relocate(10, 15);
             price.relocate(10, 45);
@@ -429,6 +440,7 @@ public class AuctionController implements Initializable {
             BuyPane.getChildren().add(p);
             a++;
         }
+
         recentPurchasesPane.setContent(BuyPane);
     }
 

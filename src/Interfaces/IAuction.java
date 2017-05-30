@@ -25,6 +25,13 @@ public interface IAuction extends Remote{
      * @return list of auctions
      */
     Collection<Auction> getAuctions() throws RemoteException;
+    
+    /**
+     *returns all auctions 
+     * @return list of auctions
+     */
+    Auction getAuction(int id) throws RemoteException;
+
 
     /**
      *returns list of Bids with auction id

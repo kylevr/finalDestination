@@ -13,6 +13,7 @@ import Interfaces.IPlaceBid;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -273,6 +274,17 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         return auctions;
     }
 
+    public Auction getAuction(int id) {
+        int index = -1;
+        for (int i = 0; i < auctions.size(); i++) {
+            if (auctions.get(i).getId() == id) {
+                index = i;
+                break;
+            }
+        }
+        return auctions.get(index);
+    }
+
     /**
      * performs instabuy for user
      *
@@ -421,20 +433,19 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     /**
      * submits userfeedback to the database.
+     *
      * @param feedback
      * @return true if successful, false if not successful
      */
-    public boolean submitFeedbackToDB(Feedback feedback)
-    {
+    public boolean submitFeedbackToDB(Feedback feedback) {
         boolean success = false;
         UserConnection conn = new UserConnection();
-        if (conn.submitFeedback(feedback.getRating(), feedback.getDescription(), feedback.getUserFrom_Username(), feedback.getUserTo_Username()))
-        {
+        if (conn.submitFeedback(feedback.getRating(), feedback.getDescription(), feedback.getUserFrom_Username(), feedback.getUserTo_Username())) {
             success = true;
         }
         return success;
     }
-    
+
     /**
      * updates feedbacklist of user with given username
      *
@@ -533,13 +544,50 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     }
 
     @Override
-    public boolean placeBid(double amount, int userID, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
-        try {
-            return auctionConn.addBid(amount, AuctionID, 1, price);
-        } catch (SQLException ex) {
-            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+    public boolean placeBid(double amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
+        UserConnection DB = new UserConnection();
+        int index = -1;
+        for (int i = 0; i < auctions.size(); i++) {
+            if (auctions.get(i).getId() == AuctionID) {
+                index = i;
+                break;
+            }
         }
+        int index2 = -1;
+        User u = null;
+        u = DB.getUser(userName);
+        System.out.println(userName);
+        System.out.println(u.getUserID());
+        System.out.println(price);
+        System.out.println(AuctionID);
+        auctions.get(index).addBid(new Bid(AuctionID, u, price));
+        //return auctionConn.addBid(amount, AuctionID, userID, price);
+        return true;
+    }
+
+    public boolean placeBuy(int amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
+        UserConnection DB = new UserConnection();
+        int index = -1;
+        for (int i = 0; i < auctions.size(); i++) {
+            if (auctions.get(i).getId() == AuctionID) {
+                index = i;
+                break;
+            }
+        }
+        int index2 = -1;
+        User u = null;
+        u = DB.getUser(userName);
+        System.out.println(userName);
+        System.out.println(u.getUserID());
+        System.out.println(price);
+        System.out.println(AuctionID);
+        for(int i=0;i<amount;i++){
+        auctions.get(index).addBid(new Bid(AuctionID, u, price));
+        }
+        int productQuantity = auctions.get(index).getProductQuantity() - amount;
+        auctions.get(index).setProductQuantity(productQuantity);
+        //return auctionConn.addBid(amount, AuctionID, userID, price);
+        return true;
     }
 
     @Override

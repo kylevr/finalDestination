@@ -237,7 +237,7 @@ public class AuctionConnection {
                     default:
                         break;
                 }
-                
+
                 auctions.add(auction);
                 auction = null;
             }
@@ -245,15 +245,15 @@ public class AuctionConnection {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("Auctions NOT retrieved from DB");
-            
+
         }
 
         try {
             conn.closeConnection();
-        } catch(Exception ex) {
-            
+        } catch (Exception ex) {
+
         }
-        
+
         return auctions;
     }
 
@@ -321,14 +321,13 @@ public class AuctionConnection {
             // Checks if Saldo is high enough
             if (user.getSaldo() >= auction.getCurrentPrice()) {
                 try {
-                    myConn = DriverManager.getConnection("jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?noAccessToProcedureBodies=true", "lesleya213_pts", "wachtwoord123");
-                    CallableStatement myStmt = myConn.prepareCall("{call bid(?,?,?,?)}");
-                    myStmt.setInt(1, auctionID);
-                    myStmt.setInt(2, userID);
-                    myStmt.setDouble(3, amount);
-                    myStmt.setDouble(4, price);
+                    conn.getConnection();
+                    pstmt = myConn.prepareStatement("INSERT INTO bid (amount, placerID, auctionID) VALUES (?,?,?);");
+                    pstmt.setDouble(1, price);
+                    pstmt.setInt(2, userID);
+                    pstmt.setInt(3, auctionID);
 
-                    myStmt.execute();
+                    pstmt.executeQuery();
                     System.out.println("GELUKT!!");
                     myStmt.close();
                     conn.closeConnection();
