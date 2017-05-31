@@ -88,6 +88,7 @@ public class UserConnection {
                     }
                 } catch (SQLException ex) {
                     System.out.println("failed to register new user. SQLException");
+                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
                     ex.printStackTrace();
                     conn.closeConnection();
                     return false;
@@ -188,6 +189,7 @@ public class UserConnection {
             conn.closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             conn.closeConnection();
         }
         return user;
@@ -231,6 +233,7 @@ public class UserConnection {
             conn.closeConnection();
         } catch (SQLException ex) {
             System.out.println("User not found");
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             conn.closeConnection();
         }
 
@@ -274,6 +277,7 @@ public class UserConnection {
                     User foundUser = new User(username, password, alias, email, verified, saldo, imgURL);
                     users.add(foundUser);
                 }
+                preparedStatement.close();
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
@@ -314,7 +318,7 @@ public class UserConnection {
         }
 
         try {
-            String username = myRs.getString("username");
+            myRs.getString("username");
             conn.closeConnection();
             hasDuplicate = true;
         } catch (SQLException ex) {
@@ -355,7 +359,7 @@ public class UserConnection {
         }
 
         try {
-            String email = myRs.getString("email");
+             myRs.getString("email");
             conn.closeConnection();
             hasDuplicate = true;
         } catch (SQLException ex) {
@@ -395,7 +399,7 @@ public class UserConnection {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            String alias = myRs.getString("alias");
+            myRs.getString("alias");
             conn.closeConnection();
             hasDuplicate = true;
         } catch (SQLException ex) {

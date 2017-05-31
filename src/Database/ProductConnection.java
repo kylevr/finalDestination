@@ -53,7 +53,7 @@ public class ProductConnection {
         String name;
         String description;
         String gtin;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         ResultSet resultset = null;
         conn.getConnection();
         if (conn.getMyConn() != null) {
@@ -124,6 +124,7 @@ public class ProductConnection {
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             conn.closeConnection();
             return 0;
         }
@@ -161,6 +162,7 @@ public class ProductConnection {
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
         
                 conn.closeConnection();
