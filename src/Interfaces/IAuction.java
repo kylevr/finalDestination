@@ -59,7 +59,7 @@ public interface IAuction extends Remote{
      * //TODO: er staat 3 keer "iets" in. Dit moet nog veranderd worden naar een betere naam.
      * @param auction auction to be added
      */
-   void addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int  iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription)throws RemoteException ;
+   boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int  iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription)throws RemoteException ;
    
     /**
      *adds feedback to a seller

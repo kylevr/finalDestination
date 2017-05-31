@@ -24,6 +24,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -59,7 +60,6 @@ public class CreateAuctionController implements Initializable {
     private String selectedOption;
     private IAuction auctionInterface;
     private ICreateProduct productInterface;
-    private IAuthorized authorizedInterface;
     String auctionType;
 
     /**
@@ -117,12 +117,23 @@ public class CreateAuctionController implements Initializable {
             int productid;
             productid = productInterface.createProduct(Gtin, productName, description);
             if (productid != 0) {
-                int userid = authorizedInterface.getLoggedInUser().getUserID();
+                int userid = 1;
                 int instabuyable = 0;
                 if (instabuy) {
                     instabuyable = 1;
                 }
-                auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, 0, 0, auctionType, 1, imageUrl, description);
+                boolean succeeded = false;
+                try{
+                    succeeded = auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, 0, 0, auctionType, 1, imageUrl, description);
+                    if(succeeded){
+                    JOptionPane.showMessageDialog(null, "Your auction has been added!", "InfoBox: " + "Succes", JOptionPane.INFORMATION_MESSAGE);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
+                }
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
+                }
+                
             } else {
                 System.out.print("Cant insert product to database.");
             }

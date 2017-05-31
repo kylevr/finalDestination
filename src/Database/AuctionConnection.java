@@ -365,7 +365,10 @@ public class AuctionConnection {
      * @return True if successfully inserted, false if it failed.
      */
     public Boolean insertAuction(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
+
+
         conn.getConnection();
+  
         try {
             pstmt = myConn.prepareStatement(SET_AUCTION_NEW);
             pstmt.setInt(1, 1);

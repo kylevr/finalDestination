@@ -644,7 +644,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     }
 
     @Override
-    public void addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String desrcription) throws RemoteException {
-        System.out.println("Nog niet geïmplementeerd");
+    public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
+        return addAuctionToDB(userID,productID,startingprice,instabuyPrice,instabuyable,quantity,iets,iets2,auctionType,iets3,imageUrl,description);
     }
 }
