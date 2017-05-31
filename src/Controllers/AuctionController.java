@@ -348,16 +348,22 @@ public class AuctionController implements Initializable {
         this.bid = RM.getBid();
         double price = auction.getCurrentPrice();
         if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
-            double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText())*auction.getCurrentPrice();
+            double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 int units = Integer.parseInt(txtUnitstoBuyBid.getText());
-                bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(),auction.getCurrentPrice());
+                bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());
                 update();
                 JOptionPane.showMessageDialog(null, "Your order has been placed");
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
+        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
+            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
+        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > auction.getProductQuantity()) {
+            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
+        } else {
+            JOptionPane.showMessageDialog(null, "Something went wrong");
         }
 
     }
@@ -374,10 +380,14 @@ public class AuctionController implements Initializable {
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
+        } else if (auction.getCurrentPrice() > Double.parseDouble(txtPriceToBid.getText())) {
+            JOptionPane.showMessageDialog(null, "You can't bid less than current price");
+        } else {
+            JOptionPane.showMessageDialog(null, "Something went wrong");
         }
     }
 
-    public void instabuyButtonClick() throws RemoteException {
+    public void instabuyButtonClick() throws RemoteException, NotEnoughMoneyException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
 
@@ -386,19 +396,9 @@ public class AuctionController implements Initializable {
 
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + auction.getInstabuyPrice() + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                for (int i = 0; i < Integer.parseInt(txtUnitstoBuy.getText()); i++) {
-                    auctionInterface.InstabuyItem(Integer.valueOf(txtUnitstoBuy.getText()), auction.getId(), loggedInUser.getUserID());
-                }
-                auction.setProductQuantity(auction.getProductQuantity() - Integer.parseInt(txtUnitstoBuy.getText()));
-                setCountdownBuys(auction);
-                auctionInterface.updateAuction(auction);
-                if (auction.getProductQuantity() > 1) {
-                    countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
-                } else if (auction.getProductQuantity() == 1) {
-                    countdownAvailableUnits.setText("There is just 1 item left");
-                } else if (auction.getProductQuantity() == 0) {
-                    countdownAvailableUnits.setText("There are no items left, you missed it");
-                }
+                int units = Integer.parseInt(txtUnitstoBuy.getText());
+                bid.placeBid(units, loggedInUser.getUsername(), auction.getId(), auction.getInstabuyPrice());
+                update();
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
