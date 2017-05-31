@@ -26,9 +26,9 @@ import java.util.logging.Logger;
  */
 public class UserConnection {
 
-    private java.sql.Connection myConn = null;
-    private PreparedStatement pstmt = null;
-    private ResultSet myRs = null;
+    private java.sql.Connection myConn;
+    private PreparedStatement pstmt;
+    private ResultSet myRs;
 
     // Connections
     //private UserConnection userConn = new UserConnection();
@@ -120,7 +120,7 @@ public class UserConnection {
         float saldo;
 
         PreparedStatement preparedStatement;
-        ResultSet resultset = null;
+        ResultSet resultset;
         if (conn.getMyConn() != null) {
             try {
                 preparedStatement = conn.getMyConn().prepareStatement(GET_FROM_USER_ID);
@@ -250,8 +250,8 @@ public class UserConnection {
         String email;
         boolean verified;
         float saldo;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultset = null;
+        PreparedStatement preparedStatement;
+        ResultSet resultset;
 
         if (myConn != null) {
 
@@ -319,6 +319,7 @@ public class UserConnection {
             hasDuplicate = true;
         } catch (SQLException ex) {
             conn.closeConnection();
+             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return hasDuplicate;
@@ -359,6 +360,7 @@ public class UserConnection {
             hasDuplicate = true;
         } catch (SQLException ex) {
             conn.closeConnection();
+             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return hasDuplicate;
@@ -398,6 +400,7 @@ public class UserConnection {
             hasDuplicate = true;
         } catch (SQLException ex) {
             conn.closeConnection();
+             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return hasDuplicate;
@@ -428,6 +431,7 @@ public class UserConnection {
                 }
             } catch (SQLException ex) {
                 System.out.println("failed to remove with username: " + username + ". SQLException");
+                 Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
                 ex.printStackTrace();
                 conn.closeConnection();
                 return false;
@@ -466,7 +470,7 @@ public class UserConnection {
                 String description = myRs.getString("description");
 
                 //gets date from 
-                Date timeCreated = null;
+                Date timeCreated;
                 timeCreated = myRs.getDate("timeCreated");
                 Timestamp timestamp = myRs.getTimestamp("timeCreated");
                 if (timestamp != null) {
@@ -479,6 +483,7 @@ public class UserConnection {
             conn.closeConnection();
         } catch (SQLException ex) {
             System.out.println("SQLException at getFeedbackToSeller");
+             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
             conn.closeConnection();
         }
@@ -514,7 +519,7 @@ public class UserConnection {
                 String description = myRs.getString("description");
 
                 //gets date from 
-                Date timeCreated = null;
+                Date timeCreated;
                 timeCreated = myRs.getDate("timeCreated");
                 Timestamp timestamp = myRs.getTimestamp("timeCreated");
                 if (timestamp != null) {
@@ -527,6 +532,7 @@ public class UserConnection {
             conn.closeConnection();
         } catch (SQLException ex) {
             System.out.println("SQLException at getFeedbackToSeller");
+             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
             conn.closeConnection();
         }
@@ -597,6 +603,7 @@ public class UserConnection {
             } catch (SQLException ex) {
                 System.out.println("failed to submit new feedback from " + buyerid + " to " + sellerid + ". SQLException");
                 ex.printStackTrace();
+                 Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
                 conn.closeConnection();
                 return false;
             }
@@ -636,6 +643,7 @@ public class UserConnection {
                 } catch (SQLException ex) {
                     System.out.println("Can't authorize User with username: " + username + ". SQLException.");
                     ex.printStackTrace();
+                     Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
                     conn.closeConnection();
                     return false;
                 }

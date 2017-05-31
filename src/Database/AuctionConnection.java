@@ -30,10 +30,10 @@ import java.util.logging.Logger;
  */
 public class AuctionConnection {
 
-    private java.sql.Connection myConn = null;
-    private PreparedStatement pstmt = null;
-    private Statement myStmt = null;
-    private ResultSet myRs = null;
+    private java.sql.Connection myConn;
+    private PreparedStatement pstmt;
+    private Statement myStmt;
+    private ResultSet myRs;
     private Auction auction;
     private ArrayList<Auction> auctions;
 
@@ -143,6 +143,7 @@ public class AuctionConnection {
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Failed to get auction by ID");
         }
 
@@ -178,7 +179,7 @@ public class AuctionConnection {
             myRs = pstmt.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            //Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
@@ -245,7 +246,7 @@ public class AuctionConnection {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("Auctions NOT retrieved from DB");
-
+ Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
@@ -272,18 +273,12 @@ public class AuctionConnection {
         int buyerId;
         double price;
         PreparedStatement preparedStatement;
-        ResultSet resultset = null;
+        ResultSet resultset;
         try {
             conn.getConnection();
             pstmt = myConn.prepareStatement(GET_BID_FROM_AUCTION_ID);
             pstmt.setInt(1, id);
             resultset = pstmt.executeQuery();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
             while (resultset.next()) {
                 auctionId = resultset.getInt("auctionID");
                 buyerId = resultset.getInt("placerID");
@@ -292,9 +287,9 @@ public class AuctionConnection {
                 bid = new Bid(auctionId, user, price);
                 bids.add(bid);
             }
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            System.out.println("Cannot add bids to list");
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return bids;
     }
@@ -335,6 +330,7 @@ public class AuctionConnection {
                 } catch (SQLException ex) {
                     conn.closeConnection();
                     myStmt.close();
+                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
                     System.out.println(ex);
                     return false;
                 }
@@ -400,6 +396,7 @@ public class AuctionConnection {
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             conn.closeConnection();
             return false;
         }
@@ -443,7 +440,7 @@ public class AuctionConnection {
                     return true;
                 } catch (SQLException ex) {
                     conn.closeConnection();
-
+                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
                     System.out.println(ex);
                     return false;
                 }
