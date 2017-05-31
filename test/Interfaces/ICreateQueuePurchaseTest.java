@@ -5,7 +5,10 @@
  */
 package Interfaces;
 
+import Classes.User;
+import Database.ProductConnection;
 import Database.QueuePurchaseConnection;
+import Database.UserConnection;
 import java.rmi.RemoteException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,12 +22,13 @@ import static org.junit.Assert.*;
  * @author lesley
  */
 public class ICreateQueuePurchaseTest {
-    
+
     public ICreateQueuePurchaseTest() {
     }
 
     /**
-     * Test of succesfull use of the createQueuePurchase method, of class ICreateQueuePurchase.
+     * Test of succesfull use of the createQueuePurchase method, of class
+     * ICreateQueuePurchase.
      */
     @Test
     public void testCreateQueuePurchaseSucces() throws Exception {
@@ -38,9 +42,10 @@ public class ICreateQueuePurchaseTest {
         boolean result = instance.createQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
         assertTrue(result);
     }
-    
+
     /**
-     * Test of the createQueuePurchase method with 0 quantity, of class ICreateQueuePurchase.
+     * Test of the createQueuePurchase method with 0 quantity, of class
+     * ICreateQueuePurchase.
      */
     @Test
     public void testCreateQueuePurchaseWithoutQuantity() throws Exception {
@@ -54,9 +59,10 @@ public class ICreateQueuePurchaseTest {
         boolean result = instance.createQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
         assertFalse(result);
     }
-    
+
     /**
-     * Test of the createQueuePurchase method without a max price, of class ICreateQueuePurchase.
+     * Test of the createQueuePurchase method without a max price, of class
+     * ICreateQueuePurchase.
      */
     @Test
     public void testCreateQueuePurchaseWithoutMaxPrice() throws Exception {
@@ -70,9 +76,10 @@ public class ICreateQueuePurchaseTest {
         boolean result = instance.createQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
         assertFalse(result);
     }
-    
+
     /**
-     * Test of the createQueuePurchase method with a max price less than the min price, of class ICreateQueuePurchase.
+     * Test of the createQueuePurchase method with a max price less than the min
+     * price, of class ICreateQueuePurchase.
      */
     @Test
     public void testCreateQueuePurchaseWithLowMaxPrice() throws Exception {
@@ -86,9 +93,10 @@ public class ICreateQueuePurchaseTest {
         boolean result = instance.createQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
         assertFalse(result);
     }
-    
+
     /**
-     * Test of the createQueuePurchase method with a productID that doesn't excist in the database, of class ICreateQueuePurchase.
+     * Test of the createQueuePurchase method with a productID that doesn't
+     * excist in the database, of class ICreateQueuePurchase.
      */
     @Test
     public void testCreateQueuePurchaseWithWrongProductID() throws Exception {
@@ -102,11 +110,12 @@ public class ICreateQueuePurchaseTest {
         boolean result = instance.createQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
         assertFalse(result);
     }
-    
+
     /**
-     * Test of the createQueuePurchase method with a productID that doesn't excist in the database, of class ICreateQueuePurchase.
+     * Test of the createQueuePurchase method with a productID that doesn't
+     * excist in the database, of class ICreateQueuePurchase.
      */
-    @Test
+    @Test(expected=NullPointerException.class)
     public void testCreateQueuePurchaseWithWrongPlacerID() throws Exception {
         System.out.println("createQueuePurchase");
         int Quantity = 1;
@@ -124,8 +133,31 @@ public class ICreateQueuePurchaseTest {
         //Method copied from Grand_Exchange class
         public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
             QueuePurchaseConnection qPConn = new QueuePurchaseConnection();
+            UserConnection userConn = new UserConnection();
+            ProductConnection productConn = new ProductConnection();
+            User user = userConn.getUser(placerID);
+            double totalMaxPrice = Quantity * maxPrice;
+            if (user.getSaldo() < totalMaxPrice) {
+                System.out.print(user.getUsername() + " has not enough credits for this queue purchase.");
+                return false;
+            }
+            if (Quantity < 1) {
+                System.out.print("Quantity has to be more than 0 in order to create a queue purchase");
+                return false;
+            }
+            if (minPrice > maxPrice) {
+                System.out.print("The maximum price has to be more then the minumum price.");
+                return false;
+            }
+            if (productConn.getProduct(productID) == null) {
+                System.out.print("That product doesn't excist");
+                return false;
+            }if(maxPrice < 0.01){
+                System.out.print("No max price given");
+                return false;
+            }
             return qPConn.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
         }
     }
-    
+
 }

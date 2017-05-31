@@ -1,6 +1,9 @@
 package Classes;
 
 import Classes.Auctions.Auction;
+import Classes.Auctions.Direct;
+import Classes.Auctions.Standard;
+import Classes.Auctions.StatusEnum;
 import Classes.User;
 import java.util.*;
 import Database.*;
@@ -540,6 +543,23 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     @Override
     public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
+        User user = userConn.getUser(placerID);
+        double totalMaxPrice = Quantity * maxPrice;
+        if(user.getSaldo() < totalMaxPrice){
+            System.out.print(user.getUsername() + " has not enough credits for this queue purchase.");
+            return false;
+        }
+        if(Quantity < 1){
+            System.out.print("Quantity has to be more than 0 in order to create a queue purchase");
+            return false;
+        }if(minPrice > maxPrice){
+            System.out.print("The maximum price has to be more then the minumum price.");
+            return false;
+        }
+        if(productConn.getProduct(productID) == null){
+            System.out.print("That product doesn't excist");
+            return false;
+        }
         return qPConn.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);
     }
 

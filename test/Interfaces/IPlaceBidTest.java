@@ -5,8 +5,14 @@
  */
 package Interfaces;
 
+import Classes.Auctions.Auction;
+import Classes.Auctions.StatusEnum;
+import Classes.Bid;
 import Classes.Grand_Exchange;
+import Classes.Product;
+import Classes.User;
 import Database.AuctionConnection;
+import Database.UserConnection;
 import Exceptions.NotEnoughMoneyException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -126,6 +132,14 @@ public class IPlaceBidTest {
 
     public class IPlaceBidImpl implements IPlaceBid {
 
+//        AuctionConnection auctionConn = new AuctionConnection();
+//        UserConnection userConn = new UserConnection();
+//
+//        User testUser = new User(666, "test user", "wachtwoord", "test user", "test@test.test", true, 1000, "");
+//        Product testProduct = new Product(666, "965855547", "test product", "test description");
+//        Auction testAuction = new Auction(666, testUser, testProduct, 100, 1, StatusEnum.New, "test description", "", 250) {};
+        
+        
         //method copied from Grand_Exchange class
         public boolean placeBid(double amount, int userID, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
             AuctionConnection auctionConn = new AuctionConnection();
@@ -136,5 +150,42 @@ public class IPlaceBidTest {
                 return false;
             }
         }
+        
+        
+//
+//        @Override
+//        public boolean placeBid(double amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
+//            
+//        User u = null;
+//        u = userConn.getUser(userName);
+//        System.out.println(userName);
+//        System.out.println(u.getUserID());
+//        System.out.println(price);
+//        System.out.println(AuctionID);
+//        testAuction.addBid(new Bid(AuctionID, u, price));
+//        //return auctionConn.addBid(amount, AuctionID, userID, price);
+//        return true;
+//        }
+//
+//        @Override
+//        public boolean placeBuy(int amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
+//            UserConnection DB = new UserConnection();
+//        
+//        User u = null;
+//        u = DB.getUser(userName);
+//        System.out.println(userName);
+//        System.out.println(u.getUserID());
+//        System.out.println(price);
+//        System.out.println(AuctionID);
+//        for(int i=0;i<amount;i++){
+//        testAuction.addBid(new Bid(AuctionID, u, price));
+//        }
+//        int productQuantity = testAuction.getProductQuantity() - amount;
+//        testAuction.setProductQuantity(productQuantity);
+//        //return auctionConn.addBid(amount, AuctionID, userID, price);
+//        return true;
+//        }
+        
+        
     }
 }
