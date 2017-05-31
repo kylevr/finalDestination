@@ -156,7 +156,13 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @param placerid : id of user who placed the queue purchase
      */
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
-        qPConn.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
+        if (minprice > maxprice) {
+            System.out.println("min prijs mag niet groter zijn dan max prijs.");
+        }
+        else{
+            qPConn.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
+        }
+        System.out.println("product toegevoegd");
     }
 
     /**
@@ -190,7 +196,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @return
      */
     public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
+        if (instabuyprice > currentprice) {
+            throw new IllegalArgumentException();
+        }
+        else {  
         return auctionConn.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
+        }
     }
 
     /**
@@ -665,6 +676,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     @Override
     public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
+       
+        if (startingprice < instabuyPrice) {
+            
+            System.out.println("startingprice mag niet lager zijn dan instabuy");
+            throw new IllegalArgumentException();
+        }
         return addAuctionToDB(userID,productID,startingprice,instabuyPrice,instabuyable,quantity,iets,iets2,auctionType,iets3,imageUrl,description);
     }
 }
