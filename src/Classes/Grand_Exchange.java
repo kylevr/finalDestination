@@ -234,6 +234,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
                 this.userConn = new UserConnection();
                 
                 User Guest = userConn.getUser(username, password);
+                //if (Guest != null) {
                 if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
                     users.add(Guest);
                     System.out.println("user with username " + Guest.getUsername() + " is logged in");

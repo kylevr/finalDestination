@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.sql.Statement;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class IAuthorizationTest {
     private User user;
     private RegistryManager RM;
     private IAuthorized authorization;
-    
+
     Connection conn;
     java.sql.Connection myConn;
     UserConnection userConn;
@@ -39,8 +40,9 @@ public class IAuthorizationTest {
         RM = new RegistryManager();
         RM.getAuthorizationInterface();
         authorization = RM.getAuthorization();
-        
+
         conn = new Connection();
+        conn.getConnection();
         myConn = conn.getMyConn();
         userConn = new UserConnection();
     }
@@ -66,197 +68,245 @@ public class IAuthorizationTest {
     //
     // @Test
     // public void hello() {}
-    public Savepoint createSavePoint(String name) throws SQLException
-    {        
-        return myConn.setSavepoint(name);
-    }
-    
-    public void rollBack(Savepoint svpnt) throws SQLException
-    {
-        myConn.rollback(svpnt);
+    public boolean createSavePoint(String name) throws SQLException {
+        try {
+            Statement stmt = conn.getMyConn().createStatement();
+            return stmt.execute("SAVEPOINT " + name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
-//    SAVEPOINT identifier
-//ROLLBACK [WORK] TO [SAVEPOINT] identifier
-//RELEASE SAVEPOINT identifier
-    
-    
+    public boolean rollBackRelease(String name) throws SQLException {
+        boolean success = false;
+        boolean successRollback = false;
+        boolean successRelease = false;
+        Statement stmt = conn.getMyConn().createStatement();
+
+        successRollback = stmt.execute("rollback to savepoint " + name);
+        return successRollback;
+//        if (successRollback)
+//        {
+//            successRelease = stmt.execute("release savepoint " + name);       
+//        }
+//        
+//        if (successRollback && successRelease)
+//        {
+//            success = true;
+//        }
+//        return success;
+    }
+
+//    /**
+//     * tests if it's possible to create a savepoint.
+//     * note: doesn't work
+//     * @throws SQLException 
+//     */
+//    @Test
+//    public void createSavepoint() throws SQLException {
+//        assertTrue(this.createSavePoint("testSave2"));
+//    }
+//
+//    /**
+//     * tests if it's possible to rollback a savepoint.
+//     * note: doesn't work
+//     * @throws SQLException 
+//     */
+//    @Test
+//    public void rollbackSavepoint() throws SQLException {
+//        assertTrue(this.rollBackRelease("testSave2"));
+//    }
+
+
+    @Test
+    public void checkAuthorizationNotNull() {
+        assertNotNull(RM.getAuthorization());
+    }
+
     /**
      * login test met correcte gegevens
+     *
      * @throws RemoteException
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
-    public void loginCorrect () throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
+    public void loginCorrect() throws RemoteException, SQLException {
+        //       this.createSavePoint("testSave");
+
         String username = "test1111";
         String password = "password";
-        assertNotNull(this.authorization.login(username, password));
-        
-        rollBack(savepoint);
+
+        user = this.authorization.login(username, password);
+
+        assertNotNull(user);
+
+        //       this.rollBackRelease("testSave");
     }
-    
+
     /**
      * login test met incorrecte gegevens
+     *
      * @throws RemoteException
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
-    public void loginIncorrect () throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
+    public void loginIncorrect() throws RemoteException, SQLException {
+        //       this.createSavePoint("testSave");
+
         String username = "username";
         String password = "password";
         assertNull(this.authorization.login(username, password));
-        
-        rollBack(savepoint);
+
+        //       this.rollBackRelease("testSave");
     }
 
     /**
-     * logs user with specified username out of the application.
-     * boolean isAuthorized of this user is set to false.
+     * logs user with specified username out of the application. boolean
+     * isAuthorized of this user is set to false.
+     *
      * @param username
      * @return success of the operation
      * @throws RemoteException
      */
     @Test
-    public void logout() throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
+    public void logout() throws RemoteException, SQLException {
+        //       this.createSavePoint("testSave");
+
         String username = "test1111";
-        String password = "password";        
+        String password = "password";
         User user = this.authorization.login(username, password);
-        
+
         assertNotNull("user specified didn't login, therefore also can't logout", user);
         assertTrue(this.authorization.logout(user.getUsername()));
-        
-        rollBack(savepoint);
+
+        //       this.rollBackRelease("testSave");
     }
 
     /**
      * registers a new user to the application.
+     *
      * @throws RemoteException
      * @throws java.sql.SQLException
      */
     @Test
-    public void registerUserCorrect() throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
+    public void registerUserCorrect() throws RemoteException, SQLException {
+        //      this.createSavePoint("testSave");
+
         String username = "testRegister";
-        String password = "password";                
+        String password = "password";
         String alias = "xTestRegister";
-        String email = "testRegister@email.com";        
-        
+        String email = "testRegister@email.com";
+
         assertNull("user is allready registered in the database", userConn.getUser(username, password));
         assertEquals("Succesfully registered new user!", this.authorization.registerUser(username, password, alias, email));
-    
-        rollBack(savepoint);
+
+        //      this.rollBackRelease("testSave");
     }
-    
+
     /**
      * doesn't register a new user that has no fields specified.
+     *
      * @throws RemoteException
      * @throws java.sql.SQLException
      */
     @Test
-    public void registerUserEmptyFields() throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
+    public void registerUserEmptyFields() throws RemoteException, SQLException {
+        //      this.createSavePoint("testSave");
+
         String username = "";
-        String password = "";                
+        String password = "";
         String alias = "";
-        String email = "";        
-        
+        String email = "";
+
         assertNotEquals("Succesfully registered new user!", this.authorization.registerUser(username, password, alias, email));
-    
-        rollBack(savepoint);
+
+        //      this.rollBackRelease("testSave");
     }
-    
+
     /**
      * registers a new user to the application.
+     *
      * @throws RemoteException
      * @throws java.sql.SQLException
      */
     @Test
-    public void registerUserAlreadyRegistered() throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
-        String username = "test5555";
-        String password = "password";                
+    public void registerUserAlreadyRegistered() throws RemoteException, SQLException {
+        //      this.createSavePoint("testSave");
+
+        String username = "testRegister";
+        String password = "password";
         String alias = "xTest5555";
-        String email = "test5555@email.com";        
-        
+        String email = "test5555@email.com";
+
+        try {
+            this.authorization.registerUser(username, password, alias, email);
+        } catch (Exception ex) {
+        }
+
         assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
         assertNotEquals("Succesfully registered new user!", this.authorization.registerUser(username, password, alias, email));
-    
-        rollBack(savepoint);
+
+        //       this.rollBackRelease("testSave");
     }
 
     /**
      * authorizes a user
+     *
      * @throws RemoteException
      */
     @Test
-    public void setIsAuthorizedToTrue() throws RemoteException, SQLException
-    {       
-        Savepoint savepoint = myConn.setSavepoint();
-        
-        String username = "test5555";
+    public void setIsAuthorizedToTrue() throws RemoteException, SQLException {
+        //       this.createSavePoint("testSave");
+
+        String username = "testAuthorized";
         String password = "password";
         boolean isAuthorized = true;
-               
+
         assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
         assertNotNull("can't login user", this.authorization.login(username, password));
         assertTrue(this.authorization.setIsAuthorized(username, isAuthorized));
-        
-        rollBack(savepoint);
+
+        //      this.rollBackRelease("testSave");
     }
-    
-   /**
+
+    /**
      * unauthorizes a user
+     *
      * @throws RemoteException
      */
     @Test
-    public void setIsAuthorizedToFalse() throws RemoteException, SQLException
-    {       
-        Savepoint savepoint = myConn.setSavepoint();
-        
-        String username = "test5555";
+    public void setIsAuthorizedToFalse() throws RemoteException, SQLException {
+//        this.createSavePoint("testSave");
+
+        String username = "testAuthorized";
         String password = "password";
         boolean isAuthorized = false;
-               
+
         assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
         assertNotNull("can't login user", this.authorization.login(username, password));
         assertTrue(this.authorization.setIsAuthorized(username, isAuthorized));
-        
-        rollBack(savepoint);
+
+        //      this.rollBackRelease("testSave");
     }
-    
-    
+
     /**
      * Get the current logged in user.
+     *
      * @return User that is logged in at this moment
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     @Test
-    public void getLoggedInUser() throws RemoteException, SQLException
-    {
-        Savepoint savepoint = myConn.setSavepoint();
-        
-        String username = "test5555";
+    public void getLoggedInUser() throws RemoteException, SQLException {
+//        this.createSavePoint("testSave");
+
+        String username = "testAuthorized";
         String password = "password";
-               
+
         assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
         assertNotNull("can't login user", this.authorization.login(username, password));
         assertNotNull(this.authorization.getLoggedInUser());
-        
-        rollBack(savepoint);
+
+        //      this.rollBackRelease("testSave");
     }
 }

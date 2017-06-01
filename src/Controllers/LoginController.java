@@ -12,7 +12,10 @@ import Interfaces.IAuthorized;
 import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -56,16 +59,16 @@ public class LoginController implements Initializable {
     @FXML
     public void button_loginUser() throws IOException {
         //nieuwe oplossing, fix ik na unittests. (database dingen >> isVerified)
-//        try
-//        {
-//            user = authorization.login(textfield_username.getText(), textfield_password.getText());
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-        
+        try
+        {
+            user = authorization.login(textfield_username.getText(), textfield_password.getText());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         //tijdelijke oplossing user getten
-        UserConnection userConn = new UserConnection();
-        user = userConn.getUser(textfield_username.getText(), textfield_password.getText());
+//        UserConnection userConn = new UserConnection();
+//        user = userConn.getUser(textfield_username.getText(), textfield_password.getText());
         
         
         if (user != null) {

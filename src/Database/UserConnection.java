@@ -634,8 +634,8 @@ public class UserConnection {
                     conn.getConnection();
                     myConn = conn.getMyConn();
                     pstmt = myConn.prepareStatement(SET_ISAUTHORIZED);
-                    pstmt.setString(1, username);
-                    pstmt.setBoolean(2, isAuthorized);
+                    pstmt.setBoolean(1, isAuthorized);
+                    pstmt.setString(2, username);
 
                     if (pstmt.executeUpdate() > 0) {
                         System.out.println("User with username: " + username + " is now authorized");
