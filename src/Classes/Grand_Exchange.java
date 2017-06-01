@@ -52,6 +52,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      *
      * @return User: logged in user
      */
+    @Override
     public User getLoggedInUser() {
         return loggedInUser;
     }
@@ -226,21 +227,21 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     public User login(String username, String password) throws RemoteException {
         User returnValue = null;
-
+        
         //als er internetconnectie is met de database, voer code uit        
-        Connection conn = new Connection();
+        Connection conn  = new Connection();
         if (conn.getConnection()) {
-            this.userConn = new UserConnection();
-
-            User Guest = userConn.getUser(username, password);
-            if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
-                users.add(Guest);
-                System.out.println("user with username " + Guest.getUsername() + " is logged in");
-                returnValue = Guest;
-            } else {
-                System.out.println("no user is logged in");
+                this.userConn = new UserConnection();
+                
+                User Guest = userConn.getUser(username, password);
+                if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
+                    users.add(Guest);
+                    System.out.println("user with username " + Guest.getUsername() + " is logged in");
+                    returnValue = Guest;
+                } else {
+                    System.out.println("no user is logged in");
+                }
             }
-        }
         return returnValue;
     }
 

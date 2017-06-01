@@ -30,11 +30,19 @@ public class IAuthorizationTest {
     private User user;
     private RegistryManager RM;
     private IAuthorized authorization;
+    
+    Connection conn;
+    java.sql.Connection myConn;
+    UserConnection userConn;
 
     public IAuthorizationTest() {
         RM = new RegistryManager();
         RM.getAuthorizationInterface();
         authorization = RM.getAuthorization();
+        
+        conn = new Connection();
+        myConn = conn.getMyConn();
+        userConn = new UserConnection();
     }
 
     @BeforeClass
@@ -58,16 +66,9 @@ public class IAuthorizationTest {
     //
     // @Test
     // public void hello() {}
-    Connection conn = new Connection();
-    java.sql.Connection myConn = conn.getMyConn();
-    PreparedStatement pstmt;
-    ResultSet myRs;
-    
-    UserConnection userConn = new UserConnection();
-    
-    public void createSavePoint() throws SQLException
+    public Savepoint createSavePoint(String name) throws SQLException
     {        
-        myConn.setSavepoint();
+        return myConn.setSavepoint(name);
     }
     
     public void rollBack(Savepoint svpnt) throws SQLException
@@ -81,18 +82,37 @@ public class IAuthorizationTest {
     
     
     /**
-     * logs a user in the application.
-     * boolean isAuthorized of this user is set to true.
-     * @param username
-     * @param password
-     * @return the user that will be logged into the application. Null if no user is found with given username and password.
+     * login test met correcte gegevens
      * @throws RemoteException
+     * @throws SQLException 
      */
     @Test
-    public User login (String username, String password) throws RemoteException
+    public void loginCorrect () throws RemoteException, SQLException
     {
-        //assert.assertNotNull(username, user);
-        return null;
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "test1111";
+        String password = "password";
+        assertNotNull(this.authorization.login(username, password));
+        
+        rollBack(savepoint);
+    }
+    
+    /**
+     * login test met incorrecte gegevens
+     * @throws RemoteException
+     * @throws SQLException 
+     */
+    @Test
+    public void loginIncorrect () throws RemoteException, SQLException
+    {
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "username";
+        String password = "password";
+        assertNull(this.authorization.login(username, password));
+        
+        rollBack(savepoint);
     }
 
     /**
@@ -102,35 +122,121 @@ public class IAuthorizationTest {
      * @return success of the operation
      * @throws RemoteException
      */
-    public boolean logout(String username) throws RemoteException
+    @Test
+    public void logout() throws RemoteException, SQLException
     {
-        return false;
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "test1111";
+        String password = "password";        
+        User user = this.authorization.login(username, password);
+        
+        assertNotNull("user specified didn't login, therefore also can't logout", user);
+        assertTrue(this.authorization.logout(user.getUsername()));
+        
+        rollBack(savepoint);
     }
 
     /**
      * registers a new user to the application.
-     * @param username
-     * @param password
-     * @param alias
-     * @param email
-     * @return "Failed to register user:: + (specific errormessages)" when failed, and "Succesfully registered new user!" if successful 
      * @throws RemoteException
+     * @throws java.sql.SQLException
      */
-    public String registerUser(String username, String password, String alias, String email) throws RemoteException
+    @Test
+    public void registerUserCorrect() throws RemoteException, SQLException
     {
-        return "";
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "testRegister";
+        String password = "password";                
+        String alias = "xTestRegister";
+        String email = "testRegister@email.com";        
+        
+        assertNull("user is allready registered in the database", userConn.getUser(username, password));
+        assertEquals("Succesfully registered new user!", this.authorization.registerUser(username, password, alias, email));
+    
+        rollBack(savepoint);
+    }
+    
+    /**
+     * doesn't register a new user that has no fields specified.
+     * @throws RemoteException
+     * @throws java.sql.SQLException
+     */
+    @Test
+    public void registerUserEmptyFields() throws RemoteException, SQLException
+    {
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "";
+        String password = "";                
+        String alias = "";
+        String email = "";        
+        
+        assertNotEquals("Succesfully registered new user!", this.authorization.registerUser(username, password, alias, email));
+    
+        rollBack(savepoint);
+    }
+    
+    /**
+     * registers a new user to the application.
+     * @throws RemoteException
+     * @throws java.sql.SQLException
+     */
+    @Test
+    public void registerUserAlreadyRegistered() throws RemoteException, SQLException
+    {
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "test5555";
+        String password = "password";                
+        String alias = "xTest5555";
+        String email = "test5555@email.com";        
+        
+        assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
+        assertNotEquals("Succesfully registered new user!", this.authorization.registerUser(username, password, alias, email));
+    
+        rollBack(savepoint);
     }
 
     /**
-     * sets if user with specified username will be authorized or not
-     * @param username username of user you want to (de)authorize
-     * @param isAuthorized 
-     * @return
+     * authorizes a user
      * @throws RemoteException
      */
-    public boolean setIsAuthorized(String username, boolean isAuthorized) throws RemoteException
-    {
-        return false;
+    @Test
+    public void setIsAuthorizedToTrue() throws RemoteException, SQLException
+    {       
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "test5555";
+        String password = "password";
+        boolean isAuthorized = true;
+               
+        assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
+        assertNotNull("can't login user", this.authorization.login(username, password));
+        assertTrue(this.authorization.setIsAuthorized(username, isAuthorized));
+        
+        rollBack(savepoint);
+    }
+    
+   /**
+     * unauthorizes a user
+     * @throws RemoteException
+     */
+    @Test
+    public void setIsAuthorizedToFalse() throws RemoteException, SQLException
+    {       
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "test5555";
+        String password = "password";
+        boolean isAuthorized = false;
+               
+        assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
+        assertNotNull("can't login user", this.authorization.login(username, password));
+        assertTrue(this.authorization.setIsAuthorized(username, isAuthorized));
+        
+        rollBack(savepoint);
     }
     
     
@@ -139,8 +245,18 @@ public class IAuthorizationTest {
      * @return User that is logged in at this moment
      * @throws RemoteException 
      */
-    public User getLoggedInUser() throws RemoteException
+    @Test
+    public void getLoggedInUser() throws RemoteException, SQLException
     {
-        return null;
+        Savepoint savepoint = myConn.setSavepoint();
+        
+        String username = "test5555";
+        String password = "password";
+               
+        assertNotNull("user is not yet registered in the database", userConn.getUser(username, password));
+        assertNotNull("can't login user", this.authorization.login(username, password));
+        assertNotNull(this.authorization.getLoggedInUser());
+        
+        rollBack(savepoint);
     }
 }
