@@ -118,7 +118,7 @@ public class User implements Serializable {
      * @exception EmptyFieldException is thrown when the receiver or description
      * String is empty
      */
-    public void sendFeedback(String receiver, int rating, String description) throws EmptyFieldException {
+    public boolean sendFeedback(String receiver, int rating, String description) throws EmptyFieldException {
         // TODO: send feedback to other user
 
         if (receiver == "") {
@@ -128,7 +128,7 @@ public class User implements Serializable {
         if (description == "") {
             throw new EmptyFieldException("Feedback description can't be empty.");
         }
-
+        
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
@@ -140,6 +140,10 @@ public class User implements Serializable {
     public void addAuction(Auction auction) {
         this.placedAuctions.add(auction);
     }
+    
+    public List<Auction> getAuctions(){
+        return placedAuctions;
+    }
 
     /**
      * Adds feedback to another user.
@@ -150,21 +154,7 @@ public class User implements Serializable {
         this.placedAuctions.remove(auction);
     }
 
-    /**
-     * Adds feedback to another user.
-     *
-     * @param auction is the auction where the user wants to place the bid
-     * @param bid is the bid that the user wants to place
-     */
-    public void requestPlaceBid(Auction auction, Bid bid) {
-        // TODO: place the bid to the given auction, then return if the bid succeeded or not
-        throw new UnsupportedOperationException("Not implemented yet.");
-    }
-
-    // Het lijkt me logisch dat we een bieding niet kunnen removen, mocht je dit wel logisch vinden, vul hem dan maar in :P
-    public void requestRemoveBid() {
-        throw new UnsupportedOperationException("Not implemented yet.");
-    }
+    
 
     /**
      * Adds or removes momey from the user's saldo
@@ -208,6 +198,10 @@ public class User implements Serializable {
         this.placedOrders.add(purchase);
     }
 
+    public List<Queue_Purchase> getQueuePurchase(){
+        return placedOrders;
+    }
+    
     /**
      * removes a queue purchase
      *
