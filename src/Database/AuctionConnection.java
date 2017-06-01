@@ -13,6 +13,7 @@ import Classes.Auctions.StatusEnum;
 import Classes.Bid;
 import Classes.Product;
 import Classes.User;
+import static Database.ProductConnection.SET_PRODUCT_NEW;
 import java.sql.CallableStatement;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -370,7 +371,7 @@ public class AuctionConnection {
         conn.getConnection();
   
         try {
-            pstmt = myConn.prepareStatement(SET_AUCTION_NEW);
+            pstmt = conn.getMyConn().prepareStatement(SET_AUCTION_NEW);
             pstmt.setInt(1, 1);
             pstmt.setInt(2, productid);
             Timestamp created = new Timestamp(System.currentTimeMillis());

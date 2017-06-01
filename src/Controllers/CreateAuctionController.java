@@ -48,8 +48,6 @@ public class CreateAuctionController implements Initializable {
     @FXML
     private TextField tbQuantity;
     @FXML
-    private TextField tbQQuantity;
-    @FXML
     private TextArea tbDescription;
     @FXML
     private TextField tbImageUrl;
@@ -131,7 +129,7 @@ public class CreateAuctionController implements Initializable {
                     JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
                 }catch(Exception ex){
-                    JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Your auction isn't added to our database", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
                 
             } else {
