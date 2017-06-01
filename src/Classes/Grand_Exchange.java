@@ -500,45 +500,54 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     public String registerUser(String username, String password, String alias, String email) {
         String errorMsg = "Failed to register user:";
+        
+        //als er internetconnectie is met de database, voer code uit
+        Connection conn  = new Connection();
+        if (conn.getConnection()) {
+            try {
+                this.userConn = new UserConnection();
 
-        try {
-            username = username.trim();
-            password = password.trim();
-            alias = alias.trim();
-            email = email.trim();
+                username = username.trim();
+                password = password.trim();
+                alias = alias.trim();
+                email = email.trim();
 
-            System.out.println("Starting registration...");
+                System.out.println("Starting registration...");
 
-            if (username.isEmpty() || password.isEmpty() || email.isEmpty() || alias.isEmpty()) {
-                errorMsg += "\n -All fields must be filled";
-            } else {
-                Connection conn = new Connection();
-                boolean duplicateUsername = userConn.hasDuplicateUsername(username);
-                boolean duplicateAlias = userConn.hasDuplicateAlias(alias);
-                boolean duplicateEmail = userConn.hasDuplicateEmail(email);
+                if (username.isEmpty() || password.isEmpty() || email.isEmpty() || alias.isEmpty()) {
+                    errorMsg += "\n -All fields must be filled";
+                } else {
+                    boolean duplicateUsername = userConn.hasDuplicateUsername(username);
+                    boolean duplicateAlias = userConn.hasDuplicateAlias(alias);
+                    boolean duplicateEmail = userConn.hasDuplicateEmail(email);
 
-                if (duplicateUsername) {
-                    errorMsg += "\n -Username is already used";
+                    if (duplicateUsername) {
+                        errorMsg += "\n -Username is already used";
+                    }
+                    if (duplicateAlias) {
+                        errorMsg += "\n -Alias is already used";
+                    }
+                    if (duplicateEmail) {
+                        errorMsg += "\n -Email is already used";
+                    }
+
+                    if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
+                        userConn.setUser_REGISTER(username, password, alias, email, null, 0);
+                        errorMsg = "Succesfully registered new user!";
+                    }
                 }
-                if (duplicateAlias) {
-                    errorMsg += "\n -Alias is already used";
-                }
-                if (duplicateEmail) {
-                    errorMsg += "\n -Email is already used";
-                }
-
-                if (!duplicateUsername && !duplicateAlias && !duplicateEmail) {
-                    userConn.setUser_REGISTER(username, password, alias, email, null, 0);
-                    errorMsg = "Succesfully registered new user!";
-                }
+            } catch (NumberFormatException ex) {
+                errorMsg += "\n -BSN field must constain a number";
+            } finally {
+                System.out.println(errorMsg);
+                return errorMsg;
             }
-
-        } catch (NumberFormatException ex) {
-            errorMsg += "\n -BSN field must constain a number";
-        } finally {
-            System.out.println(errorMsg);
-            return errorMsg;
         }
+        else
+        {
+            errorMsg += "\n -BSN field must constain a number";
+        }
+        return errorMsg;
     }
 
     @Override

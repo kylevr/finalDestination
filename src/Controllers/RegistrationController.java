@@ -53,7 +53,7 @@ public class RegistrationController implements Initializable {
 
     String errorMsg;
     RegistryManager RM;
-    IAuthorized authorizationInterface;
+    IAuthorized authorization;
 
     /**
      * Initializes the controller class.
@@ -65,10 +65,9 @@ public class RegistrationController implements Initializable {
 
     @FXML
     public void button_registerUser() throws IOException {
-            RM.getAuthorizationInterface();
-            this.authorizationInterface = RM.getAuthorization();                    
-            this.label_errorMsg.setText(this.authorizationInterface.registerUser(textfield_username.getText(), textfield_password.getText(), textfield_alias.getText(), textfield_email.getText()));
-            this.label_errorMsg.setVisible(true);
+        String messageRegistration = this.authorization.registerUser(textfield_username.getText(), textfield_password.getText(), textfield_alias.getText(), textfield_email.getText());
+        this.label_errorMsg.setText(messageRegistration);
+        this.label_errorMsg.setVisible(true);
     }
 
     @FXML
@@ -82,8 +81,9 @@ public class RegistrationController implements Initializable {
         stage.close();
     }
     
-    public void Setup(RegistryManager RM)
+    public void setUp(RegistryManager RM)
     {
         this.RM = RM;
+        this.authorization = RM.getAuthorization();
     }
 }

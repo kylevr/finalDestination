@@ -42,6 +42,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         RM = new RegistryManager();
+        RM.getAuthorizationInterface();
         authorization = RM.getAuthorization();
     }
 
@@ -54,7 +55,6 @@ public class LoginController implements Initializable {
 
     @FXML
     public void button_loginUser() throws IOException {
-        
         //user = authorization.login(textfield_username.getText(), textfield_password.getText());
         
         //tijdelijke oplossing user getten
@@ -86,14 +86,27 @@ public class LoginController implements Initializable {
 
     @FXML
     public void button_registerUser() throws IOException {
-        Stage newStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Registration.fxml"));
-        Parent root = loader.load();
-        newStage.setScene(new Scene(root));
-        newStage.show();
-        Stage stage = (Stage) currentPane.getScene().getWindow();
-        stage.close();
+//        Stage newStage = new Stage();
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Registration.fxml"));
+//        Parent root = loader.load();
+//        newStage.setScene(new Scene(root));
+//        newStage.show();
+//        Stage stage = (Stage) currentPane.getScene().getWindow();
+//        stage.close();
         //Stage currentStage = (Stage)currentPane.getScene().getWindow();
         //currentStage.close();
+        
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Registration.fxml"));
+            Parent root = loader.load();
+
+            RegistrationController controller = (RegistrationController) loader.getController();
+            controller.setUp(RM);
+
+            Stage inputStage = new Stage();
+            Scene newScene = new Scene(root);
+            inputStage.setScene(newScene);
+            inputStage.show();
+            Stage stage = (Stage) textfield_username.getScene().getWindow();
+            stage.close();
     }
 }
