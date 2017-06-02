@@ -159,8 +159,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     public void addQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
         if (minprice > maxprice) {
             System.out.println("min prijs mag niet groter zijn dan max prijs.");
-        }
-        else{
+        } else {
             qPConn.insertQueuePurchase(quantity, minprice, maxprice, productid, placerid);
         }
         System.out.println("product toegevoegd");
@@ -199,9 +198,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
         if (instabuyprice > currentprice) {
             throw new IllegalArgumentException();
-        }
-        else {  
-        return auctionConn.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
+        } else {
+            return auctionConn.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
         }
     }
 
@@ -227,22 +225,22 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     public User login(String username, String password) throws RemoteException {
         User returnValue = null;
-        
+
         //als er internetconnectie is met de database, voer code uit        
-        Connection conn  = new Connection();
+        Connection conn = new Connection();
         if (conn.getConnection()) {
-                this.userConn = new UserConnection();
-                
-                User Guest = userConn.getUser(username, password);
-                //if (Guest != null) {
-                if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
-                    users.add(Guest);
-                    System.out.println("user with username " + Guest.getUsername() + " is logged in");
-                    returnValue = Guest;
-                } else {
-                    System.out.println("no user is logged in");
-                }
+            this.userConn = new UserConnection();
+
+            User Guest = userConn.getUser(username, password);
+            //if (Guest != null) {
+            if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
+                users.add(Guest);
+                System.out.println("user with username " + Guest.getUsername() + " is logged in");
+                returnValue = Guest;
+            } else {
+                System.out.println("no user is logged in");
             }
+        }
         return returnValue;
     }
 
@@ -510,9 +508,9 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     public String registerUser(String username, String password, String alias, String email) {
         String errorMsg = "Failed to register user:";
-        
+
         //als er internetconnectie is met de database, voer code uit
-        Connection conn  = new Connection();
+        Connection conn = new Connection();
         if (conn.getConnection()) {
             try {
                 this.userConn = new UserConnection();
@@ -552,9 +550,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
                 System.out.println(errorMsg);
                 return errorMsg;
             }
-        }
-        else
-        {
+        } else {
             errorMsg += "\n -BSN field must constain a number";
         }
         return errorMsg;
@@ -575,18 +571,19 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
         User user = userConn.getUser(placerID);
         double totalMaxPrice = Quantity * maxPrice;
-        if(user.getSaldo() < totalMaxPrice){
+        if (user.getSaldo() < totalMaxPrice) {
             System.out.print(user.getUsername() + " has not enough credits for this queue purchase.");
             return false;
         }
-        if(Quantity < 1){
+        if (Quantity < 1) {
             System.out.print("Quantity has to be more than 0 in order to create a queue purchase");
             return false;
-        }if(minPrice > maxPrice){
+        }
+        if (minPrice > maxPrice) {
             System.out.print("The maximum price has to be more then the minumum price.");
             return false;
         }
-        if(productConn.getProduct(productID) == null){
+        if (productConn.getProduct(productID) == null) {
             System.out.print("That product doesn't excist");
             return false;
         }
@@ -631,8 +628,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         System.out.println(u.getUserID());
         System.out.println(price);
         System.out.println(AuctionID);
-        for(int i=0;i<amount;i++){
-        auctions.get(index).addBid(new Bid(AuctionID, u, price));
+        for (int i = 0; i < amount; i++) {
+            auctions.get(index).addBid(new Bid(AuctionID, u, price));
         }
         int productQuantity = auctions.get(index).getProductQuantity() - amount;
         auctions.get(index).setProductQuantity(productQuantity);
@@ -695,12 +692,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     @Override
     public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
-       
+
         if (startingprice < instabuyPrice) {
-            
+
             System.out.println("startingprice mag niet lager zijn dan instabuy");
             throw new IllegalArgumentException();
         }
-        return addAuctionToDB(userID,productID,startingprice,instabuyPrice,instabuyable,quantity,iets,iets2,auctionType,iets3,imageUrl,description);
+        return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);
     }
 }

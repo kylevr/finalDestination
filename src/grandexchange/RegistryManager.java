@@ -46,7 +46,7 @@ public class RegistryManager {
     // References to registry and Grand Exchange
     private Registry registry = null;
     private InetAddress localhost;
-    private String ipAddress = "";
+    private String ipAddress = "192.168.137.1";
 
     public RegistryManager() {
         getLocalHostIp();
@@ -173,7 +173,7 @@ public class RegistryManager {
 
         try {
             localhost = InetAddress.getLocalHost();
-            ipAddress = localhost.getHostAddress();
+            //ipAddress = localhost.getHostAddress();
         } catch (UnknownHostException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }

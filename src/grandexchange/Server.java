@@ -6,9 +6,13 @@
 package grandexchange;
 
 import Classes.Grand_Exchange;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,9 +29,9 @@ public class Server {
     // References to registry and Grand Exchange
     private Registry registry = null;
     private Grand_Exchange GE = null;
-        
-    public Server(){
-        
+
+    public Server() {
+
         // Print port number for registry
         System.out.println("Server: Port number " + portNumber);
 
@@ -35,8 +39,7 @@ public class Server {
         try {
             GE = new Grand_Exchange();
             System.out.println("Server: Grand Exchange created !");
-        } 
-        catch (RemoteException ex) {
+        } catch (RemoteException ex) {
             System.out.println("Server: Cannot create Grand Exchange Object");
             System.out.println("Server: RemoteException: " + ex.getMessage());
             GE = null;
@@ -59,10 +62,27 @@ public class Server {
             System.out.println("Server: Cannot bind Grand Exchange");
             System.out.println("Server: RemoteException: " + ex.getMessage());
         }
-    }    
-        
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
+            System.out.println("Server: IP Address: " + localhost.getHostAddress());
+            // Just in case this host has multiple IP addresses....
+            InetAddress[] allMyIps;
+
+            allMyIps = InetAddress.getAllByName(localhost.getCanonicalHostName());
+            if (allMyIps != null && allMyIps.length > 1) {
+                System.out.println("Server: Full list of IP addresses:");
+                for (InetAddress allMyIp : allMyIps) {
+                    System.out.println("    " + allMyIp);
+                }
+            }
+
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static void main(String[] args) {
         Server server = new Server();
     }
-    
+
 }

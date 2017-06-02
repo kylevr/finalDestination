@@ -26,17 +26,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author piete
  */
 public class LoginController implements Initializable {
-    
+
     @FXML
     AnchorPane currentPane;
-    
+
     private User user;
     private RegistryManager RM;
     private IAuthorized authorization;
@@ -51,7 +53,7 @@ public class LoginController implements Initializable {
         authorization = RM.getAuthorization();
         imageview_grandLogo.setImage(new Image("/Icon/scale.png"));
     }
-    
+
     @FXML
     TextField textfield_username;
     @FXML
@@ -60,7 +62,7 @@ public class LoginController implements Initializable {
     Label label_errorMsg;
     @FXML
     ImageView imageview_grandLogo;
-    
+
     @FXML
     public void button_loginUser() throws IOException {
         //nieuwe oplossing, fix ik na unittests. (database dingen >> isVerified)
@@ -77,11 +79,11 @@ public class LoginController implements Initializable {
             user.setIsAuthorized(true);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Main.fxml"));
             Parent root = loader.load();
-            
+
             MainController controller = (MainController) loader.getController();
             RM.setUser(user);
             controller.setUp(RM);
-            
+
             Stage inputStage = new Stage();
             Scene newScene = new Scene(root);
             inputStage.getIcons().add(new Image("/Icon/scale.png"));
@@ -99,7 +101,7 @@ public class LoginController implements Initializable {
     public void button_exit() {
         System.exit(1);
     }
-    
+
     @FXML
     public void button_registerUser() throws IOException {
 //        Stage newStage = new Stage();
@@ -111,13 +113,13 @@ public class LoginController implements Initializable {
 //        stage.close();
         //Stage currentStage = (Stage)currentPane.getScene().getWindow();
         //currentStage.close();
-        
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Registration.fxml"));
         Parent root = loader.load();
-        
+
         RegistrationController controller = (RegistrationController) loader.getController();
         controller.setUp(RM);
-        
+
         Stage inputStage = new Stage();
         Scene newScene = new Scene(root);
         inputStage.getIcons().add(new Image("/Icon/scale.png"));

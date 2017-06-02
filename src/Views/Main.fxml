@@ -9,10 +9,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.MainController">
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color:white;&#10;-fx-background-radius: 25;&#10;-fx-padding: 10;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.MainController">
   <children>
-    <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="700.0" />
-    <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" prefWidth="113.0" text="Settings" />
+    <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="721.0" style="-fx-background-radius: 50 100 50 50;&#10;" />
+    <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Settings" />
     <ScrollPane fx:id="scrollPaneBiddedAuctions" content="$null" layoutX="15.0" layoutY="330.0" prefHeight="214.0" prefWidth="474.0" />
     <Label layoutX="15.0" layoutY="310.0" text="Auctions You've placed a bid on:">
       <font>
@@ -21,7 +21,7 @@
     </Label>
     <ScrollPane fx:id="scrollPaneWonBought" content="$null" layoutX="15.0" layoutY="572.0" prefHeight="214.0" prefWidth="474.0" />
     <Label font="$x1" layoutX="15.0" layoutY="552.0" text="Auctions You've won / Bought:" />
-    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="18.0" layoutY="110.0" pickOnBounds="true" preserveRatio="false" />
+    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="15.0" layoutY="42.0" pickOnBounds="true" preserveRatio="false" />
     <CheckBox layoutX="290.0" layoutY="43.0" mnemonicParsing="false" prefWidth="199.0" text="Direct Auctions" />
     <Label font="$x1" layoutX="290.0" layoutY="24.0" text="Filters:" />
     <CheckBox layoutX="290.0" layoutY="75.0" mnemonicParsing="false" prefWidth="199.0" text="Countdown Auctions" />
@@ -41,15 +41,16 @@
         <Font size="13.0" />
       </font>
     </Label>
-
-    
-
-    <Button layoutX="18.0" layoutY="270.0" mnemonicParsing="false" prefWidth="199.0" text="Sell an item" />
     <Button layoutX="136.0" layoutY="14.0" mnemonicParsing="false" onAction="#button_Logout" prefHeight="25.0" prefWidth="113.0" text="Logout" underline="true" />
-    <Button layoutX="15.0" layoutY="47.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
-    <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="80.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
-    <Button layoutX="14.0" layoutY="80.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
-    <Button layoutX="433.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#btnRefresh" text="Refresh" />
-    <Button layoutX="14.0" layoutY="111.0" mnemonicParsing="false" onAction="#createAuction" prefWidth="113.0" text="Create Auction" />
+    <Button layoutX="16.0" layoutY="201.0" mnemonicParsing="false" onAction="#queuePurchaseClicked" prefWidth="113.0" text="Queue Purchase" />
+    <TextField fx:id="textField_usernameOfFeedbackOwner" layoutX="136.0" layoutY="230.0" prefHeight="25.0" prefWidth="104.0" promptText="nameFeedOwner" />
+    <Button layoutX="16.0" layoutY="230.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
+    <Button layoutX="429.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#btnRefresh" prefHeight="25.0" text="Refresh" />
+    <Button layoutX="16.0" layoutY="262.0" mnemonicParsing="false" onAction="#createAuction" prefWidth="113.0" text="Create Auction" />
+    <Button layoutX="1179.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#button_exit" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color:red;&#10;-fx-background-radius: 25;" text="X">
+      <font>
+        <Font name="System Bold" size="12.0" />
+      </font>
+    </Button>
   </children>
 </AnchorPane>

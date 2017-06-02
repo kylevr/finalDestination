@@ -38,8 +38,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
@@ -65,7 +67,7 @@ public class MainController implements Initializable {
     private Button btnQueuePurchase;
     @FXML
     private TextField textField_usernameOfFeedbackOwner;
-    
+
     private IAuction auctionInterface;
     private RegistryManager RM;
 
@@ -81,7 +83,7 @@ public class MainController implements Initializable {
         this.RM = RM;
         RM.getAuctionInterface();
         this.auctionInterface = RM.getAuction();
-        
+
         Pane allAuctions = new Pane();
         allAuctions.setPrefWidth(800);
         allAuctions.setPrefHeight(150 * auctionInterface.getAuctions().size());
@@ -140,12 +142,9 @@ public class MainController implements Initializable {
         }
         auctionsPane.setContent(allAuctions);
 
-        try
-        {
+        try {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
-        }
-        catch(NullPointerException ex)
-        {
+        } catch (NullPointerException ex) {
             System.out.println("LoggedInUser doesn't have an imageURL yet");
         }
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
@@ -181,22 +180,26 @@ public class MainController implements Initializable {
             lstCategory.getItems().remove(selected);
         }
     }
-    
+
     @FXML
     public void button_Logout() throws IOException {
         RM.getAuthorization().logout(RM.getUser().getUsername());
-        
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Login.fxml"));
         Parent root = loader.load();
         Stage newStage = new Stage();
+        newStage.getIcons().add(new Image("/Icon/scale.png"));
+
+        newStage.initStyle(StageStyle.TRANSPARENT);
+        newStage.setScene(new Scene(root, Color.TRANSPARENT));
         newStage.setScene(new Scene(root));
         newStage.show();
         Stage stage = (Stage) auctionsPane.getScene().getWindow();
         stage.close();
     }
-    
+
     @FXML
-    public void queuePurchaseClicked() throws IOException{
+    public void queuePurchaseClicked() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/queuePurchase.fxml"));
         Scene newScene;
         newScene = new Scene(loader.load());
@@ -207,33 +210,32 @@ public class MainController implements Initializable {
         inputStage.setScene(newScene);
         inputStage.showAndWait();
     }
-    
+
     @FXML
-    public void createAuction() throws IOException{
-        try{
-            
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/CreateAuction.fxml"));
-        Scene newScene;
-        newScene = new Scene(loader.load());
-        CreateAuctionController controller = loader.<CreateAuctionController>getController();
-        controller.setUp(RM);
-        Stage inputStage = new Stage();
-        inputStage.getIcons().add(new Image("/Icon/scale.png"));        
-        inputStage.setScene(newScene);
-        inputStage.showAndWait();}
-        catch(Exception e){e.printStackTrace();}
+    public void createAuction() throws IOException {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/CreateAuction.fxml"));
+            Scene newScene;
+            newScene = new Scene(loader.load());
+            CreateAuctionController controller = loader.<CreateAuctionController>getController();
+            controller.setUp(RM);
+            Stage inputStage = new Stage();
+            inputStage.getIcons().add(new Image("/Icon/scale.png"));
+            inputStage.setScene(newScene);
+            inputStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
+
     public void button_goToFeedbackOf() throws IOException {
         if (!textField_usernameOfFeedbackOwner.getText().isEmpty()) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Profile_Feedback.fxml"));
                 Parent root = loader.load();
-
                 Profile_FeedbackController controller = (Profile_FeedbackController) loader.getController();
-
-                controller.setUp(RM , textField_usernameOfFeedbackOwner.getText());
-
+                controller.setUp(RM, textField_usernameOfFeedbackOwner.getText());
                 Stage inputStage = new Stage();
                 Scene newScene = new Scene(root);
                 inputStage.getIcons().add(new Image("/Icon/scale.png"));
@@ -246,14 +248,16 @@ public class MainController implements Initializable {
                 System.out.println("Failed to open feedback screen");
                 ex.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             System.out.println("textField_usernameOfFeedbackOwner may not be empty when trying to open profile feedback");
         }
     }
-    
-    public void btnRefresh() throws RemoteException{
+
+    public void button_exit() {
+        System.exit(1);
+    }
+
+    public void btnRefresh() throws RemoteException {
         setUp(RM);
     }
 }
