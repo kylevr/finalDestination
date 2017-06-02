@@ -158,6 +158,7 @@ public class MainController implements Initializable {
         AuctionController controller = loader.<AuctionController>getController();
         controller.setUp(a, this.RM);
         Stage inputStage = new Stage();
+        inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);
         inputStage.showAndWait();
     }
@@ -202,6 +203,7 @@ public class MainController implements Initializable {
         QueuePurchaseController controller = loader.<QueuePurchaseController>getController();
         controller.setUp(RM);
         Stage inputStage = new Stage();
+        inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);
         inputStage.showAndWait();
     }
@@ -216,6 +218,7 @@ public class MainController implements Initializable {
         CreateAuctionController controller = loader.<CreateAuctionController>getController();
         controller.setUp(RM);
         Stage inputStage = new Stage();
+        inputStage.getIcons().add(new Image("/Icon/scale.png"));        
         inputStage.setScene(newScene);
         inputStage.showAndWait();}
         catch(Exception e){e.printStackTrace();}
@@ -233,6 +236,7 @@ public class MainController implements Initializable {
 
                 Stage inputStage = new Stage();
                 Scene newScene = new Scene(root);
+                inputStage.getIcons().add(new Image("/Icon/scale.png"));
                 inputStage.setScene(newScene);
                 inputStage.setTitle("Grand Exchange");
                 inputStage.show();

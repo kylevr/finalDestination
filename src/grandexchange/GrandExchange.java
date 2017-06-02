@@ -29,6 +29,9 @@ import javafx.stage.Stage;
 import Database.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -38,11 +41,13 @@ public class GrandExchange extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-      
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Login.fxml"));
         Parent root = loader.load();
+        primaryStage.getIcons().add(new Image("/Icon/scale.png"));
 
-        primaryStage.setScene(new Scene(root));
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root,Color.TRANSPARENT));
         //primaryStage.setTitle("Grand Exchange-Login");
         primaryStage.show();
     }
