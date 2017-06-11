@@ -114,6 +114,7 @@ public class AuctionController implements Initializable {
     Auction auction;
     Direct directAuction;
     Standard standardAuction;
+    Grand_Exchange GX;
     private User loggedInUser;
     private String type;
     private RegistryManager RM;
@@ -132,7 +133,8 @@ public class AuctionController implements Initializable {
 
     }
 
-    public void setUp(Auction auction, RegistryManager RM) {
+    public void setUp(Auction auction, RegistryManager RM) throws RemoteException {
+        this.GX = new Grand_Exchange();
         this.RM = RM;
         this.auction = auction;
         loggedInUser = RM.getUser();
@@ -343,7 +345,7 @@ public class AuctionController implements Initializable {
         }
     }
 
-    public void buyButtonClick() throws RemoteException, NotEnoughMoneyException {
+    public void buyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
         double price = auction.getCurrentPrice();
@@ -365,10 +367,10 @@ public class AuctionController implements Initializable {
         } else {
             JOptionPane.showMessageDialog(null, "Something went wrong");
         }
-
+        checkAuctionStatus();
     }
 
-    public void bidButtonClick() throws RemoteException, NotEnoughMoneyException {
+    public void bidButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
         if (auction.getCurrentPrice() < Double.parseDouble(txtPriceToBid.getText())) {
@@ -385,9 +387,10 @@ public class AuctionController implements Initializable {
         } else {
             JOptionPane.showMessageDialog(null, "Something went wrong");
         }
+        checkAuctionStatus();
     }
 
-    public void instabuyButtonClick() throws RemoteException, NotEnoughMoneyException {
+    public void instabuyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
 
@@ -407,6 +410,7 @@ public class AuctionController implements Initializable {
         } else {
             JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
         }
+        checkAuctionStatus();
     }
 
     public void setCountdownBuys(Auction auction) {
@@ -442,6 +446,30 @@ public class AuctionController implements Initializable {
         }
 
         recentPurchasesPane.setContent(BuyPane);
+    }
+    
+    /**
+     * if items in the auction are less then one, the auction closes
+     */
+    public void checkAuctionStatus() throws SQLException {
+        if (auction instanceof Countdown) { 
+            Countdown countdown = (Countdown) auction;
+            if(countdown.getProductQuantity() <1) { 
+                GX.closeAuction();
+            }
+        } else if (auction instanceof Direct) { 
+            Direct direct = (Direct) auction;
+            if(direct.getProductQuantity() <1) {
+                GX.closeAuction();
+            }
+        } else if(auction instanceof Standard) {
+            Standard standard = (Standard) auction;
+            if(standard.getProductQuantity() <1) {
+                GX.closeAuction();
+            }
+        }
+        
+       
     }
 
     @FXML
