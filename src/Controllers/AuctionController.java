@@ -118,7 +118,7 @@ public class AuctionController implements Initializable {
     private User loggedInUser;
     private String type;
     private RegistryManager RM;
-
+   Timeline timeline1;
     Timeline timeline;
     int timeSeconds;
 
@@ -139,7 +139,53 @@ public class AuctionController implements Initializable {
         this.auction = auction;
         loggedInUser = RM.getUser();
         update();
+             timeline1 = new Timeline();
+            timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
 
+                @Override
+                public void handle(Event event) {
+                    liveUpdate();
+                }
+            }));
+            timeline1.playFromStart();
+
+    }
+
+    public void liveUpdate() {
+        int updateid = auction.getId();
+        try {
+            auction = RM.getAuction().getAuction(updateid);
+        } catch (RemoteException ex) {
+            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (auction instanceof Countdown) {
+            //setting auction
+            Countdown countdownAuction = (Countdown) auction;
+            countdownAuction.setPrice();
+            countdownCurrentPrice.setText("€" + countdownAuction.getCurrentPrice());
+            timeline.playFromStart();
+            if (auction.getProductQuantity()
+                    > 1) {
+                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
+            } else if (auction.getProductQuantity()
+                    == 1) {
+                countdownAvailableUnits.setText("There is just 1 item left");
+            } else if (auction.getProductQuantity()
+                    == 0) {
+                countdownAvailableUnits.setText("There are no items left, you missed it");
+            }
+
+            setCountdownBuys(auction);
+        } else if (auction instanceof Standard) {
+            standardAuction = (Standard) auction;
+            countdownCurrentPrice.setText("€" + standardAuction.getCurrentPrice());
+            if (auction.getProductQuantity()
+                    >= 1) {
+                countdownAvailableUnits.setText("You're Buying " + auction.getProductQuantity() + " units for this price!");
+            }
+
+            setCountdownBuys(auction);
+        }
     }
 
     public void update() {
@@ -212,7 +258,8 @@ public class AuctionController implements Initializable {
             long periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
             long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();
             Timestamp newDate = new Timestamp(next_period_begin);
-            CreateDate.setText(newDate.getMonth() + "/" + newDate.getDay() + "  " + newDate.getHours() + ":" + newDate.getMinutes() + ":" + newDate.getSeconds());
+            if(timeline != null){timeline.stop();}
+            timeline = null;
             timeline = new Timeline();
             timeline.setCycleCount(Timeline.INDEFINITE);
             long duration = (next_period_begin - System.currentTimeMillis()) / 1000;
@@ -255,9 +302,7 @@ public class AuctionController implements Initializable {
 
             setCountdownBuys(auction);
 
-        }
-
-        if (auction instanceof Standard) {
+        } else if (auction instanceof Standard) {
             //setting correct buttons:           
             txtPriceToBid.setVisible(true);
             BidBtn.setVisible(true);
