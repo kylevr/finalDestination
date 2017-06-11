@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color:white;&#10;-fx-background-radius: 25;&#10;-fx-padding: 10;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.MainController">
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" style="" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.MainController">
   <children>
-    <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="721.0" style="-fx-background-radius: 50 100 50 50;&#10;" />
+    <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="700.0" style="&#10;" />
     <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Settings" />
     <ScrollPane fx:id="scrollPaneBiddedAuctions" content="$null" layoutX="15.0" layoutY="330.0" prefHeight="214.0" prefWidth="474.0" />
     <Label layoutX="15.0" layoutY="310.0" text="Auctions You've placed a bid on:">
@@ -47,10 +47,5 @@
     <Button layoutX="16.0" layoutY="230.0" mnemonicParsing="false" onAction="#button_goToFeedbackOf" prefHeight="25.0" prefWidth="113.0" text="Feedback" />
     <Button layoutX="429.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#btnRefresh" prefHeight="25.0" text="Refresh" />
     <Button layoutX="16.0" layoutY="262.0" mnemonicParsing="false" onAction="#createAuction" prefWidth="113.0" text="Create Auction" />
-    <Button layoutX="1179.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#button_exit" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color:red;&#10;-fx-background-radius: 25;" text="X">
-      <font>
-        <Font name="System Bold" size="12.0" />
-      </font>
-    </Button>
   </children>
 </AnchorPane>

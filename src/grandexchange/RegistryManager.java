@@ -173,7 +173,7 @@ public class RegistryManager {
 
         try {
             localhost = InetAddress.getLocalHost();
-            //ipAddress = localhost.getHostAddress();
+            ipAddress = localhost.getHostAddress();
         } catch (UnknownHostException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }

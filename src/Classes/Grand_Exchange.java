@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Array;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Properties;
@@ -130,7 +131,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         if (auction == null) {
             throw new IllegalArgumentException();
         } else {
-            auctions.add(auction);
+            auctions.remove(auction);
         }
     }
 
@@ -631,8 +632,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         for (int i = 0; i < amount; i++) {
             auctions.get(index).addBid(new Bid(AuctionID, u, price));
         }
-        int productQuantity = auctions.get(index).getProductQuantity() - amount;
-        auctions.get(index).setProductQuantity(productQuantity);
+        auctions.get(index).setProductQuantity(amount);
         //return auctionConn.addBid(amount, AuctionID, userID, price);
         return true;
     }
@@ -690,6 +690,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         transport.close();
     }
 
+    int id=10;
     @Override
     public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
 
@@ -698,6 +699,15 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             System.out.println("startingprice mag niet lager zijn dan instabuy");
             throw new IllegalArgumentException();
         }
+        int index = -1;
+        for (int i = 0; i < auctions.size(); i++) {
+            if (Integer.parseInt(products.get(i).getGTIN()) == productID) {
+                index = i;
+                break;
+            }
+        }
+        Product p = products.get(index);
+        auctions.add(new Standard(id,new User("test2222","password","xtest2222","test@test.nl",true,500,"https://fiom.nl/sites/default/files/styles/section_quote/public/nieuws_tiener.jpg?"),p,startingprice,quantity, new Timestamp(2017,6,2,15,35,52,2),new Timestamp(2017,6,20,15,35,52,2),StatusEnum.New,description,imageUrl,3000));
         return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);
     }
 }

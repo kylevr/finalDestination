@@ -11,10 +11,18 @@
 <AnchorPane id="AnchorPane" fx:id="currentPane" minHeight="399.0" minWidth="308.0" prefHeight="399.0" prefWidth="308.0" style="-fx-background-color:lightgreen;&#10;-fx-background-radius: 25;&#10;-fx-padding: 10;&#10;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controllers.LoginController">
   <children>
     <TextField fx:id="textfield_username" layoutX="111.0" layoutY="66.0" prefHeight="25.0" prefWidth="149.0" promptText="username" />
-    <Label layoutX="41.0" layoutY="70.0" text="Username" />
-    <Label layoutX="41.0" layoutY="103.0" text="Password" />
-    <Button fx:id="button_login" layoutX="210.0" layoutY="132.0" mnemonicParsing="false" onAction="#button_loginUser" prefHeight="25.0" text="Login" />
-    <Button fx:id="button_gotoRegistration" layoutX="111.0" layoutY="132.0" mnemonicParsing="false" onAction="#button_registerUser" prefHeight="25.0" prefWidth="97.0" text="No Account?" />
+    <Label layoutX="41.0" layoutY="70.0" text="Username">
+      <font>
+        <Font name="System Italic" size="13.0" fx:id="x1" />
+      </font>
+    </Label>
+    <Label font="$x1" layoutX="41.0" layoutY="103.0" text="Password" />
+    <Button fx:id="button_login" font="$x1" layoutX="210.0" layoutY="132.0" mnemonicParsing="false" onAction="#button_loginUser" prefHeight="25.0" text="Login" />
+    <Button fx:id="button_gotoRegistration" layoutX="111.0" layoutY="132.0" mnemonicParsing="false" onAction="#button_registerUser" prefHeight="25.0" prefWidth="97.0" text="No Account?">
+      <font>
+        <Font name="System Italic" size="12.0" />
+      </font>
+    </Button>
     <Label fx:id="label_errorMsg" layoutX="38.0" layoutY="165.0" text="&lt;Label for error messages&gt;" textFill="#ff3333" visible="false" />
     <ImageView fx:id="imageview_grandLogo" fitHeight="159.0" fitWidth="219.0" focusTraversable="true" layoutX="50.0" layoutY="223.0" pickOnBounds="true" preserveRatio="false" />
     <PasswordField fx:id="textfield_password" layoutX="111.0" layoutY="100.0" prefWidth="149.0" promptText="password" />
@@ -23,7 +31,7 @@
         <Font name="System Italic" size="20.0" />
       </font>
     </Label>
-    <Button layoutX="266.0" layoutY="7.0" minWidth="25.0" mnemonicParsing="false" onMouseClicked="#button_exit" prefHeight="27.0" prefWidth="28.0" style="-fx-background-color:red;&#10;-fx-background-radius: 25;" text="X">
+    <Button layoutX="266.0" layoutY="7.0" minWidth="25.0" mnemonicParsing="false" onMouseClicked="#button_exit" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color:red;&#10;-fx-background-radius: 25;" text="X">
       <font>
         <Font name="System Bold" size="12.0" />
       </font>
