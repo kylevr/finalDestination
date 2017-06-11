@@ -95,6 +95,10 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             users.add(user);
         }
     }
+    
+    public void closeAuction() throws SQLException {
+        auctionConn.closeAuction();
+    }
 
     /**
      * removes user from collection of users

@@ -48,6 +48,7 @@ public class AuctionConnection {
     static final String GET_BID_FROM_AUCTION_ID = "SELECT * FROM bid WHERE auctionID = ?";
     static final String GET_FROM_AUCTIONS = "SELECT * FROM auction";
     static final String SET_AUCTION_NEW = "INSERT INTO auction(sellerID, productID, timecreated, currentprice, instabuyprice, instabuyable, productquantity, timeend, priceloweringAmount, priceloweringdelay, type, status, imageUrl, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    static final String SET_CLOSE_AUCTION = "DELETE FROM `auction` WHERE  `productquantity` < 1";
 
     // Constructor
     public AuctionConnection() {
@@ -403,6 +404,23 @@ public class AuctionConnection {
             Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             conn.closeConnection();
             return false;
+        }
+    }
+    
+    /**
+     * Closes all Auctions where the amount is less then one.
+     * @throws SQLException if connection failed
+     */
+    public void closeAuction() throws SQLException {
+        try {
+            conn.getConnection();
+            pstmt = conn.getMyConn().prepareStatement(SET_CLOSE_AUCTION);
+            myRs = pstmt.executeQuery();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        } finally {
+            conn.closeConnection();
         }
     }
 

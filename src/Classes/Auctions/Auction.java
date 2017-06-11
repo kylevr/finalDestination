@@ -184,6 +184,8 @@ public abstract class Auction implements Serializable{
 
         return seller;
     }
+    
+   
 
     public static double round(double value, int places) {
         if (places < 0) {
