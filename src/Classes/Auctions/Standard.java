@@ -14,34 +14,39 @@ import java.sql.Timestamp;
  *
  * @author piete
  */
-public class Standard extends Auction implements Serializable{
+public class Standard extends Auction implements Serializable {
 
-    private  Timestamp creationDate;
-    private  Timestamp timeEnd;
+    private Timestamp creationDate;
+    private Timestamp timeEnd;
 
-    public Standard(int id, User seller, Product product, double price, int quantity, Timestamp beginTime, Timestamp timeEnd,StatusEnum status, String description,String imageURLs, double instabuy) {
-        super(id, seller, product, price, quantity,status,description,imageURLs,instabuy);
+    public Standard(int id, User seller, Product product, double price, int quantity, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs, double instabuy) {
+        super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);
         this.timeEnd = timeEnd;
         this.creationDate = beginTime;
 
     }
 
-    public Standard(User seller, Product product, int quantity, double price, double instabuyprice, Timestamp beginTime, Timestamp timeEnd,StatusEnum status, String description,String imageURLs) {
-        super(seller, product, quantity, price, instabuyprice,status,description,imageURLs);
+    public Standard(User seller, Product product, int quantity, double price, double instabuyprice, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs) {
+        super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);
         this.timeEnd = timeEnd;
         this.creationDate = beginTime;
     }
-    
+
     /**
      * Returns the remaining time of a standard auction in seconds.
+     *
      * @return remaining time of a standard auction in seconds
      */
-    public long getTimeRemaining(){
-    long diff = timeEnd.getTime() - creationDate.getTime();
-    return diff / 1000 % 60;
+    public long getTimeRemaining() {
+        long diff = timeEnd.getTime() - creationDate.getTime();
+        return diff / 1000 % 60;
     }
-    
+
     public Timestamp getCreationDate() {
         return creationDate;
+    }
+
+    public Timestamp getEndDate() {
+        return timeEnd;
     }
 }

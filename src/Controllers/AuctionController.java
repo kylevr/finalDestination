@@ -118,7 +118,7 @@ public class AuctionController implements Initializable {
     private User loggedInUser;
     private String type;
     private RegistryManager RM;
-   Timeline timeline1;
+    Timeline timeline1;
     Timeline timeline;
     int timeSeconds;
 
@@ -139,15 +139,15 @@ public class AuctionController implements Initializable {
         this.auction = auction;
         loggedInUser = RM.getUser();
         update();
-             timeline1 = new Timeline();
-            timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
+        timeline1 = new Timeline();
+        timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
 
-                @Override
-                public void handle(Event event) {
-                    liveUpdate();
-                }
-            }));
-            timeline1.playFromStart();
+            @Override
+            public void handle(Event event) {
+                liveUpdate();
+            }
+        }));
+        timeline1.playFromStart();
 
     }
 
@@ -258,7 +258,9 @@ public class AuctionController implements Initializable {
             long periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
             long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();
             Timestamp newDate = new Timestamp(next_period_begin);
-            if(timeline != null){timeline.stop();}
+            if (timeline != null) {
+                timeline.stop();
+            }
             timeline = null;
             timeline = new Timeline();
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -271,11 +273,9 @@ public class AuctionController implements Initializable {
                     timeSeconds--;
                     int minutesToGo = (int) Math.floor(timeSeconds / 60);
                     int secondsToGo = timeSeconds - (minutesToGo * 60);
-                    if (secondsToGo < 10) {
-                        CreateDate.setText(minutesToGo + ":0" + secondsToGo);
-                    } else {
-                        CreateDate.setText(minutesToGo + ":" + secondsToGo);
-                    }
+                    String minutes = Integer.toString(minutesToGo);
+                    String seconds = Integer.toString(secondsToGo);
+                    CreateDate.setText(minutes + ":" + seconds);
                     if (minutesToGo <= 0) {
                         minutesBar.setProgress(-1);
                     } else {
@@ -327,6 +327,44 @@ public class AuctionController implements Initializable {
             }
 
             setCountdownBuys(auction);
+            long now = System.currentTimeMillis();
+            long then = standardAuction.getEndDate().getTime();
+            timeSeconds = (int) ((now - then) / 1000);
+            if (timeline != null) {
+                timeline.stop();
+            }
+            timeline = null;
+            timeline = new Timeline();
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {
+
+                @Override
+                public void handle(Event event) {
+                    timeSeconds--;
+                    int daysToGo = (int) Math.floor(timeSeconds / 60 / 60 / 24);
+                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60);
+                    int minutesToGo = (int) Math.floor(timeSeconds / 60);
+                    int secondsToGo = timeSeconds - (minutesToGo * 60);
+                    String hours = Integer.toString(hoursToGo);
+                    String minutes = Integer.toString(minutesToGo);
+                    String seconds = Integer.toString(secondsToGo);
+                    if (hoursToGo < 10) {
+                        hours = "0" + hours;
+                    }
+                    if (minutesToGo < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    if (secondsToGo < 10) {
+                        seconds = "0" + seconds;
+                    }
+                    CreateDate.setText(daysToGo + "Days,  " + hours + ":" + minutes + ":" + seconds);
+                    if (timeSeconds <= 0) {
+                        timeline.stop();
+                        update();
+                    }
+                }
+            }));
+            timeline.playFromStart();
 
         }
 
@@ -492,29 +530,28 @@ public class AuctionController implements Initializable {
 
         recentPurchasesPane.setContent(BuyPane);
     }
-    
+
     /**
      * if items in the auction are less then one, the auction closes
      */
     public void checkAuctionStatus() throws SQLException {
-        if (auction instanceof Countdown) { 
+        if (auction instanceof Countdown) {
             Countdown countdown = (Countdown) auction;
-            if(countdown.getProductQuantity() <1) { 
+            if (countdown.getProductQuantity() < 1) {
                 GX.closeAuction();
             }
-        } else if (auction instanceof Direct) { 
+        } else if (auction instanceof Direct) {
             Direct direct = (Direct) auction;
-            if(direct.getProductQuantity() <1) {
+            if (direct.getProductQuantity() < 1) {
                 GX.closeAuction();
             }
-        } else if(auction instanceof Standard) {
+        } else if (auction instanceof Standard) {
             Standard standard = (Standard) auction;
-            if(standard.getProductQuantity() <1) {
+            if (standard.getProductQuantity() < 1) {
                 GX.closeAuction();
             }
         }
-        
-       
+
     }
 
     @FXML
