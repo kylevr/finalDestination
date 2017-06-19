@@ -118,26 +118,33 @@ public class MainController implements Initializable {
             description.wrapTextProperty().setValue(Boolean.TRUE);
             description.setEditable(false);
 
-            ImageView image = new ImageView(new Image(a.getImageURLs()[0]));
-            image.setFitWidth(100);
-            image.setFitHeight(100);
-            image.relocate(25, 25);
-            image.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                    new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    ImageView i = (ImageView) e.getSource();
-                    try {
-                        showAuction(a);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            //setting image of auction
+                ImageView image;
+                try
+                {
+                    image = new ImageView(new Image(a.getImageURLs()[0]));
                 }
-            });
-
-            Auction.getChildren().addAll(productName, image, price, seller, description);
-            allAuctions.getChildren().add(Auction);
-
+                catch(Exception ex)
+                {
+                    image = new ImageView();
+                }
+                image.setFitWidth(100);
+                image.setFitHeight(100);
+                image.relocate(25, 25);
+                image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                        new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        ImageView i = (ImageView) e.getSource();
+                        try {
+                            showAuction(a);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                Auction.getChildren().addAll(productName, image, price, seller, description);
+                allAuctions.getChildren().add(Auction);
             i++;
         }
         auctionsPane.setContent(allAuctions);
