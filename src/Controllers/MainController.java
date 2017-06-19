@@ -126,7 +126,7 @@ public class MainController implements Initializable {
                 }
                 catch(Exception ex)
                 {
-                    image = new ImageView();
+                    image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
                 }
                 image.setFitWidth(100);
                 image.setFitHeight(100);

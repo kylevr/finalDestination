@@ -23,7 +23,7 @@ public class Standard extends Auction implements Serializable {
         super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);
         this.timeEnd = timeEnd;
         this.creationDate = beginTime;
-
+        this.timeEnd = new Timestamp(beginTime.getTime()+(long)604800000);
     }
 
     public Standard(User seller, Product product, int quantity, double price, double instabuyprice, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs) {
