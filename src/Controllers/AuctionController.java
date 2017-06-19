@@ -204,7 +204,12 @@ public class AuctionController implements Initializable {
         imagePane.setPrefWidth(85 * auction.getImageURLs().length);
         imagePane.setPrefHeight(70);
         for (String URL : auction.getImageURLs()) {
-            ImageView image = new ImageView(new Image(URL));
+            ImageView image = null;
+            try {
+                image = new ImageView(new Image(URL));
+            } catch (Exception ex) {
+                image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+            }
             image.setFitWidth(80);
             image.setFitHeight(60);
             image.relocate(85 * i, 5);
@@ -216,7 +221,14 @@ public class AuctionController implements Initializable {
                     bigProductImage.setImage(i.getImage());
                 }
             });
-            bigProductImage.setImage(new Image(auction.getImageURLs()[0]));
+            Image bigImage = null;
+            try {
+                bigImage = new Image(auction.getImageURLs()[0]);
+            } catch (Exception ex) {
+                bigImage = new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm());
+            }
+
+            bigProductImage.setImage(bigImage);
             imagePane.getChildren().add(image);
             i++;
         }
@@ -275,6 +287,12 @@ public class AuctionController implements Initializable {
                     int secondsToGo = timeSeconds - (minutesToGo * 60);
                     String minutes = Integer.toString(minutesToGo);
                     String seconds = Integer.toString(secondsToGo);
+                    if (minutesToGo < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    if (secondsToGo < 10) {
+                        seconds = "0" + seconds;
+                    }
                     CreateDate.setText(minutes + ":" + seconds);
                     if (minutesToGo <= 0) {
                         minutesBar.setProgress(-1);
@@ -341,10 +359,12 @@ public class AuctionController implements Initializable {
                 @Override
                 public void handle(Event event) {
                     timeSeconds--;
-                    int daysToGo = (int) Math.floor(timeSeconds / 60 / 60 / 24);
-                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60);
-                    int minutesToGo = (int) Math.floor(timeSeconds / 60);
-                    int secondsToGo = timeSeconds - (minutesToGo * 60);
+                    int timeDays = timeSeconds;
+                    int timeHours = timeSeconds;
+                    int daysToGo = (int) Math.floor(timeDays / 60 / 60 / 24);
+                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60) - daysToGo * 24;
+                    int minutesToGo = (int) Math.floor(timeSeconds / 60)-(hoursToGo*60)-(daysToGo*24*60);
+                    int secondsToGo = timeSeconds -(hoursToGo*60*60)-(daysToGo*24*60*60)-(minutesToGo*60);
                     String hours = Integer.toString(hoursToGo);
                     String minutes = Integer.toString(minutesToGo);
                     String seconds = Integer.toString(secondsToGo);
