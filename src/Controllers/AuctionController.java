@@ -539,16 +539,22 @@ public class AuctionController implements Initializable {
             Countdown countdown = (Countdown) auction;
             if (countdown.getProductQuantity() < 1) {
                 GX.closeAuction();
+                System.out.println("Verwijderd uit de databsase");
+                closeButtonClick();
             }
         } else if (auction instanceof Direct) {
             Direct direct = (Direct) auction;
             if (direct.getProductQuantity() < 1) {
                 GX.closeAuction();
+                System.out.println("Verwijderd uit de databsase");
+                closeButtonClick();
             }
         } else if (auction instanceof Standard) {
             Standard standard = (Standard) auction;
             if (standard.getProductQuantity() < 1) {
                 GX.closeAuction();
+                System.out.println("Verwijderd uit de databsase");
+                closeButtonClick();
             }
         }
 
