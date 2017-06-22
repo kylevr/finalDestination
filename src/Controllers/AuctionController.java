@@ -476,7 +476,7 @@ public class AuctionController implements Initializable {
     public void bidButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
-        if (auction.getCurrentPrice() < Double.parseDouble(txtPriceToBid.getText())) {
+        if (auction.getCurrentPrice() < Double.parseDouble(txtPriceToBid.getText())&&Double.parseDouble(txtPriceToBid.getText())<auction.getInstabuyPrice()) {
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Bid " + txtPriceToBid.getText(), "Are You Sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 bid.placeBid(1, loggedInUser.getUsername(), auction.getId(), Double.parseDouble(txtPriceToBid.getText()));
