@@ -161,36 +161,36 @@ public class UserConnection {
      */
     public User getUser(String username, String password) {
         User user = null;
-        try {
-            conn.getConnection();
-            myConn = conn.getMyConn();
-            pstmt = myConn.prepareStatement(GET_FROM_USER_BYLOGININFO);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
+        if (!username.isEmpty() || !password.isEmpty()) {
+            try {
+                conn.getConnection();
+                myConn = conn.getMyConn();
+                pstmt = myConn.prepareStatement(GET_FROM_USER_BYLOGININFO);
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
 
-            myRs = pstmt.executeQuery();
-            myRs.next();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+                myRs = pstmt.executeQuery();
+                myRs.next();
+                int userID = myRs.getInt("id");
+                //removed  int bsn = myRs.getInt("bsn");
+                String usernm = myRs.getString("username");
+                String pass = myRs.getString("password");
+                String alias = myRs.getString("alias");
+                String email = myRs.getString("email");
+                boolean verified = myRs.getBoolean("verified");
+                double saldo = myRs.getDouble("saldo");
+                String imgURL = myRs.getString("imageUrl");
+
+                user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
+                conn.closeConnection();
+            } catch (SQLException ex) {
+                System.out.println("User not found");
+                conn.closeConnection();
+            }
         }
-        try {
-            int userID = myRs.getInt("id");
-            //removed  int bsn = myRs.getInt("bsn");
-            String usernm = myRs.getString("username");
-            String pass = myRs.getString("password");
-            String alias = myRs.getString("alias");
-            String email = myRs.getString("email");
-            boolean verified = myRs.getBoolean("verified");
-            double saldo = myRs.getDouble("saldo");
-            String imgURL = myRs.getString("imageUrl");
-
-            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
-            conn.closeConnection();
-        } catch (SQLException ex) {
-            System.out.println("User not found");
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-            conn.closeConnection();
+        else
+        {
+            System.out.println("Username and password may not be empty.");
         }
         return user;
     }
