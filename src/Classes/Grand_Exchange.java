@@ -201,7 +201,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @return
      */
     public boolean addAuctionToDB(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
-        if (instabuyprice > currentprice) {
+        if (instabuyable == 0 && instabuyprice > currentprice) {
             throw new IllegalArgumentException();
         } else {
             return auctionConn.insertAuction(sellerid, productid, currentprice, instabuyprice, instabuyable, quantity, loweringamount, loweringdelay, type, status, imgurl, description);
@@ -240,7 +240,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             //if (Guest != null) {
             if (Guest != null && userConn.setAuthorized(Guest.getUsername(), true)) {
                 users.add(Guest);
-                System.out.println("user with username " + Guest.getUsername() + " is logged in");
+                System.out.println("user with username " + Guest.getUsername() + " is logged in" + Guest.getUserID());
                 returnValue = Guest;
             } else {
                 System.out.println("no user is logged in");
@@ -698,20 +698,20 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     @Override
     public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
 
-        if (startingprice < instabuyPrice) {
+        if (instabuyable == 1 && startingprice > instabuyPrice) {
 
             System.out.println("startingprice mag niet lager zijn dan instabuy");
             throw new IllegalArgumentException();
         }
-        int index = -1;
-        for (int i = 0; i < auctions.size(); i++) {
-            if (Integer.parseInt(products.get(i).getGTIN()) == productID) {
-                index = i;
-                break;
-            }
-        }
-        Product p = products.get(index);
-        auctions.add(new Standard(id,new User("test2222","password","xtest2222","test@test.nl",true,500,"https://fiom.nl/sites/default/files/styles/section_quote/public/nieuws_tiener.jpg?"),p,startingprice,quantity, new Timestamp(2017,6,2,15,35,52,2),new Timestamp(2017,6,20,15,35,52,2),StatusEnum.New,description,imageUrl,3000));
+//        int index = -1;
+//        for (int i = 0; i < auctions.size(); i++) {
+//            if (Integer.parseInt(products.get(i).getGTIN()) == productID) {
+//                index = i;
+//                break;
+//            }
+//        }
+//        Product p = products.get(index);
+//        auctions.add(new Standard(id,new User("test2222","password","xtest2222","test@test.nl",true,500,"https://fiom.nl/sites/default/files/styles/section_quote/public/nieuws_tiener.jpg?"),p,startingprice,quantity, new Timestamp(2017,6,2,15,35,52,2),new Timestamp(2017,6,20,15,35,52,2),StatusEnum.New,description,imageUrl,3000));
         return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);
     }
 }

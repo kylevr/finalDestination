@@ -61,9 +61,11 @@ public class Countdown extends Auction implements Serializable {
     public void setPrice() {
         long now = System.currentTimeMillis();
         long then = creationDate.getTime();
-        long periods = (now - then) / 60000 / (long) priceloweringDelay;
+        if(priceloweringDelay > 0){
+            long periods = (now - then) / 60000 / (long) priceloweringDelay;
         double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);
         setCurrentPrice(newPrice);
+        }
     }
 
 }

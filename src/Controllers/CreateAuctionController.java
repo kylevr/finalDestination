@@ -12,6 +12,7 @@ import Interfaces.IAuction;
 import Interfaces.IAuthorized;
 import Interfaces.ICreateProduct;
 import grandexchange.RegistryManager;
+import static java.lang.Math.toIntExact;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
@@ -115,14 +116,20 @@ public class CreateAuctionController implements Initializable {
             int productid;
             productid = productInterface.createProduct(Gtin, productName, description);
             if (productid != 0) {
-                int userid = 1;
+                int userid = RM.getUser().getUserID();
                 int instabuyable = 0;
                 if (instabuy) {
                     instabuyable = 1;
                 }
+                int priceloweringAmount = 0;
+                int priceloweringdelay = 0;
+                if(auctionType.equalsIgnoreCase("countdown")){
+                    priceloweringAmount = toIntExact(Math.round(startingPrice / 100));
+                    priceloweringdelay = 10;
+                }
                 boolean succeeded = false;
                 try{
-                    succeeded = auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, 0, 0, auctionType, 1, imageUrl, description);
+                    succeeded = auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, priceloweringAmount, priceloweringdelay, auctionType, 1, imageUrl, description);
                     if(succeeded){
                     JOptionPane.showMessageDialog(null, "Your auction has been added!", "InfoBox: " + "Succes", JOptionPane.INFORMATION_MESSAGE);
                 }else{

@@ -88,7 +88,9 @@ public class QueuePurchaseController implements Initializable {
     }
 
     public void setUp(RegistryManager RM) {
-        this.RM = new RegistryManager();
+        this.RM = RM;
+        this.RM.getQueuePurchaseInterface();
+        this.queuePurchaseInterface = RM.getQueuePurchase();
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
     
@@ -172,17 +174,32 @@ public class QueuePurchaseController implements Initializable {
         
         if (txtQuantity.getText().equals("") || txtMinPrice.getText().equals("") || txtMaxPrice.getText().equals("") || selectedProductID == 0){
             Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Wat de F doe jij nou weer");
-            alert.setHeaderText("This is a header WOO !");
-            alert.setContentText("There are still empty fields ! fgt");
+            alert.setTitle("Error!");
+            alert.setHeaderText("Alle velden moeten ingevuld zijn.");
+            alert.setContentText("Vul alle velden in en probeer het opnieuw.");
 
             alert.showAndWait();
         }
-        else{
+        else {
             int quantity = Integer.parseInt(txtQuantity.getText());
             double minAmount = Double.parseDouble(txtMinPrice.getText());
             double maxAmount = Double.parseDouble(txtMaxPrice.getText());
-            queuePurchaseInterface.createQueuePurchase(quantity, minAmount, maxAmount, selectedProductID, RM.getUser().getUserID());
+            if (maxAmount < minAmount) {
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Error!");
+                alert.setHeaderText("Ongeldige gegevens ingevuld.");
+                alert.setContentText("De maximale prijs moet gelijk of hoger zijn dan de minimale prijs.");
+
+                alert.showAndWait();
+            } else {
+                queuePurchaseInterface.createQueuePurchase(1, 500, 1000, 1, 9);
+                int userid = RM.getUser().getUserID();
+                if (queuePurchaseInterface.createQueuePurchase(quantity, minAmount, maxAmount, selectedProductID, userid)) {
+                    System.out.println("Queue purchase toegevoegd.");
+                } else {
+                    System.out.println("Queue purchase niet toegevoegd.");
+                }
+            }
         }
     }
     

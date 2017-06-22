@@ -61,6 +61,7 @@ public class User implements Serializable {
      */
     public User(int userID, String username, String password, String alias, String email, boolean verified, double saldo, String imageURL) {
         //removed  this.BSN = BSN;
+        this.userID = userID;
         this.username = username;
         this.password = password;
         this.alias = alias;

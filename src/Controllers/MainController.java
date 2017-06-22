@@ -83,7 +83,7 @@ public class MainController implements Initializable {
         this.RM = RM;
         RM.getAuctionInterface();
         this.auctionInterface = RM.getAuction();
-
+        System.out.println("User id = " + RM.getUser().getUserID());
         Pane allAuctions = new Pane();
         allAuctions.setPrefWidth(800);
         allAuctions.setPrefHeight(150 * auctionInterface.getAuctions().size());

@@ -68,6 +68,7 @@ public class LoginController implements Initializable {
         //nieuwe oplossing, fix ik na unittests. (database dingen >> isVerified)
         try {
             user = authorization.login(textfield_username.getText(), textfield_password.getText());
+            System.out.println("userid " + user.getUserID());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
