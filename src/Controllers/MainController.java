@@ -199,8 +199,8 @@ public class MainController implements Initializable {
 
         newStage.initStyle(StageStyle.TRANSPARENT);
         newStage.setScene(new Scene(root, Color.TRANSPARENT));
-        newStage.setScene(new Scene(root));
         newStage.show();
+        
         Stage stage = (Stage) auctionsPane.getScene().getWindow();
         stage.close();
     }
