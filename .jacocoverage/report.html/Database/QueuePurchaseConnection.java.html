@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>QueuePurchaseConnection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Database</a> &gt; <span class="el_source">QueuePurchaseConnection.java</span></div><h1>QueuePurchaseConnection.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>QueuePurchaseConnection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange_news&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Database</a> &gt; <span class="el_source">QueuePurchaseConnection.java</span></div><h1>QueuePurchaseConnection.java</h1><pre class="source lang-java linenums">/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -22,12 +22,12 @@ import java.util.logging.Logger;
  */
 public class QueuePurchaseConnection {
 
-<span class="nc" id="L25">    private java.sql.Connection myConn = null;</span>
-<span class="nc" id="L26">    private PreparedStatement pstmt = null;</span>
-<span class="nc" id="L27">    private ResultSet myRs = null;</span>
+<span class="fc" id="L25">    private java.sql.Connection myConn = null;</span>
+<span class="fc" id="L26">    private PreparedStatement pstmt = null;</span>
+<span class="fc" id="L27">    private ResultSet myRs = null;</span>
 
     // Connections
-<span class="nc" id="L30">    private Connection conn = new Connection();</span>
+<span class="fc" id="L30">    private Connection conn = new Connection();</span>
 
     //  SQL codes
     static final String SET_QUEUEPURCHASE_NEW = &quot;INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID) VALUES (?,?,?,?,?)&quot;;
@@ -36,8 +36,8 @@ public class QueuePurchaseConnection {
     
     
     // Constructor
-<span class="nc" id="L39">    public QueuePurchaseConnection() {</span>
-<span class="nc" id="L40">    }</span>
+<span class="fc" id="L39">    public QueuePurchaseConnection() {</span>
+<span class="fc" id="L40">    }</span>
 
     /**
      * Get an ArrayList with all QueuePurchases
@@ -65,24 +65,32 @@ public class QueuePurchaseConnection {
 <span class="nc" id="L65">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
 <span class="nc" id="L66">        }</span>
         try {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">            while (myRs.next()) {</span>
-<span class="nc" id="L69">                id = resultset.getInt(&quot;id&quot;);</span>
-<span class="nc" id="L70">                quantity = resultset.getInt(&quot;quantity&quot;);</span>
-<span class="nc" id="L71">                minPrice = resultset.getDouble(&quot;minprice&quot;);</span>
-<span class="nc" id="L72">                maxPrice = resultset.getDouble(&quot;maxprice&quot;);</span>
-<span class="nc" id="L73">                productID = resultset.getInt(&quot;productid&quot;);</span>
-<span class="nc" id="L74">                placerID = resultset.getInt(&quot;placerID&quot;);</span>
-<span class="nc" id="L75">                queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);</span>
-<span class="nc" id="L76">                queuepurchase.setID(id);</span>
-<span class="nc" id="L77">                queuepurchases.add(queuepurchase);</span>
-<span class="nc" id="L78">                conn.closeConnection();</span>
+<span class="nc" id="L68">            System.out.println(&quot;DOET NIKS&quot;);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            while (myRs.next()) {</span>
+<span class="nc" id="L70">                    id = myRs.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L71">                    quantity = myRs.getInt(&quot;quantity&quot;);</span>
+<span class="nc" id="L72">                    minPrice = myRs.getDouble(&quot;minprice&quot;);</span>
+<span class="nc" id="L73">                    maxPrice = myRs.getDouble(&quot;maxprice&quot;);</span>
+<span class="nc" id="L74">                    productID = myRs.getInt(&quot;productid&quot;);</span>
+<span class="nc" id="L75">                    placerID = myRs.getInt(&quot;placerID&quot;);</span>
+<span class="nc" id="L76">                    queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);</span>
+<span class="nc" id="L77">                    queuepurchase.setID(id);</span>
+<span class="nc" id="L78">                    queuepurchases.add(queuepurchase);</span>
+                
             }
-<span class="nc" id="L80">        } catch (Exception ex) {</span>
-<span class="nc" id="L81">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L82">            System.out.println(&quot;Product ding connection ophalen failed ofzo.&quot;);</span>
-<span class="nc" id="L83">        }</span>
+            
+<span class="nc" id="L82">        } catch (SQLException ex) {</span>
+<span class="nc" id="L83">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L84">            System.out.println(&quot;Queuepurchases not retrieved from database&quot;);</span>
+<span class="nc" id="L85">        }</span>
         
-<span class="nc" id="L85">        return queuepurchases;</span>
+        try{ 
+<span class="nc" id="L88">            conn.closeConnection();</span>
+<span class="nc" id="L89">        } catch( Exception ex) {</span>
+<span class="nc" id="L90">            System.out.println(&quot;Cant close&quot;);</span>
+<span class="nc" id="L91">        }</span>
+        
+<span class="nc" id="L93">        return queuepurchases;</span>
     }
 
     /**
@@ -95,30 +103,30 @@ public class QueuePurchaseConnection {
      * @return True if successfully inserted, false if not.
      */
     public Boolean insertQueuePurchase(int quantity, double minprice, double maxprice, int productid, int placerid) {
-<span class="nc" id="L98">        conn.getConnection();</span>
+<span class="fc" id="L106">        conn.getConnection();</span>
 
         try {
             //INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID
-<span class="nc" id="L102">            pstmt = conn.getMyConn().prepareStatement(SET_QUEUEPURCHASE_NEW);</span>
-<span class="nc" id="L103">            pstmt.setInt(1, quantity);</span>
-<span class="nc" id="L104">            pstmt.setDouble(2, minprice);</span>
-<span class="nc" id="L105">            pstmt.setDouble(3, maxprice);</span>
-<span class="nc" id="L106">            pstmt.setInt(4, productid);</span>
-<span class="nc" id="L107">            pstmt.setInt(5, placerid);</span>
+<span class="fc" id="L110">            pstmt = conn.getMyConn().prepareStatement(SET_QUEUEPURCHASE_NEW);</span>
+<span class="fc" id="L111">            pstmt.setInt(1, quantity);</span>
+<span class="fc" id="L112">            pstmt.setDouble(2, minprice);</span>
+<span class="fc" id="L113">            pstmt.setDouble(3, maxprice);</span>
+<span class="fc" id="L114">            pstmt.setInt(4, productid);</span>
+<span class="fc" id="L115">            pstmt.setInt(5, placerid);</span>
 
-<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
-<span class="nc" id="L110">                System.out.println(&quot;succesfully registered new queuePurchase: &quot;);</span>
-<span class="nc" id="L111">                conn.closeConnection();</span>
-<span class="nc" id="L112">                return true;</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="fc" id="L118">                System.out.println(&quot;succesfully registered new queuePurchase: &quot;);</span>
+<span class="fc" id="L119">                conn.closeConnection();</span>
+<span class="fc" id="L120">                return true;</span>
             } else {
-<span class="nc" id="L114">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
-<span class="nc" id="L115">                conn.closeConnection();</span>
-<span class="nc" id="L116">                return false;</span>
+<span class="nc" id="L122">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L123">                conn.closeConnection();</span>
+<span class="nc" id="L124">                return false;</span>
             }
-<span class="nc" id="L118">        } catch (SQLException ex) {</span>
-<span class="nc" id="L119">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L120">            conn.closeConnection();</span>
-<span class="nc" id="L121">            return false;</span>
+<span class="nc" id="L126">        } catch (SQLException ex) {</span>
+<span class="nc" id="L127">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L128">            conn.closeConnection();</span>
+<span class="nc" id="L129">            return false;</span>
         }
 
     }
@@ -130,23 +138,23 @@ public class QueuePurchaseConnection {
      */
     public void deleteQueuePurchase(int queueID) {
         
-<span class="nc" id="L133">        conn.getConnection();</span>
+<span class="nc" id="L141">        conn.getConnection();</span>
         PreparedStatement preparedStatement;
         ResultSet resultset;
 
             try {
-<span class="nc" id="L138">                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);</span>
-<span class="nc" id="L139">                preparedStatement.setInt(1, queueID);</span>
-<span class="nc" id="L140">                resultset = preparedStatement.executeQuery();</span>
-<span class="nc" id="L141">                resultset.next();</span>
-<span class="nc" id="L142">            } catch (SQLException ex) {</span>
-<span class="nc" id="L143">                System.out.println(ex.getMessage());</span>
-<span class="nc" id="L144">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L145">            }</span>
+<span class="nc" id="L146">                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);</span>
+<span class="nc" id="L147">                preparedStatement.setInt(1, queueID);</span>
+<span class="nc" id="L148">                resultset = preparedStatement.executeQuery();</span>
+<span class="nc" id="L149">                resultset.next();</span>
+<span class="nc" id="L150">            } catch (SQLException ex) {</span>
+<span class="nc" id="L151">                System.out.println(ex.getMessage());</span>
+<span class="nc" id="L152">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L153">            }</span>
 
-<span class="nc" id="L147">            conn.getConnection();</span>
-<span class="nc" id="L148">            getQueuePurchase(queueID);</span>
-<span class="nc" id="L149">    }</span>
+<span class="nc" id="L155">            conn.getConnection();</span>
+<span class="nc" id="L156">            getQueuePurchase(queueID);</span>
+<span class="nc" id="L157">    }</span>
     
     /**
      * Get a Queue_Purchase with the given id.
@@ -155,47 +163,47 @@ public class QueuePurchaseConnection {
      */
     public Queue_Purchase getQueuePurchase(int queueID) {
         
-<span class="nc" id="L158">        conn.getConnection();</span>
-<span class="nc" id="L159">        Queue_Purchase queuepurchase = null;</span>
+<span class="nc" id="L166">        conn.getConnection();</span>
+<span class="nc" id="L167">        Queue_Purchase queuepurchase = null;</span>
         int id;
         int quantity;
         double minPrice;
         double maxPrice;
         int productID;
         int placerID;
-<span class="nc" id="L166">        PreparedStatement preparedStatement = null;</span>
-<span class="nc" id="L167">        ResultSet resultset = null;</span>
+<span class="nc" id="L174">        PreparedStatement preparedStatement = null;</span>
+<span class="nc" id="L175">        ResultSet resultset = null;</span>
 
             try {
-<span class="nc" id="L170">                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);</span>
-<span class="nc" id="L171">                preparedStatement.setInt(1, queueID);</span>
-<span class="nc" id="L172">                resultset = preparedStatement.executeQuery();</span>
-<span class="nc" id="L173">                resultset.next();</span>
-<span class="nc" id="L174">            } catch (SQLException ex) {</span>
-<span class="nc" id="L175">                System.out.println(ex.getMessage());</span>
-<span class="nc" id="L176">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L177">            }</span>
+<span class="nc" id="L178">                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);</span>
+<span class="nc" id="L179">                preparedStatement.setInt(1, queueID);</span>
+<span class="nc" id="L180">                resultset = preparedStatement.executeQuery();</span>
+<span class="nc" id="L181">                resultset.next();</span>
+<span class="nc" id="L182">            } catch (SQLException ex) {</span>
+<span class="nc" id="L183">                System.out.println(ex.getMessage());</span>
+<span class="nc" id="L184">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L185">            }</span>
 
             try {
-<span class="nc" id="L180">                id = resultset.getInt(&quot;id&quot;);</span>
-<span class="nc" id="L181">                quantity = resultset.getInt(&quot;quantity&quot;);</span>
-<span class="nc" id="L182">                minPrice = resultset.getDouble(&quot;minprice&quot;);</span>
-<span class="nc" id="L183">                maxPrice = resultset.getDouble(&quot;maxprice&quot;);</span>
-<span class="nc" id="L184">                productID = resultset.getInt(&quot;productid&quot;);</span>
-<span class="nc" id="L185">                placerID = resultset.getInt(&quot;placerID&quot;);</span>
+<span class="nc" id="L188">                id = resultset.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L189">                quantity = resultset.getInt(&quot;quantity&quot;);</span>
+<span class="nc" id="L190">                minPrice = resultset.getDouble(&quot;minprice&quot;);</span>
+<span class="nc" id="L191">                maxPrice = resultset.getDouble(&quot;maxprice&quot;);</span>
+<span class="nc" id="L192">                productID = resultset.getInt(&quot;productid&quot;);</span>
+<span class="nc" id="L193">                placerID = resultset.getInt(&quot;placerID&quot;);</span>
 
-<span class="nc" id="L187">                queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);</span>
-<span class="nc" id="L188">                queuepurchase.setID(id);</span>
-<span class="nc" id="L189">                conn.closeConnection();</span>
-<span class="nc" id="L190">                return queuepurchase;</span>
-<span class="nc" id="L191">            } catch (SQLException ex) {</span>
-<span class="nc" id="L192">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L195">                queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);</span>
+<span class="nc" id="L196">                queuepurchase.setID(id);</span>
+<span class="nc" id="L197">                conn.closeConnection();</span>
+<span class="nc" id="L198">                return queuepurchase;</span>
+<span class="nc" id="L199">            } catch (SQLException ex) {</span>
+<span class="nc" id="L200">                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
             }
 
-<span class="nc" id="L195">            conn.getConnection();</span>
-<span class="nc" id="L196">            getQueuePurchase(queueID);</span>
+<span class="nc" id="L203">            conn.getConnection();</span>
+<span class="nc" id="L204">            getQueuePurchase(queueID);</span>
         
-<span class="nc" id="L198">        return queuepurchase;</span>
+<span class="nc" id="L206">        return queuepurchase;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

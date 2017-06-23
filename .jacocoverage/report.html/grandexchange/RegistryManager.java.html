@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RegistryManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">grandexchange</a> &gt; <span class="el_source">RegistryManager.java</span></div><h1>RegistryManager.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RegistryManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange_news&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">grandexchange</a> &gt; <span class="el_source">RegistryManager.java</span></div><h1>RegistryManager.java</h1><pre class="source lang-java linenums">/*
  * This project is for PTS3 Fontys Eindhoven
  * Jorian Vas, Kyle van Raaij, Pieter Beukelman, Sam Dirkx, Lesley Peeters, Robin Welten
  * �2016-2017
@@ -36,8 +36,7 @@ public class RegistryManager {
     private IPlaceBid bid;
     private ICreateProduct product;
     private ICreateQueuePurchase queuePurchase;
-    
-    
+
     // Set port number
     private static final int portNumber = 1099;
 
@@ -45,114 +44,115 @@ public class RegistryManager {
     private static final String bindingName = &quot;GrandExchangeServer&quot;;
 
     // References to registry and Grand Exchange
-<span class="nc" id="L48">    private Registry registry = null;</span>
+<span class="fc" id="L47">    private Registry registry = null;</span>
     private InetAddress localhost;
-<span class="nc" id="L50">    private String ipAddress = &quot;&quot;;</span>
+<span class="fc" id="L49">    private String ipAddress = &quot;192.168.137.1&quot;;</span>
 
-<span class="nc" id="L52">    public RegistryManager() {</span>
-<span class="nc" id="L53">        getLocalHostIp();</span>
-<span class="nc" id="L54">        setupRegistry();</span>
-<span class="nc" id="L55">    }</span>
-    
+<span class="fc" id="L51">    public RegistryManager() {</span>
+<span class="fc" id="L52">        getLocalHostIp();</span>
+<span class="fc" id="L53">        setupRegistry();</span>
+<span class="fc" id="L54">    }</span>
+
     public IPlaceBid getBid() {
-<span class="nc" id="L58">        return bid;</span>
+<span class="nc" id="L57">        return bid;</span>
     }
 
     public ICreateProduct getProduct() {
-<span class="nc" id="L62">        return product;</span>
+<span class="nc" id="L61">        return product;</span>
     }
 
     public ICreateQueuePurchase getQueuePurchase() {
-<span class="nc" id="L66">        return queuePurchase;</span>
+<span class="nc" id="L65">        return queuePurchase;</span>
     }
-    
+
     public User getUser() {
-<span class="nc" id="L70">        return user;</span>
+<span class="nc" id="L69">        return user;</span>
     }
 
     public void setUser(User user) {
-<span class="nc" id="L74">        this.user = user;</span>
-<span class="nc" id="L75">    }</span>
-    
+<span class="nc" id="L73">        this.user = user;</span>
+<span class="nc" id="L74">    }</span>
+
     public IAuthorized getAuthorization() {
-<span class="nc" id="L78">        return authorization;</span>
+<span class="fc" id="L77">        return authorization;</span>
     }
 
     public IAuction getAuction() {
-<span class="nc" id="L82">        return auction;</span>
+<span class="nc" id="L81">        return auction;</span>
     }
 
-
     public void getAuthorizationInterface() {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (registry != null) {</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (registry != null) {</span>
             try {
-<span class="nc" id="L89">                System.out.println(&quot;Trying to lookup Authorization Interface...&quot;);</span>
-<span class="nc" id="L90">                authorization = (IAuthorized) registry.lookup(bindingName);</span>
-<span class="nc" id="L91">                System.out.println(&quot;Interface reference IS bound.&quot;);</span>
+<span class="fc" id="L87">                System.out.println(&quot;Trying to lookup Authorization Interface...&quot;);</span>
+<span class="nc" id="L88">                authorization = (IAuthorized) registry.lookup(bindingName);</span>
+<span class="nc" id="L89">                System.out.println(&quot;Interface reference IS bound.&quot;);</span>
 
-<span class="nc" id="L93">                this.authorization = authorization;</span>
+<span class="nc" id="L91">                this.authorization = authorization;</span>
 
-<span class="nc" id="L95">            } catch (RemoteException | NotBoundException ex) {</span>
-<span class="nc" id="L96">                System.out.println(&quot;Client: Cannot bind Autherization interface&quot;);</span>
-<span class="nc" id="L97">                System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L98">                System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
-<span class="nc" id="L99">                authorization = null;</span>
+<span class="fc" id="L93">            } catch (RemoteException | NotBoundException ex) {</span>
+<span class="fc" id="L94">                System.out.println(&quot;Client: Cannot bind Autherization interface&quot;);</span>
+<span class="fc" id="L95">                System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
+<span class="fc" id="L96">                System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
+<span class="fc" id="L97">                authorization = null;</span>
 
-<span class="nc" id="L101">            }</span>
+<span class="nc" id="L99">            }</span>
         }
-<span class="nc" id="L103">    }</span>
-    
+<span class="fc" id="L101">    }</span>
+
     public void getPlaceBidInterface() {
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (registry != null) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (registry != null) {</span>
             try {
-<span class="nc" id="L108">                System.out.println(&quot;Trying to lookup Bid Interface...&quot;);</span>
-<span class="nc" id="L109">                this.bid = (IPlaceBid) registry.lookup(bindingName);</span>
-<span class="nc" id="L110">                System.out.println(&quot;Interface reference IS bound.&quot;);</span>
+<span class="nc" id="L106">                System.out.println(&quot;Trying to lookup Bid Interface...&quot;);</span>
+<span class="nc" id="L107">                this.bid = (IPlaceBid) registry.lookup(bindingName);</span>
+<span class="nc" id="L108">                System.out.println(&quot;Interface reference IS bound.&quot;);</span>
 
+<span class="nc" id="L110">            } catch (RemoteException | NotBoundException ex) {</span>
+<span class="nc" id="L111">                System.out.println(&quot;Client: Cannot bind Bid Interface&quot;);</span>
+<span class="nc" id="L112">                System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L113">                System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
+<span class="nc" id="L114">                this.bid = null;</span>
 
-<span class="nc" id="L113">            } catch (RemoteException | NotBoundException ex) {</span>
-<span class="nc" id="L114">                System.out.println(&quot;Client: Cannot bind Bid Interface&quot;);</span>
-<span class="nc" id="L115">                System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L116">                System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
-<span class="nc" id="L117">                this.bid = null;</span>
-
-<span class="nc" id="L119">            }</span>
+<span class="nc" id="L116">            }</span>
         }
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L118">    }</span>
 
     public void getAuctionInterface() {
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (registry != null) {</span>
-            try {
-<span class="nc" id="L126">                System.out.println(&quot;Trying to lookup Auction Interface...&quot;);</span>
-<span class="nc" id="L127">                auction = (IAuction) registry.lookup(bindingName);</span>
-<span class="nc" id="L128">                System.out.println(&quot;Interface reference IS bound.&quot;);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (auction == null) {</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            if (registry != null) {</span>
+                try {
+<span class="nc" id="L124">                    System.out.println(&quot;Trying to lookup Auction Interface...&quot;);</span>
+<span class="nc" id="L125">                    auction = (IAuction) registry.lookup(bindingName);</span>
+<span class="nc" id="L126">                    System.out.println(&quot;Interface reference IS bound.&quot;);</span>
 
-
-<span class="nc" id="L131">            } catch (RemoteException | NotBoundException ex) {</span>
-<span class="nc" id="L132">                System.out.println(&quot;Client: Cannot bind Auction Interface&quot;);</span>
-<span class="nc" id="L133">                System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L134">                System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
-<span class="nc" id="L135">                this.auction = null;</span>
-<span class="nc" id="L136">            }</span>
+<span class="nc" id="L128">                } catch (RemoteException | NotBoundException ex) {</span>
+<span class="nc" id="L129">                    System.out.println(&quot;Client: Cannot bind Auction Interface&quot;);</span>
+<span class="nc" id="L130">                    System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L131">                    System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
+<span class="nc" id="L132">                    this.auction = null;</span>
+<span class="nc" id="L133">                }</span>
+            }
         }
-<span class="nc" id="L138">    }</span>
-        
-    public void getProductInterface() {
-<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (registry != null) {</span>
-            try {
-<span class="nc" id="L143">                System.out.println(&quot;Trying to lookup Product Interface...&quot;);</span>
-<span class="nc" id="L144">                this.product = (ICreateProduct) registry.lookup(bindingName);</span>
-<span class="nc" id="L145">                System.out.println(&quot;Interface reference IS bound.&quot;);</span>
+<span class="nc" id="L136">    }</span>
 
-<span class="nc" id="L147">            } catch (RemoteException | NotBoundException ex) {</span>
-<span class="nc" id="L148">                System.out.println(&quot;Client: Cannot bind Product Interface&quot;);</span>
-<span class="nc" id="L149">                System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L150">                System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
-<span class="nc" id="L151">                this.product = null;</span>
-<span class="nc" id="L152">            }</span>
+    public void getProductInterface() {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (product == null) {</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">            if (registry != null) {</span>
+                try {
+<span class="nc" id="L142">                    System.out.println(&quot;Trying to lookup Product Interface...&quot;);</span>
+<span class="nc" id="L143">                    this.product = (ICreateProduct) registry.lookup(bindingName);</span>
+<span class="nc" id="L144">                    System.out.println(&quot;Interface reference IS bound.&quot;);</span>
+
+<span class="nc" id="L146">                } catch (RemoteException | NotBoundException ex) {</span>
+<span class="nc" id="L147">                    System.out.println(&quot;Client: Cannot bind Product Interface&quot;);</span>
+<span class="nc" id="L148">                    System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L149">                    System.out.println(&quot;Interface reference is NOT bound&quot;);</span>
+<span class="nc" id="L150">                    this.product = null;</span>
+<span class="nc" id="L151">                }</span>
+            }
         }
 <span class="nc" id="L154">    }</span>
-     
+
     public void getQueuePurchaseInterface() {
 <span class="nc bnc" id="L157" title="All 2 branches missed.">        if (registry != null) {</span>
             try {
@@ -168,35 +168,36 @@ public class RegistryManager {
 <span class="nc" id="L168">            }</span>
         }
 <span class="nc" id="L170">    }</span>
+
     public void getLocalHostIp() {
 
         try {
-<span class="nc" id="L174">            localhost = InetAddress.getLocalHost();</span>
-<span class="nc" id="L175">            ipAddress = localhost.getHostAddress();</span>
-<span class="nc" id="L176">        } catch (UnknownHostException ex) {</span>
-<span class="nc" id="L177">            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L178">        }</span>
+<span class="fc" id="L175">            localhost = InetAddress.getLocalHost();</span>
+<span class="fc" id="L176">            ipAddress = localhost.getHostAddress();</span>
+<span class="nc" id="L177">        } catch (UnknownHostException ex) {</span>
+<span class="nc" id="L178">            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L179">        }</span>
 
-<span class="nc" id="L180">    }</span>
+<span class="fc" id="L181">    }</span>
 
     public void setupRegistry() {
 
         // Locate registry at IP address and port number
         try {
-<span class="nc" id="L186">            registry = LocateRegistry.getRegistry(ipAddress, portNumber);</span>
+<span class="fc" id="L187">            registry = LocateRegistry.getRegistry(ipAddress, portNumber);</span>
 
-<span class="nc bnc" id="L188" title="All 2 branches missed.">            if (registry != null) {</span>
-<span class="nc" id="L189">                System.out.println(&quot;Client: Registry located&quot;);</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">            if (registry != null) {</span>
+<span class="fc" id="L190">                System.out.println(&quot;Client: Registry located&quot;);</span>
             }
 
-<span class="nc" id="L192">        } catch (RemoteException ex) {</span>
-<span class="nc" id="L193">            System.out.println(&quot;Client: Cannot locate registry&quot;);</span>
-<span class="nc" id="L194">            System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L195">            registry = null;</span>
-<span class="nc" id="L196">            System.out.println(&quot;Client reference = null&quot;);</span>
-<span class="nc" id="L197">        }</span>
+<span class="nc" id="L193">        } catch (RemoteException ex) {</span>
+<span class="nc" id="L194">            System.out.println(&quot;Client: Cannot locate registry&quot;);</span>
+<span class="nc" id="L195">            System.out.println(&quot;Client: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L196">            registry = null;</span>
+<span class="nc" id="L197">            System.out.println(&quot;Client reference = null&quot;);</span>
+<span class="fc" id="L198">        }</span>
 
-<span class="nc" id="L199">    }</span>
+<span class="fc" id="L200">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

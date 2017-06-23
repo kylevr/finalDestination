@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Bid.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Classes</a> &gt; <span class="el_source">Bid.java</span></div><h1>Bid.java</h1><pre class="source lang-java linenums">package Classes;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Bid.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;GrandExchange_news&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Classes</a> &gt; <span class="el_source">Bid.java</span></div><h1>Bid.java</h1><pre class="source lang-java linenums">package Classes;
 
 import Classes.Auctions.Auction;
 import java.io.Serializable;
@@ -16,17 +16,17 @@ public class Bid implements Serializable {
      * @param placer : may not be null
      * @param amount : must be higher than 0
      */
-<span class="nc" id="L19">    public Bid(int auctionId, User placer, double amount) {</span>
-<span class="nc bnc" id="L20" title="All 4 branches missed.">        if (placer == null || amount &lt;= 0) {</span>
+<span class="fc" id="L19">    public Bid(int auctionId, User placer, double amount) {</span>
+<span class="pc bpc" id="L20" title="2 of 4 branches missed.">        if (placer == null || amount &lt;= 0) {</span>
 <span class="nc" id="L21">            throw new IllegalArgumentException();</span>
         } else {
-<span class="nc" id="L23">            this.placer = placer;</span>
-<span class="nc" id="L24">            this.amount = amount;</span>
-<span class="nc" id="L25">            this.auctionId = auctionId;</span>
-<span class="nc" id="L26">            Date date = new Date();</span>
-<span class="nc" id="L27">            this.timeCreated = date;</span>
+<span class="fc" id="L23">            this.placer = placer;</span>
+<span class="fc" id="L24">            this.amount = amount;</span>
+<span class="fc" id="L25">            this.auctionId = auctionId;</span>
+<span class="fc" id="L26">            Date date = new Date();</span>
+<span class="fc" id="L27">            this.timeCreated = date;</span>
         }
-<span class="nc" id="L29">    }</span>
+<span class="fc" id="L29">    }</span>
 
     /**
      * This method is used to get a string of the placer of this bid.
@@ -43,7 +43,7 @@ public class Bid implements Serializable {
      * @return double
      */
     public double getAmount() {
-<span class="nc" id="L46">        return amount;</span>
+<span class="fc" id="L46">        return amount;</span>
     }
 
 //    public Auction getAuction() {
