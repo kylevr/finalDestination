@@ -119,32 +119,30 @@ public class MainController implements Initializable {
             description.setEditable(false);
 
             //setting image of auction
-                ImageView image;
-                try
-                {
-                    image = new ImageView(new Image(a.getImageURLs()[0]));
-                }
-                catch(Exception ex)
-                {
-                    image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                }
-                image.setFitWidth(100);
-                image.setFitHeight(100);
-                image.relocate(25, 25);
-                image.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                        new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        ImageView i = (ImageView) e.getSource();
-                        try {
-                            showAuction(a);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+            ImageView image;
+            try {
+                image = new ImageView(new Image(a.getImageURLs()[0]));
+            } catch (Exception ex) {
+                image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+                Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+
+            }
+            image.setFitWidth(100);
+            image.setFitHeight(100);
+            image.relocate(25, 25);
+            image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                    new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    try {
+                        showAuction(a);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                });
-                Auction.getChildren().addAll(productName, image, price, seller, description);
-                allAuctions.getChildren().add(Auction);
+                }
+            });
+            Auction.getChildren().addAll(productName, image, price, seller, description);
+            allAuctions.getChildren().add(Auction);
             i++;
         }
         auctionsPane.setContent(allAuctions);
@@ -153,6 +151,8 @@ public class MainController implements Initializable {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
         } catch (NullPointerException ex) {
             System.out.println("LoggedInUser doesn't have an imageURL yet");
+            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+
         }
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
@@ -181,7 +181,6 @@ public class MainController implements Initializable {
     }
 
     public void CategoryDelete(Event E) {
-        ListView lst = (ListView) E.getSource();
         int selected = lstCategory.getSelectionModel().getSelectedIndex();
         if (selected >= 0 && selected < lstCategory.getItems().size()) {
             lstCategory.getItems().remove(selected);
@@ -200,7 +199,7 @@ public class MainController implements Initializable {
         newStage.initStyle(StageStyle.TRANSPARENT);
         newStage.setScene(new Scene(root, Color.TRANSPARENT));
         newStage.show();
-        
+
         Stage stage = (Stage) auctionsPane.getScene().getWindow();
         stage.close();
     }
@@ -233,6 +232,7 @@ public class MainController implements Initializable {
             inputStage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
+            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -254,6 +254,7 @@ public class MainController implements Initializable {
             } catch (Exception ex) {
                 System.out.println("Failed to open feedback screen");
                 ex.printStackTrace();
+                Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.out.println("textField_usernameOfFeedbackOwner may not be empty when trying to open profile feedback");
@@ -261,7 +262,7 @@ public class MainController implements Initializable {
     }
 
     public void button_exit() {
-        System.exit(1);
+        Runtime.getRuntime().halt(1);
     }
 
     public void btnRefresh() throws RemoteException {

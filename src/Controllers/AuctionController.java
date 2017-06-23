@@ -209,6 +209,7 @@ public class AuctionController implements Initializable {
                 image = new ImageView(new Image(URL));
             } catch (Exception ex) {
                 image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+                        Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
             }
             image.setFitWidth(80);
             image.setFitHeight(60);
@@ -226,7 +227,8 @@ public class AuctionController implements Initializable {
                 bigImage = new Image(auction.getImageURLs()[0]);
             } catch (Exception ex) {
                 bigImage = new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm());
-            }
+                                    Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+}
 
             bigProductImage.setImage(bigImage);
             imagePane.getChildren().add(image);
@@ -269,7 +271,6 @@ public class AuctionController implements Initializable {
             long then = countdownAuction.getCreationDate().getTime();
             long periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
             long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();
-            Timestamp newDate = new Timestamp(next_period_begin);
             if (timeline != null) {
                 timeline.stop();
             }
@@ -283,7 +284,7 @@ public class AuctionController implements Initializable {
                 @Override
                 public void handle(Event event) {
                     timeSeconds--;
-                    int minutesToGo = (int) Math.floor(timeSeconds / 60);
+                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0);
                     int secondsToGo = timeSeconds - (minutesToGo * 60);
                     String minutes = Integer.toString(minutesToGo);
                     String seconds = Integer.toString(secondsToGo);
@@ -360,10 +361,9 @@ public class AuctionController implements Initializable {
                 public void handle(Event event) {
                     timeSeconds--;
                     int timeDays = timeSeconds;
-                    int timeHours = timeSeconds;
-                    int daysToGo = (int) Math.floor(timeDays / 60 / 60 / 24);
-                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60) - daysToGo * 24;
-                    int minutesToGo = (int) Math.floor(timeSeconds / 60)-(hoursToGo*60)-(daysToGo*24*60);
+                    int daysToGo = (int) Math.floor(timeDays / 60.0 / 60 / 24.0);
+                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60.0) - daysToGo * 24;
+                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0)-(hoursToGo*60)-(daysToGo*24*60);
                     int secondsToGo = timeSeconds -(hoursToGo*60*60)-(daysToGo*24*60*60)-(minutesToGo*60);
                     String hours = Integer.toString(hoursToGo);
                     String minutes = Integer.toString(minutesToGo);
@@ -451,7 +451,6 @@ public class AuctionController implements Initializable {
     public void buyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
-        double price = auction.getCurrentPrice();
         if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
             double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
