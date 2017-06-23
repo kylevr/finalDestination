@@ -201,7 +201,7 @@ public class QueuePurchaseConnection {
             }
 
             conn.getConnection();
-            getQueuePurchase(queueID);
+            //getQueuePurchase(queueID);
         
         return queuepurchase;
     }
