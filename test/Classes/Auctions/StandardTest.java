@@ -5,6 +5,8 @@
  */
 package Classes.Auctions;
 
+import Classes.Product;
+import Classes.User;
 import java.sql.Timestamp;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,9 +31,18 @@ public class StandardTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    
+    Standard test;
+    Product product;
+    User seller;
+    Timestamp time;
+    Timestamp timeEnd;
     @Before
     public void setUp() {
+         seller = new User(1, "testUser", "password", "testAlias", "test@test.nl", true, 5000.00, "");
+        product = new Product(1, "", "", "");
+        time = new Timestamp(System.currentTimeMillis());
+        timeEnd = new Timestamp(System.currentTimeMillis()+120000);
+        test = new Standard(1,seller,product,50,5,time,timeEnd,StatusEnum.New,"","",5000);
     }
     
     @After
@@ -44,12 +55,9 @@ public class StandardTest {
     @Test
     public void testGetTimeRemaining() {
         System.out.println("getTimeRemaining");
-        Standard instance = null;
-        long expResult = 0L;
-        long result = instance.getTimeRemaining();
+        long expResult = 60;
+        long result = test.getTimeRemaining();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -58,12 +66,9 @@ public class StandardTest {
     @Test
     public void testGetCreationDate() {
         System.out.println("getCreationDate");
-        Standard instance = null;
-        Timestamp expResult = null;
-        Timestamp result = instance.getCreationDate();
+        Timestamp expResult = time;
+        Timestamp result = test.getCreationDate();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -72,12 +77,9 @@ public class StandardTest {
     @Test
     public void testGetEndDate() {
         System.out.println("getEndDate");
-        Standard instance = null;
-        Timestamp expResult = null;
-        Timestamp result = instance.getEndDate();
+        Timestamp expResult = timeEnd;
+        Timestamp result = test.getEndDate();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

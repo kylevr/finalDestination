@@ -5,6 +5,8 @@
  */
 package Classes.Auctions;
 
+import Classes.Product;
+import Classes.User;
 import java.sql.Timestamp;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,22 +20,30 @@ import static org.junit.Assert.*;
  * @author piete
  */
 public class CountdownTest {
-    
+
     public CountdownTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+    Countdown test;
+    Product product;
+    User seller;
+    Timestamp time;
+
     @Before
     public void setUp() {
+         seller = new User(1, "testUser", "password", "testAlias", "test@test.nl", true, 5000.00, "");
+        product = new Product(1, "", "", "");
+        time = new Timestamp(System.currentTimeMillis());
+        test = new Countdown(1,seller,product,5,5000,25,10,500,StatusEnum.New,"","",500,time);
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -44,12 +54,9 @@ public class CountdownTest {
     @Test
     public void testGetCreationDate() {
         System.out.println("getCreationDate");
-        Countdown instance = null;
-        Timestamp expResult = null;
-        Timestamp result = instance.getCreationDate();
+        Timestamp expResult = time;
+        Timestamp result = test.getCreationDate();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -58,12 +65,9 @@ public class CountdownTest {
     @Test
     public void testGetPriceLoweringAmount() {
         System.out.println("getPriceLoweringAmount");
-        Countdown instance = null;
-        double expResult = 0.0;
-        double result = instance.getPriceLoweringAmount();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        double expResult = 25.0;
+        double result = test.getPriceLoweringAmount();
+        assertEquals(expResult, result, 0.1);
     }
 
     /**
@@ -72,12 +76,9 @@ public class CountdownTest {
     @Test
     public void testGetPriceLoweringDelay() {
         System.out.println("getPriceLoweringDelay");
-        Countdown instance = null;
-        double expResult = 0.0;
-        double result = instance.getPriceLoweringDelay();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        double expResult = 10.0;
+        double result = test.getPriceLoweringDelay();
+        assertEquals(expResult, result, 0.1);
     }
 
     /**
@@ -86,10 +87,10 @@ public class CountdownTest {
     @Test
     public void testSetPrice() {
         System.out.println("setPrice");
-        Countdown instance = null;
-        instance.setPrice();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        test.setPrice();
+        double expResult = 5000;
+        double result = test.getCurrentPrice();
+        assertEquals(expResult, result, 0.1);
     }
-    
+
 }
