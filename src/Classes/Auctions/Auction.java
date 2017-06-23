@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class Auction implements Serializable{
+public abstract class Auction implements Serializable {
 
     User seller;
     private int id;
@@ -100,17 +100,26 @@ public abstract class Auction implements Serializable{
      * @return Bid
      */
     public Bid getBestBid() {
-        return null;
+        double money = 0.0;
+        Bid returnb = null;
+        for (Bid b : bids) {
+            if (b.getAmount() > money) {
+                returnb = b;
+                money = b.getAmount();
+            }
+        }
+        return returnb;
     }
 
     /**
-     *adds bid to all bids of auction
+     * adds bid to all bids of auction
+     *
      * @param bid
      */
     public boolean addBid(Bid bid) {
         try {
             double amount = bid.getAmount();
-            if (amount> currentPrice) {
+            if (amount > currentPrice) {
                 this.bids.add(bid);
                 this.currentPrice = bid.getAmount();
                 return true;
@@ -184,8 +193,6 @@ public abstract class Auction implements Serializable{
 
         return seller;
     }
-    
-   
 
     public static double round(double value, int places) {
         if (places < 0) {

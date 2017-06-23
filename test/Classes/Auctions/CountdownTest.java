@@ -1,17 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This project is for PTS3 Fontys Eindhoven
+ * Jorian Vas, Kyle van Raaij, Pieter Beukelman, Sam Dirkx, Lesley Peeters, Robin Welten
+ * �2016-2017
  */
 package Classes.Auctions;
 
-import Classes.Bid;
-import Classes.Grand_Exchange;
-import Classes.Product;
-import Classes.User;
-import java.util.Date;
-import java.util.List;
-import junit.framework.Assert;
+import java.sql.Timestamp;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,16 +15,9 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author kyle_
+ * @author piete
  */
 public class CountdownTest {
-    
-    Auction auction;
-    User user;
-    Date date;
-    Product product;
-    Grand_Exchange gE;
-    Bid bid;
     
     public CountdownTest() {
     }
@@ -45,51 +32,64 @@ public class CountdownTest {
     
     @Before
     public void setUp() {
-        user = new User("Kyle","PassWW");
-        date = new Date();
-        product = new Product(1,"1932","Smalle suède riem ","Mooi en handig voor elke maat");
-        auction = new Countdown(user,product,15,45,75,75,56,56,StatusEnum.New,"Testtestetestetets","");
-        bid = new Bid(user, 15);
-        
-        // adds a bid to the auction
-        auction.addBid(bid);
     }
     
     @After
     public void tearDown() {
     }
 
+    /**
+     * Test of getCreationDate method, of class Countdown.
+     */
     @Test
-    public void testGetBestBid() {
-        Bid result = auction.getBestBid();
-        Assert.assertNotNull("Bid is null", result);
+    public void testGetCreationDate() {
+        System.out.println("getCreationDate");
+        Countdown instance = null;
+        Timestamp expResult = null;
+        Timestamp result = instance.getCreationDate();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getBids method, of class Auction. This test checks if the list is
-     * not empty
+     * Test of getPriceLoweringAmount method, of class Countdown.
      */
     @Test
-    public void testGetBids() {
-        List<Bid> bids = auction.getBids();
-        if (bids.isEmpty()) {
-            fail("The list is empty");
-        }
+    public void testGetPriceLoweringAmount() {
+        System.out.println("getPriceLoweringAmount");
+        Countdown instance = null;
+        double expResult = 0.0;
+        double result = instance.getPriceLoweringAmount();
+        assertEquals(expResult, result, 0.0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of sendMailRequest method, of class Auction.
+     * Test of getPriceLoweringDelay method, of class Countdown.
      */
     @Test
-    public void testSendMailRequest() {
-        String email = "Kyle_v_r@hotmail.com";
+    public void testGetPriceLoweringDelay() {
+        System.out.println("getPriceLoweringDelay");
+        Countdown instance = null;
+        double expResult = 0.0;
+        double result = instance.getPriceLoweringDelay();
+        assertEquals(expResult, result, 0.0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 
-        try {
-            auction.sendMailRequest(email);
-        } catch (Exception e) {
-            fail("Method failed");
-        }
-
+    /**
+     * Test of setPrice method, of class Countdown.
+     */
+    @Test
+    public void testSetPrice() {
+        System.out.println("setPrice");
+        Countdown instance = null;
+        instance.setPrice();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
     
 }

@@ -1,18 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This project is for PTS3 Fontys Eindhoven
+ * Jorian Vas, Kyle van Raaij, Pieter Beukelman, Sam Dirkx, Lesley Peeters, Robin Welten
+ * �2016-2017
  */
 package Classes.Auctions;
 
-import Classes.Bid;
-import Classes.Grand_Exchange;
-import Classes.Product;
-import Classes.User;
-import grandexchange.GrandExchange;
-import java.util.Date;
-import java.util.List;
-import junit.framework.Assert;
+import java.sql.Timestamp;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,16 +15,9 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author kyle_
+ * @author piete
  */
 public class StandardTest {
-    
-    Auction auction;
-    User user;
-    Date date;
-    Product product;
-    Grand_Exchange gE;
-    Bid bid;
     
     public StandardTest() {
     }
@@ -46,56 +32,52 @@ public class StandardTest {
     
     @Before
     public void setUp() {
-        user = new User("Kyle","PassWW");
-        date = new Date();
-        product = new Product(1, "1932","Riem","Mooi en handig voor elke maat");
-        auction = new Standard(user,product,15,32,date,StatusEnum.New,"","", 10);
-        bid = new Bid(user, 15);
-        
-        // adds a bid to the auction
-        auction.addBid(bid);
     }
     
     @After
     public void tearDown() {
     }
-    
+
     /**
-     * Test of getBestBid method, of class Auction. This test checks if result
-     * is not null.
+     * Test of getTimeRemaining method, of class Standard.
      */
     @Test
-    public void testGetBestBid() {
-        Bid result = auction.getBestBid();
-        Assert.assertNotNull("Bid is null", result);
+    public void testGetTimeRemaining() {
+        System.out.println("getTimeRemaining");
+        Standard instance = null;
+        long expResult = 0L;
+        long result = instance.getTimeRemaining();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getBids method, of class Auction. This test checks if the list is
-     * not empty
+     * Test of getCreationDate method, of class Standard.
      */
     @Test
-    public void testGetBids() {
-        List<Bid> bids = auction.getBids();
-        if (bids.isEmpty()) {
-            fail("The list is empty");
-        }
+    public void testGetCreationDate() {
+        System.out.println("getCreationDate");
+        Standard instance = null;
+        Timestamp expResult = null;
+        Timestamp result = instance.getCreationDate();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of sendMailRequest method, of class Auction.
-     * This tet checks if the method gives no errors
+     * Test of getEndDate method, of class Standard.
      */
     @Test
-    public void testSendMailRequest() {
-        String email = "Kyle_v_r@hotmail.com";
-
-        try {
-            auction.sendMailRequest(email);
-        } catch (Exception e) {
-            fail("Method failed");
-        }
-
+    public void testGetEndDate() {
+        System.out.println("getEndDate");
+        Standard instance = null;
+        Timestamp expResult = null;
+        Timestamp result = instance.getEndDate();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
     
 }
