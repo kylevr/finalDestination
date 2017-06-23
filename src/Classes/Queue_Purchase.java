@@ -11,7 +11,7 @@ public class Queue_Purchase implements Serializable {
     private int productID;
     private int placerID;
 
-    public Queue_Purchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) {
+    public Queue_Purchase(int quantity, double minPrice, double maxPrice, int productID, int placerID) {
         this.quantity = quantity;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
@@ -25,7 +25,7 @@ public class Queue_Purchase implements Serializable {
      * @return int
      */
     public int getQuantity() {
-        return quantity;
+        return this.quantity;
     }
 
     /**
@@ -34,7 +34,7 @@ public class Queue_Purchase implements Serializable {
      * @return double
      */
     public double getMinPrice() {
-        return minPrice;
+        return this.minPrice;
     }
 
     /**
@@ -43,7 +43,7 @@ public class Queue_Purchase implements Serializable {
      * @return double
      */
     public double getMaxPrice() {
-        return maxPrice;
+        return this.maxPrice;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Queue_Purchase implements Serializable {
      * @return int
      */
     public int getProductID() {
-        return productID;
+        return this.productID;
     }
 
     /**
@@ -61,7 +61,7 @@ public class Queue_Purchase implements Serializable {
      * @return int
      */
     public int getPlacerID() {
-        return placerID;
+        return this.placerID;
     }
 
     /**
