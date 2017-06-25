@@ -451,8 +451,14 @@ public class AuctionController implements Initializable {
     public void buyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
+        System.out.println("Saldo = " + RM.getUser().getSaldo());
+        RM.getUser().getSaldo();
+        
+        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
+        if(RM.getUser().getSaldo() < totalprice){
+            JOptionPane.showMessageDialog(null, "You don't have enough money on your account to perform this action.");
+        }else{
         if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
-            double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 int units = Integer.parseInt(txtUnitstoBuyBid.getText());
@@ -468,7 +474,7 @@ public class AuctionController implements Initializable {
             JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
         } else {
             JOptionPane.showMessageDialog(null, "Something went wrong");
-        }
+        }}
         checkAuctionStatus();
     }
 
