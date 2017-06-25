@@ -481,12 +481,16 @@ public class AuctionController implements Initializable {
     public void bidButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
-        if (auction.getCurrentPrice() < Double.parseDouble(txtPriceToBid.getText())&&Double.parseDouble(txtPriceToBid.getText())<auction.getInstabuyPrice()) {
+        double price = Double.parseDouble(txtPriceToBid.getText());
+        if (auction.getCurrentPrice() < price ) {
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Bid " + txtPriceToBid.getText(), "Are You Sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                bid.placeBid(1, loggedInUser.getUsername(), auction.getId(), Double.parseDouble(txtPriceToBid.getText()));
+                if(bid.placeBid(1, RM.getUser().getUserID(), auction.getId(), price)){
+                    JOptionPane.showMessageDialog(null, "Your bid has been placed.");
+                }else{
+                    JOptionPane.showMessageDialog(null, "Something went wrong while placing your bid.");
+                }
                 update();
-                JOptionPane.showMessageDialog(null, "Your bid has been placed");
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
@@ -508,7 +512,7 @@ public class AuctionController implements Initializable {
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + auction.getInstabuyPrice() + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 int units = Integer.parseInt(txtUnitstoBuy.getText());
-                bid.placeBid(units, loggedInUser.getUsername(), auction.getId(), auction.getInstabuyPrice());
+                bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());
                 update();
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");

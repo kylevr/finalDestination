@@ -596,25 +596,10 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     }
 
     @Override
-    public boolean placeBid(double amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
-        UserConnection DB = new UserConnection();
-        int index = -1;
-        for (int i = 0; i < auctions.size(); i++) {
-            if (auctions.get(i).getId() == AuctionID) {
-                index = i;
-                break;
-            }
-        }
-        int index2 = -1;
-        User u = null;
-        u = DB.getUser(userName);
-        System.out.println(userName);
-        System.out.println(u.getUserID());
-        System.out.println(price);
-        System.out.println(AuctionID);
-        auctions.get(index).addBid(new Bid(AuctionID, u, price));
-        //return auctionConn.addBid(amount, AuctionID, userID, price);
-        return true;
+    public boolean placeBid(double amount, int userid, int auctionid, double price) throws RemoteException, NotEnoughMoneyException {
+        auctionConn = new AuctionConnection();
+        return auctionConn.insertBid(price, userid, auctionid);
+        
     }
 
     public boolean placeBuy(int amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {

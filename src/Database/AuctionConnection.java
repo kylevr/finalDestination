@@ -48,6 +48,7 @@ public class AuctionConnection {
     static final String GET_BID_FROM_AUCTION_ID = "SELECT * FROM bid WHERE auctionID = ?";
     static final String GET_FROM_AUCTIONS = "SELECT * FROM auction";
     static final String SET_AUCTION_NEW = "INSERT INTO auction(sellerID, productID, timecreated, currentprice, instabuyprice, instabuyable, productquantity, timeend, priceloweringAmount, priceloweringdelay, type, status, imageUrl, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    static final String SET_BID_NEW = "INSERT INTO bid(amount, timeCreated, placerID, auctionID) VALUES (?,?,?,?)";
     static final String SET_CLOSE_AUCTION = "DELETE FROM `auction` WHERE  `productquantity` < 1";
 
     // Constructor
@@ -278,7 +279,7 @@ public class AuctionConnection {
         ResultSet resultset;
         try {
             conn.getConnection();
-            pstmt = myConn.prepareStatement(GET_BID_FROM_AUCTION_ID);
+            pstmt = conn.getMyConn().prepareStatement(GET_BID_FROM_AUCTION_ID);
             pstmt.setInt(1, id);
             resultset = pstmt.executeQuery();
             while (resultset.next()) {
@@ -319,7 +320,7 @@ public class AuctionConnection {
             if (user.getSaldo() >= auction.getCurrentPrice()) {
                 try {
                     conn.getConnection();
-                    pstmt = myConn.prepareStatement("INSERT INTO bid (amount, placerID, auctionID) VALUES (?,?,?);");
+                    pstmt = conn.getMyConn().prepareStatement("INSERT INTO bid (amount, placerID, auctionID) VALUES (?,?,?);");
                     pstmt.setDouble(1, price);
                     pstmt.setInt(2, userID);
                     pstmt.setInt(3, auctionID);
@@ -389,6 +390,36 @@ public class AuctionConnection {
             pstmt.setInt(12, status);
             pstmt.setString(13, imgurl);
             pstmt.setString(14, description);
+
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println("succesfully registered new queuePurchase: ");
+                conn.closeConnection();
+                return true;
+            } else {
+                System.out.println("Couldn't insert new queuePurchase. Rows are unaffected.");
+                conn.closeConnection();
+                return false;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+            conn.closeConnection();
+            return false;
+        }
+    }
+    
+    public Boolean insertBid(double amount, int userid, int auctionid) {
+
+
+        conn.getConnection();
+  
+        try {
+            pstmt = conn.getMyConn().prepareStatement(SET_BID_NEW);
+            pstmt.setDouble(1, amount);
+            Timestamp created = new Timestamp(System.currentTimeMillis());
+            pstmt.setTimestamp(2, created);
+            pstmt.setInt(3, userid);
+            pstmt.setInt(4, auctionid);
 
             if (pstmt.executeUpdate() > 0) {
                 System.out.println("succesfully registered new queuePurchase: ");
