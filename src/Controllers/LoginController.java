@@ -67,8 +67,14 @@ public class LoginController implements Initializable {
     public void button_loginUser() throws IOException {
         //nieuwe oplossing, fix ik na unittests. (database dingen >> isVerified)
         try {
+            
+            if(!textfield_username.getText().isEmpty() || !textfield_password.getText().isEmpty()){
+                //
+            
             user = authorization.login(textfield_username.getText(), textfield_password.getText());
             System.out.println("userid " + user.getUserID());
+            
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
