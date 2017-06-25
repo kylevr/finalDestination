@@ -511,6 +511,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @param email
      * @return message that says if it's successful or not
      */
+    @Override
     public String registerUser(String username, String password, String alias, String email) {
         String errorMsg = "Failed to register user:";
 
@@ -617,6 +618,17 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         return true;
     }
 
+    /**
+     *
+     * @param amount
+     * @param userName
+     * @param AuctionID
+     * @param price
+     * @return
+     * @throws RemoteException
+     * @throws NotEnoughMoneyException
+     */
+    @Override
     public boolean placeBuy(int amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
         UserConnection DB = new UserConnection();
         int index = -1;
@@ -636,6 +648,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         for (int i = 0; i < amount; i++) {
             auctions.get(index).addBid(new Bid(AuctionID, u, price));
         }
+        
+        Auction a = auctions.get(index);
+        if (a.getCurrentPrice() < 0){
+            
+        }
+//        if(auctions.get(index).getCurrentPrice() )
         auctions.get(index).setProductQuantity(amount);
         //return auctionConn.addBid(amount, AuctionID, userID, price);
         return true;

@@ -184,7 +184,7 @@ public class RegistryManager {
 
         // Locate registry at IP address and port number
         try {
-            registry = LocateRegistry.getRegistry(ipAddress, portNumber);
+            registry = LocateRegistry.getRegistry("localhost", portNumber);
 
             if (registry != null) {
                 System.out.println("Client: Registry located");
