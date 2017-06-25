@@ -78,34 +78,7 @@ public class CreateAuctionController implements Initializable {
 
     public void createAuction() throws RemoteException {
 
-        RM.getAuctionInterface();
-        RM.getProductInterface();
-        productInterface = RM.getProduct();
-        auctionInterface = RM.getAuction();
-        
-        if ("Standard Auction".equals(selectedOption)) {
-            auctionType = "standard";
-        }
-        if ("Countdown Auction".equals(selectedOption)) {
-            auctionType = "countdown";
-        }
-        if ("Direct Auction".equals(selectedOption)) {
-            auctionType = "direct";
-        }
-        String productName = tbAuctionTitle.getText();
-        int Gtin = Integer.parseInt(tbGtin.getText());
-        double startingPrice = Double.parseDouble(tbStartingPrice.getText());
-        boolean instabuy = cbInstaBuy.isSelected();
-        double instabuyPrice = 0;
-        if (instabuy) {
-            instabuyPrice = Double.parseDouble(tbInstabuyPrice.getText());
-        }
-        String amount = tbQuantity.getText();
-        int quantity = Integer.parseInt(amount);
-        String description = tbDescription.getText();
-        String imageUrl = tbImageUrl.getText();
-
-        if ("".equals(cbAuctionType.getValue()) || "".equals(productName) || "".equals(tbGtin.getText()) || "".equals(tbStartingPrice.getText()) || "".equals(tbQuantity.getText()) || "".equals(description)) {
+        if (tbAuctionTitle.getText().equals("") || tbGtin.getText().equals("") || tbStartingPrice.getText().equals("") || tbQuantity.getText().equals("") || tbDescription.getText().equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Empty Field Error");
             alert.setHeaderText("You didn't enter all required fields.");
@@ -113,6 +86,34 @@ public class CreateAuctionController implements Initializable {
 
             alert.showAndWait();
         } else {
+
+            RM.getAuctionInterface();
+            RM.getProductInterface();
+            productInterface = RM.getProduct();
+            auctionInterface = RM.getAuction();
+
+            if ("Standard Auction".equals(selectedOption)) {
+                auctionType = "standard";
+            }
+            if ("Countdown Auction".equals(selectedOption)) {
+                auctionType = "countdown";
+            }
+            if ("Direct Auction".equals(selectedOption)) {
+                auctionType = "direct";
+            }
+            String productName = tbAuctionTitle.getText();
+            int Gtin = Integer.parseInt(tbGtin.getText());
+            double startingPrice = Double.parseDouble(tbStartingPrice.getText());
+            boolean instabuy = cbInstaBuy.isSelected();
+            double instabuyPrice = 0;
+            if (instabuy) {
+                instabuyPrice = Double.parseDouble(tbInstabuyPrice.getText());
+            }
+            String amount = tbQuantity.getText();
+            int quantity = Integer.parseInt(amount);
+            String description = tbDescription.getText();
+            String imageUrl = tbImageUrl.getText();
+
             int productid;
             productid = productInterface.createProduct(Gtin, productName, description);
             if (productid != 0) {
@@ -123,22 +124,22 @@ public class CreateAuctionController implements Initializable {
                 }
                 int priceloweringAmount = 0;
                 int priceloweringdelay = 0;
-                if(auctionType.equalsIgnoreCase("countdown")){
+                if (auctionType.equalsIgnoreCase("countdown")) {
                     priceloweringAmount = toIntExact(Math.round(startingPrice / 100));
                     priceloweringdelay = 10;
                 }
                 boolean succeeded = false;
-                try{
+                try {
                     succeeded = auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, priceloweringAmount, priceloweringdelay, auctionType, 1, imageUrl, description);
-                    if(succeeded){
-                    JOptionPane.showMessageDialog(null, "Your auction has been added!", "InfoBox: " + "Succes", JOptionPane.INFORMATION_MESSAGE);
-                }else{
-                    JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
-                }catch(Exception ex){
+                    if (succeeded) {
+                        JOptionPane.showMessageDialog(null, "Your auction has been added!", "InfoBox: " + "Succes", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Your auction isn't added to our database", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
-                
+
             } else {
                 System.out.print("Cant insert product to database.");
             }
