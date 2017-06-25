@@ -81,13 +81,13 @@ public interface IAuction extends Remote{
      * @param userID The id of the user.
      * @return True if instabuy item is be brought, false if its not.
      */
-    public boolean InstabuyItem(int amount, int auctionID, int userID) throws RemoteException;;
+    public boolean InstabuyItem(int amount, int auctionID, int userID) throws RemoteException;
     
     /**
      * Updates the auction given in the parameter.
      *
      * @param auction the auction that need to be updated
      */
-    public void updateAuction(Auction auction) throws RemoteException;;
+    public void updateAuction(Auction auction) throws RemoteException;
     
 }

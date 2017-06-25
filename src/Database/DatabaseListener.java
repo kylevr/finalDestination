@@ -39,7 +39,8 @@ public class DatabaseListener extends Observable{
                 auctionlistener = new AuctionListener(getConnection());
                 queueListener = new QueuePurchaseListener(getConnection());
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                            Logger.getLogger(DatabaseListener.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println(ex.getMessage());
                 System.out.println("Can't create database listener Object.");
             }
         
@@ -61,10 +62,12 @@ public class DatabaseListener extends Observable{
                 auctionIdList.add(tempResultSet.getInt("auctionID"));
                 System.out.println(tempResultSet.getInt("auctionID"));
             }
+            
             }
             else{
                 System.out.println("resultSet of NEW auction id's is empty ?!");
             }
+            tempStatement.closeOnCompletion();
 
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseListener.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,6 +91,7 @@ public class DatabaseListener extends Observable{
             else{
                 System.out.println("resultSet of NEW queuepurchase id's is empty ?!");
             }
+            tempStatement.closeOnCompletion();
 
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseListener.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,7 +157,8 @@ public class DatabaseListener extends Observable{
 
                     Thread.sleep(5000);
                 } catch (Exception exc) {
-                    System.out.println(exc.getMessage());
+                                Logger.getLogger(Database.Connection.class.getName()).log(Level.SEVERE, null, exc);
+System.out.println(exc.getMessage());
                     close(conn, myStmt);
                     System.out.println("Listener Thread interrupted.");
                 }
@@ -217,7 +222,8 @@ public class DatabaseListener extends Observable{
 
                     Thread.sleep(5000);
                 } catch (Exception exc) {
-                    System.out.println(exc.getMessage());
+                                Logger.getLogger(Database.Connection.class.getName()).log(Level.SEVERE, null, exc);
+System.out.println(exc.getMessage());
                     close(conn, myStmt);
                     System.out.println("Listener Thread interrupted.");
                 }

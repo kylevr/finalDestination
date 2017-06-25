@@ -40,50 +40,53 @@ public class Server {
 <span class="nc" id="L40">            GE = new Grand_Exchange();</span>
 <span class="nc" id="L41">            System.out.println(&quot;Server: Grand Exchange created !&quot;);</span>
 <span class="nc" id="L42">        } catch (RemoteException ex) {</span>
-<span class="nc" id="L43">            System.out.println(&quot;Server: Cannot create Grand Exchange Object&quot;);</span>
-<span class="nc" id="L44">            System.out.println(&quot;Server: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L45">            GE = null;</span>
-<span class="nc" id="L46">        }</span>
+<span class="nc" id="L43">                                                                              Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L44"> System.out.println(&quot;Server: Cannot create Grand Exchange Object&quot;);</span>
+<span class="nc" id="L45">            System.out.println(&quot;Server: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L46">            GE = null;</span>
+<span class="nc" id="L47">        }</span>
 
         // Create registry at port number
         try {
-<span class="nc" id="L50">            registry = LocateRegistry.createRegistry(portNumber);</span>
-<span class="nc" id="L51">            System.out.println(&quot;Server: Registry created on port number &quot; + portNumber);</span>
-<span class="nc" id="L52">        } catch (RemoteException ex) {</span>
-<span class="nc" id="L53">            System.out.println(&quot;Server: Cannot create registry&quot;);</span>
-<span class="nc" id="L54">            System.out.println(&quot;Server: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L55">            registry = null;</span>
-<span class="nc" id="L56">        }</span>
+<span class="nc" id="L51">            registry = LocateRegistry.createRegistry(portNumber);</span>
+<span class="nc" id="L52">            System.out.println(&quot;Server: Registry created on port number &quot; + portNumber);</span>
+<span class="nc" id="L53">        } catch (RemoteException ex) {</span>
+<span class="nc" id="L54">                                                                               Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L55">System.out.println(&quot;Server: Cannot create registry&quot;);</span>
+<span class="nc" id="L56">            System.out.println(&quot;Server: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L57">            registry = null;</span>
+<span class="nc" id="L58">        }</span>
 
         // Bind Grand Exchange using registry
         try {
-<span class="nc" id="L60">            registry.rebind(bindingName, GE);</span>
-<span class="nc" id="L61">        } catch (RemoteException ex) {</span>
-<span class="nc" id="L62">            System.out.println(&quot;Server: Cannot bind Grand Exchange&quot;);</span>
-<span class="nc" id="L63">            System.out.println(&quot;Server: RemoteException: &quot; + ex.getMessage());</span>
-<span class="nc" id="L64">        }</span>
+<span class="nc" id="L62">            registry.rebind(bindingName, GE);</span>
+<span class="nc" id="L63">        } catch (RemoteException ex) {</span>
+<span class="nc" id="L64">                                                                   Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L65">System.out.println(&quot;Server: Cannot bind Grand Exchange&quot;);</span>
+<span class="nc" id="L66">            System.out.println(&quot;Server: RemoteException: &quot; + ex.getMessage());</span>
+<span class="nc" id="L67">        }</span>
         try {
-<span class="nc" id="L66">            InetAddress localhost = InetAddress.getLocalHost();</span>
-<span class="nc" id="L67">            System.out.println(&quot;Server: IP Address: &quot; + localhost.getHostAddress());</span>
+<span class="nc" id="L69">            InetAddress localhost = InetAddress.getLocalHost();</span>
+<span class="nc" id="L70">            System.out.println(&quot;Server: IP Address: &quot; + localhost.getHostAddress());</span>
             // Just in case this host has multiple IP addresses....
             InetAddress[] allMyIps;
 
-<span class="nc" id="L71">            allMyIps = InetAddress.getAllByName(localhost.getCanonicalHostName());</span>
-<span class="nc bnc" id="L72" title="All 4 branches missed.">            if (allMyIps != null &amp;&amp; allMyIps.length &gt; 1) {</span>
-<span class="nc" id="L73">                System.out.println(&quot;Server: Full list of IP addresses:&quot;);</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">                for (InetAddress allMyIp : allMyIps) {</span>
-<span class="nc" id="L75">                    System.out.println(&quot;    &quot; + allMyIp);</span>
+<span class="nc" id="L74">            allMyIps = InetAddress.getAllByName(localhost.getCanonicalHostName());</span>
+<span class="nc bnc" id="L75" title="All 4 branches missed.">            if (allMyIps != null &amp;&amp; allMyIps.length &gt; 1) {</span>
+<span class="nc" id="L76">                System.out.println(&quot;Server: Full list of IP addresses:&quot;);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">                for (InetAddress allMyIp : allMyIps) {</span>
+<span class="nc" id="L78">                    System.out.println(&quot;    &quot; + allMyIp);</span>
                 }
             }
 
-<span class="nc" id="L79">        } catch (UnknownHostException ex) {</span>
-<span class="nc" id="L80">            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L81">        }</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L82">        } catch (UnknownHostException ex) {</span>
+<span class="nc" id="L83">            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L84">        }</span>
+<span class="nc" id="L85">    }</span>
 
     public static void main(String[] args) {
-<span class="nc" id="L85">        Server server = new Server();</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L88">        Server server = new Server();</span>
+<span class="nc" id="L89">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

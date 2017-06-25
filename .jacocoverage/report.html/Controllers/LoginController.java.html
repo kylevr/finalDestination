@@ -67,41 +67,48 @@ import javafx.stage.StageStyle;
     public void button_loginUser() throws IOException {
         //nieuwe oplossing, fix ik na unittests. (database dingen &gt;&gt; isVerified)
         try {
-<span class="nc" id="L70">            user = authorization.login(textfield_username.getText(), textfield_password.getText());</span>
-<span class="nc" id="L71">            System.out.println(&quot;userid &quot; + user.getUserID());</span>
-<span class="nc" id="L72">        } catch (Exception ex) {</span>
-<span class="nc" id="L73">            ex.printStackTrace();</span>
-<span class="nc" id="L74">        }</span>
+            
+<span class="nc bnc" id="L71" title="All 4 branches missed.">            if(!textfield_username.getText().isEmpty() || !textfield_password.getText().isEmpty()){</span>
+                //
+            
+<span class="nc" id="L74">            user = authorization.login(textfield_username.getText(), textfield_password.getText());</span>
+<span class="nc" id="L75">            System.out.println(&quot;userid &quot; + user.getUserID());</span>
+            
+            }
+<span class="nc" id="L78">        } catch (Exception ex) {</span>
+<span class="nc" id="L79">                                                                   Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L80">ex.printStackTrace();</span>
+<span class="nc" id="L81">        }</span>
 
         //tijdelijke oplossing user getten
 //        UserConnection userConn = new UserConnection();
 //        user = userConn.getUser(textfield_username.getText(), textfield_password.getText());
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L80">            user.setIsAuthorized(true);</span>
-<span class="nc" id="L81">            FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Main.fxml&quot;));</span>
-<span class="nc" id="L82">            Parent root = loader.load();</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L87">            user.setIsAuthorized(true);</span>
+<span class="nc" id="L88">            FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Main.fxml&quot;));</span>
+<span class="nc" id="L89">            Parent root = loader.load();</span>
 
-<span class="nc" id="L84">            MainController controller = (MainController) loader.getController();</span>
-<span class="nc" id="L85">            RM.setUser(user);</span>
-<span class="nc" id="L86">            controller.setUp(RM);</span>
+<span class="nc" id="L91">            MainController controller = (MainController) loader.getController();</span>
+<span class="nc" id="L92">            RM.setUser(user);</span>
+<span class="nc" id="L93">            controller.setUp(RM);</span>
 
-<span class="nc" id="L88">            Stage inputStage = new Stage();</span>
-<span class="nc" id="L89">            Scene newScene = new Scene(root);</span>
-<span class="nc" id="L90">            inputStage.getIcons().add(new Image(&quot;/Icon/scale.png&quot;));</span>
-<span class="nc" id="L91">            inputStage.setScene(newScene);</span>
-<span class="nc" id="L92">            inputStage.setTitle(&quot;Grand Exchange&quot;);</span>
-<span class="nc" id="L93">            inputStage.show();</span>
-<span class="nc" id="L94">            Stage stage = (Stage) textfield_username.getScene().getWindow();</span>
-<span class="nc" id="L95">            stage.close();</span>
-<span class="nc" id="L96">        } else {</span>
-<span class="nc" id="L97">            label_errorMsg.setVisible(true);</span>
-<span class="nc" id="L98">            label_errorMsg.setText(&quot; Our attempt to log you in failed. \n Please try again or check your connection.&quot;);</span>
+<span class="nc" id="L95">            Stage inputStage = new Stage();</span>
+<span class="nc" id="L96">            Scene newScene = new Scene(root);</span>
+<span class="nc" id="L97">            inputStage.getIcons().add(new Image(&quot;/Icon/scale.png&quot;));</span>
+<span class="nc" id="L98">            inputStage.setScene(newScene);</span>
+<span class="nc" id="L99">            inputStage.setTitle(&quot;Grand Exchange&quot;);</span>
+<span class="nc" id="L100">            inputStage.show();</span>
+<span class="nc" id="L101">            Stage stage = (Stage) textfield_username.getScene().getWindow();</span>
+<span class="nc" id="L102">            stage.close();</span>
+<span class="nc" id="L103">        } else {</span>
+<span class="nc" id="L104">            label_errorMsg.setVisible(true);</span>
+<span class="nc" id="L105">            label_errorMsg.setText(&quot; Our attempt to log you in failed. \n Please try again or check your connection.&quot;);</span>
         }
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L107">    }</span>
 
     public void button_exit() {
-<span class="nc" id="L103">        System.exit(1);</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L110">        System.exit(1);</span>
+<span class="nc" id="L111">    }</span>
 
     @FXML
     public void button_registerUser() throws IOException {
@@ -115,19 +122,19 @@ import javafx.stage.StageStyle;
         //Stage currentStage = (Stage)currentPane.getScene().getWindow();
         //currentStage.close();
 
-<span class="nc" id="L118">        FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Registration.fxml&quot;));</span>
-<span class="nc" id="L119">        Parent root = loader.load();</span>
+<span class="nc" id="L125">        FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/Views/Registration.fxml&quot;));</span>
+<span class="nc" id="L126">        Parent root = loader.load();</span>
 
-<span class="nc" id="L121">        RegistrationController controller = (RegistrationController) loader.getController();</span>
-<span class="nc" id="L122">        controller.setUp(RM);</span>
+<span class="nc" id="L128">        RegistrationController controller = (RegistrationController) loader.getController();</span>
+<span class="nc" id="L129">        controller.setUp(RM);</span>
 
-<span class="nc" id="L124">        Stage inputStage = new Stage();</span>
-<span class="nc" id="L125">        Scene newScene = new Scene(root);</span>
-<span class="nc" id="L126">        inputStage.getIcons().add(new Image(&quot;/Icon/scale.png&quot;));</span>
-<span class="nc" id="L127">        inputStage.setScene(newScene);</span>
-<span class="nc" id="L128">        inputStage.show();</span>
-<span class="nc" id="L129">        Stage stage = (Stage) textfield_username.getScene().getWindow();</span>
-<span class="nc" id="L130">        stage.close();</span>
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L131">        Stage inputStage = new Stage();</span>
+<span class="nc" id="L132">        Scene newScene = new Scene(root);</span>
+<span class="nc" id="L133">        inputStage.getIcons().add(new Image(&quot;/Icon/scale.png&quot;));</span>
+<span class="nc" id="L134">        inputStage.setScene(newScene);</span>
+<span class="nc" id="L135">        inputStage.show();</span>
+<span class="nc" id="L136">        Stage stage = (Stage) textfield_username.getScene().getWindow();</span>
+<span class="nc" id="L137">        stage.close();</span>
+<span class="nc" id="L138">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

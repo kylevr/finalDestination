@@ -7,6 +7,7 @@ package grandexchange;
 
 import Classes.User;
 import Controllers.LoginController;
+import Database.DatabaseListener;
 import Interfaces.IAuction;
 import Interfaces.IAuthorized;
 import Interfaces.ICreateProduct;
@@ -91,7 +92,8 @@ public class RegistryManager {
                 this.authorization = authorization;
 
             } catch (RemoteException | NotBoundException ex) {
-                System.out.println("Client: Cannot bind Autherization interface");
+                                                       Logger.getLogger(RegistryManager.class.getName()).log(Level.SEVERE, null, ex);
+ System.out.println("Client: Cannot bind Autherization interface");
                 System.out.println("Client: RemoteException: " + ex.getMessage());
                 System.out.println("Interface reference is NOT bound");
                 authorization = null;
@@ -108,7 +110,8 @@ public class RegistryManager {
                 System.out.println("Interface reference IS bound.");
 
             } catch (RemoteException | NotBoundException ex) {
-                System.out.println("Client: Cannot bind Bid Interface");
+                                                        Logger.getLogger(RegistryManager.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Client: Cannot bind Bid Interface");
                 System.out.println("Client: RemoteException: " + ex.getMessage());
                 System.out.println("Interface reference is NOT bound");
                 this.bid = null;
@@ -126,7 +129,8 @@ public class RegistryManager {
                     System.out.println("Interface reference IS bound.");
 
                 } catch (RemoteException | NotBoundException ex) {
-                    System.out.println("Client: Cannot bind Auction Interface");
+                                                            Logger.getLogger(RegistryManager.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Client: Cannot bind Auction Interface");
                     System.out.println("Client: RemoteException: " + ex.getMessage());
                     System.out.println("Interface reference is NOT bound");
                     this.auction = null;
@@ -144,7 +148,8 @@ public class RegistryManager {
                     System.out.println("Interface reference IS bound.");
 
                 } catch (RemoteException | NotBoundException ex) {
-                    System.out.println("Client: Cannot bind Product Interface");
+                                                            Logger.getLogger(RegistryManager.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Client: Cannot bind Product Interface");
                     System.out.println("Client: RemoteException: " + ex.getMessage());
                     System.out.println("Interface reference is NOT bound");
                     this.product = null;
@@ -161,7 +166,8 @@ public class RegistryManager {
                 System.out.println("Interface reference IS bound.");
 
             } catch (RemoteException | NotBoundException ex) {
-                System.out.println("Client: Cannot bind QueuePurchase Interface");
+                                                        Logger.getLogger(RegistryManager.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Client: Cannot bind QueuePurchase Interface");
                 System.out.println("Client: RemoteException: " + ex.getMessage());
                 System.out.println("Interface reference is NOT bound");
                 this.queuePurchase = null;
@@ -191,7 +197,8 @@ public class RegistryManager {
             }
 
         } catch (RemoteException ex) {
-            System.out.println("Client: Cannot locate registry");
+                                        Logger.getLogger(RegistryManager.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Client: Cannot locate registry");
             System.out.println("Client: RemoteException: " + ex.getMessage());
             registry = null;
             System.out.println("Client reference = null");

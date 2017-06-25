@@ -184,15 +184,16 @@ import java.util.logging.Logger;
 <span class="nc" id="L184">                user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);</span>
 <span class="nc" id="L185">                conn.closeConnection();</span>
 <span class="fc" id="L186">            } catch (SQLException ex) {</span>
-<span class="fc" id="L187">                System.out.println(&quot;User not found&quot;);</span>
-<span class="fc" id="L188">                conn.closeConnection();</span>
-<span class="pc" id="L189">            }</span>
+<span class="fc" id="L187">                                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L188">System.out.println(&quot;User not found&quot;);</span>
+<span class="fc" id="L189">                conn.closeConnection();</span>
+<span class="pc" id="L190">            }</span>
         }
         else
         {
-<span class="nc" id="L193">            System.out.println(&quot;Username and password may not be empty.&quot;);</span>
+<span class="nc" id="L194">            System.out.println(&quot;Username and password may not be empty.&quot;);</span>
         }
-<span class="fc" id="L195">        return user;</span>
+<span class="fc" id="L196">        return user;</span>
     }
 
     /**
@@ -202,42 +203,42 @@ import java.util.logging.Logger;
      * @return a user with the given username.
      */
     public User getUser(String username) {
-<span class="nc" id="L205">        User user = null;</span>
+<span class="nc" id="L206">        User user = null;</span>
 
         try {
-<span class="nc" id="L208">            conn.getConnection();</span>
-<span class="nc" id="L209">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L209">            conn.getConnection();</span>
 <span class="nc" id="L210">            myConn = conn.getMyConn();</span>
-<span class="nc" id="L211">            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);</span>
-<span class="nc" id="L212">            pstmt.setString(1, username);</span>
+<span class="nc" id="L211">            myConn = conn.getMyConn();</span>
+<span class="nc" id="L212">            pstmt = myConn.prepareStatement(GET_FROM_USER_BYUSERNAME);</span>
+<span class="nc" id="L213">            pstmt.setString(1, username);</span>
 
-<span class="nc" id="L214">            myRs = pstmt.executeQuery();</span>
-<span class="nc" id="L215">            myRs.next();</span>
-<span class="nc" id="L216">        } catch (SQLException ex) {</span>
-<span class="nc" id="L217">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L218">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L219">        }</span>
+<span class="nc" id="L215">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L216">            myRs.next();</span>
+<span class="nc" id="L217">        } catch (SQLException ex) {</span>
+<span class="nc" id="L218">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L219">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L220">        }</span>
 
         try {
-<span class="nc" id="L222">            int userID = myRs.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L223">            int userID = myRs.getInt(&quot;id&quot;);</span>
             //removed  int bsn = myRs.getInt(&quot;bsn&quot;);
-<span class="nc" id="L224">            String usernm = myRs.getString(&quot;username&quot;);</span>
-<span class="nc" id="L225">            String pass = myRs.getString(&quot;password&quot;);</span>
-<span class="nc" id="L226">            String alias = myRs.getString(&quot;alias&quot;);</span>
-<span class="nc" id="L227">            String email = myRs.getString(&quot;email&quot;);</span>
-<span class="nc" id="L228">            boolean verified = myRs.getBoolean(&quot;verified&quot;);</span>
-<span class="nc" id="L229">            double saldo = myRs.getDouble(&quot;saldo&quot;);</span>
-<span class="nc" id="L230">            String imgURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="nc" id="L225">            String usernm = myRs.getString(&quot;username&quot;);</span>
+<span class="nc" id="L226">            String pass = myRs.getString(&quot;password&quot;);</span>
+<span class="nc" id="L227">            String alias = myRs.getString(&quot;alias&quot;);</span>
+<span class="nc" id="L228">            String email = myRs.getString(&quot;email&quot;);</span>
+<span class="nc" id="L229">            boolean verified = myRs.getBoolean(&quot;verified&quot;);</span>
+<span class="nc" id="L230">            double saldo = myRs.getDouble(&quot;saldo&quot;);</span>
+<span class="nc" id="L231">            String imgURL = myRs.getString(&quot;imageUrl&quot;);</span>
 
-<span class="nc" id="L232">            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);</span>
-<span class="nc" id="L233">            conn.closeConnection();</span>
-<span class="nc" id="L234">        } catch (SQLException ex) {</span>
-<span class="nc" id="L235">            System.out.println(&quot;User not found&quot;);</span>
-<span class="nc" id="L236">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L237">            conn.closeConnection();</span>
-<span class="nc" id="L238">        }</span>
+<span class="nc" id="L233">            user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);</span>
+<span class="nc" id="L234">            conn.closeConnection();</span>
+<span class="nc" id="L235">        } catch (SQLException ex) {</span>
+<span class="nc" id="L236">            System.out.println(&quot;User not found&quot;);</span>
+<span class="nc" id="L237">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L238">            conn.closeConnection();</span>
+<span class="nc" id="L239">        }</span>
 
-<span class="nc" id="L240">        return user;</span>
+<span class="nc" id="L241">        return user;</span>
     }
 
     /**
@@ -246,7 +247,7 @@ import java.util.logging.Logger;
      * @return all users
      */
     public ArrayList&lt;User&gt; getAllUsers() {
-<span class="nc" id="L249">        ArrayList&lt;User&gt; users = new ArrayList&lt;User&gt;();</span>
+<span class="nc" id="L250">        ArrayList&lt;User&gt; users = new ArrayList&lt;User&gt;();</span>
         String username;
         String password;
         String alias;
@@ -256,11 +257,10 @@ import java.util.logging.Logger;
         PreparedStatement preparedStatement;
         ResultSet resultset;
 
-<span class="nc bnc" id="L259" title="All 2 branches missed.">        if (myConn != null) {</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">        if (myConn != null) {</span>
 
             try {
-<span class="nc" id="L262">                conn.getConnection();</span>
-<span class="nc" id="L263">                myConn = conn.getMyConn();</span>
+<span class="nc" id="L263">                conn.getConnection();</span>
 <span class="nc" id="L264">                myConn = conn.getMyConn();</span>
 <span class="nc" id="L265">                preparedStatement = myConn.prepareStatement(GET_FROM_USER_ALLUSERS);</span>
 <span class="nc" id="L266">                resultset = preparedStatement.executeQuery();</span>

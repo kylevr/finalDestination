@@ -165,12 +165,11 @@ public class User implements Serializable {
      * enough money
      */
     public void addSaldo(double amount) throws NotEnoughMoneyException {
-<span class="fc" id="L168">        double oldSaldo = this.saldo;</span>
-<span class="fc" id="L169">        this.saldo += amount;</span>
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        if (this.saldo &lt; 0) {</span>
-<span class="nc" id="L171">            throw new NotEnoughMoneyException(&quot;Not enough money.&quot;);</span>
+<span class="fc" id="L168">        this.saldo += amount;</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (this.saldo &lt; 0) {</span>
+<span class="nc" id="L170">            throw new NotEnoughMoneyException(&quot;Not enough money.&quot;);</span>
         }
-<span class="fc" id="L173">    }</span>
+<span class="fc" id="L172">    }</span>
 
     /**
      * Returns the amount of money the user has
@@ -178,7 +177,7 @@ public class User implements Serializable {
      * @return the amount of money the user has
      */
     public double getSaldo() {
-<span class="fc" id="L181">        return this.saldo;</span>
+<span class="fc" id="L180">        return this.saldo;</span>
     }
 
     /**
@@ -187,7 +186,7 @@ public class User implements Serializable {
      * @return a list with transaction objects
      */
     public List&lt;Transaction&gt; getTransactionHistory() {
-<span class="nc" id="L190">        return this.transactions;</span>
+<span class="nc" id="L189">        return this.transactions;</span>
     }
 
     /**
@@ -196,11 +195,11 @@ public class User implements Serializable {
      * @param purchase is the purchase that needs to be added to the list
      */
     public void addQueuePurchase(Queue_Purchase purchase) {
-<span class="fc" id="L199">        this.placedOrders.add(purchase);</span>
-<span class="fc" id="L200">    }</span>
+<span class="fc" id="L198">        this.placedOrders.add(purchase);</span>
+<span class="fc" id="L199">    }</span>
 
     public List&lt;Queue_Purchase&gt; getQueuePurchase(){
-<span class="fc" id="L203">        return placedOrders;</span>
+<span class="fc" id="L202">        return placedOrders;</span>
     }
     
     /**
@@ -209,15 +208,15 @@ public class User implements Serializable {
      * @param purchase is the purchase that needs to be removed from the list
      */
     public void removeQueuePurchase(Queue_Purchase purchase) {
-<span class="fc" id="L212">        this.placedOrders.remove(purchase);</span>
-<span class="fc" id="L213">    }</span>
+<span class="fc" id="L211">        this.placedOrders.remove(purchase);</span>
+<span class="fc" id="L212">    }</span>
 
     /**
      * Method that sends a request to verify the user's account
      */
     public void requestVerification() {
         // TODO: implement the method to verify a user.
-<span class="fc" id="L220">        throw new UnsupportedOperationException(&quot;Not implemented yet.&quot;);</span>
+<span class="fc" id="L219">        throw new UnsupportedOperationException(&quot;Not implemented yet.&quot;);</span>
     }
 
     /**
@@ -226,7 +225,7 @@ public class User implements Serializable {
      * @return String
      */
     public String getUsername() {
-<span class="fc" id="L229">        return username;</span>
+<span class="fc" id="L228">        return username;</span>
     }
 
     /**
@@ -235,7 +234,7 @@ public class User implements Serializable {
      * @return string
      */
     public String getImageURL() {
-<span class="fc" id="L238">        return imageURL;</span>
+<span class="fc" id="L237">        return imageURL;</span>
     }
 
     /**
@@ -244,10 +243,10 @@ public class User implements Serializable {
      * @param feedback : feedback to be added
      */
     public void addFeedback(Feedback feedback) {
-<span class="pc bpc" id="L247" title="1 of 2 branches missed.">        if (!this.feedbacklist.contains(feedback)) {</span>
-<span class="fc" id="L248">            this.feedbacklist.add(feedback);</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">        if (!this.feedbacklist.contains(feedback)) {</span>
+<span class="fc" id="L247">            this.feedbacklist.add(feedback);</span>
         }
-<span class="fc" id="L250">    }</span>
+<span class="fc" id="L249">    }</span>
 
     /**
      * removes feedback from users feedback
@@ -255,8 +254,8 @@ public class User implements Serializable {
      * @param feedback : feedback to be removed
      */
     public void removeFeedback(Feedback feedback) {
-<span class="fc" id="L258">        this.feedbacklist.remove(feedback);</span>
-<span class="fc" id="L259">    }</span>
+<span class="fc" id="L257">        this.feedbacklist.remove(feedback);</span>
+<span class="fc" id="L258">    }</span>
 
     /**
      * Receives the list with feedback addressed to user object
@@ -264,14 +263,14 @@ public class User implements Serializable {
      * @return a list with feedback objects
      */
     public List&lt;Feedback&gt; getFeedbackToMe() {
-<span class="fc" id="L267">        this.sortFeedbacklistByDate();</span>
-<span class="fc" id="L268">        List&lt;Feedback&gt; feedbackToMeList = new ArrayList&lt;Feedback&gt;();</span>
-<span class="fc bfc" id="L269" title="All 2 branches covered.">        for (Feedback f : this.feedbacklist) {</span>
-<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            if (f.getUserTo_Username().equals(this.username)) {</span>
-<span class="fc" id="L271">                feedbackToMeList.add(f);</span>
+<span class="fc" id="L266">        this.sortFeedbacklistByDate();</span>
+<span class="fc" id="L267">        List&lt;Feedback&gt; feedbackToMeList = new ArrayList&lt;Feedback&gt;();</span>
+<span class="fc bfc" id="L268" title="All 2 branches covered.">        for (Feedback f : this.feedbacklist) {</span>
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">            if (f.getUserTo_Username().equals(this.username)) {</span>
+<span class="fc" id="L270">                feedbackToMeList.add(f);</span>
             }
-<span class="fc" id="L273">        }</span>
-<span class="fc" id="L274">        return feedbackToMeList;</span>
+<span class="fc" id="L272">        }</span>
+<span class="fc" id="L273">        return feedbackToMeList;</span>
     }
 
     /**
@@ -280,14 +279,14 @@ public class User implements Serializable {
      * @return a list with feedback objects
      */
     public List&lt;Feedback&gt; getFeedbackFromMe() {
-<span class="nc" id="L283">        this.sortFeedbacklistByDate();</span>
-<span class="nc" id="L284">        List&lt;Feedback&gt; feedbackFromMeList = new ArrayList&lt;Feedback&gt;();</span>
-<span class="nc bnc" id="L285" title="All 2 branches missed.">        for (Feedback f : this.feedbacklist) {</span>
-<span class="nc bnc" id="L286" title="All 2 branches missed.">            if (f.getUserFrom_Username().equals(this.username)) {</span>
-<span class="nc" id="L287">                feedbackFromMeList.add(f);</span>
+<span class="nc" id="L282">        this.sortFeedbacklistByDate();</span>
+<span class="nc" id="L283">        List&lt;Feedback&gt; feedbackFromMeList = new ArrayList&lt;Feedback&gt;();</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        for (Feedback f : this.feedbacklist) {</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">            if (f.getUserFrom_Username().equals(this.username)) {</span>
+<span class="nc" id="L286">                feedbackFromMeList.add(f);</span>
             }
-<span class="nc" id="L289">        }</span>
-<span class="nc" id="L290">        return feedbackFromMeList;</span>
+<span class="nc" id="L288">        }</span>
+<span class="nc" id="L289">        return feedbackFromMeList;</span>
     }
 
     /**
@@ -296,8 +295,8 @@ public class User implements Serializable {
      * @return a list with feedback objects
      */
     public List&lt;Feedback&gt; getFeedbacklist() {
-<span class="nc" id="L299">        this.sortFeedbacklistByDate();</span>
-<span class="nc" id="L300">        return this.feedbacklist;</span>
+<span class="nc" id="L298">        this.sortFeedbacklistByDate();</span>
+<span class="nc" id="L299">        return this.feedbacklist;</span>
     }
 
     /**
@@ -305,22 +304,22 @@ public class User implements Serializable {
      * on top
      */
     public void sortFeedbacklistByDate() {
-<span class="fc" id="L308">        Collections.sort(this.feedbacklist, new Comparator&lt;Feedback&gt;() {</span>
+<span class="fc" id="L307">        Collections.sort(this.feedbacklist, new Comparator&lt;Feedback&gt;() {</span>
             public int compare(Feedback o1, Feedback o2) {
-<span class="nc bnc" id="L310" title="All 4 branches missed.">                if (o1.getTimeCreated() == null || o2.getTimeCreated() == null) {</span>
-<span class="nc" id="L311">                    return 0;</span>
+<span class="nc bnc" id="L309" title="All 4 branches missed.">                if (o1.getTimeCreated() == null || o2.getTimeCreated() == null) {</span>
+<span class="nc" id="L310">                    return 0;</span>
                 }
-<span class="nc" id="L313">                return o2.getTimeCreated().compareTo(o1.getTimeCreated());</span>
+<span class="nc" id="L312">                return o2.getTimeCreated().compareTo(o1.getTimeCreated());</span>
             }
         });
-<span class="fc" id="L316">    }</span>
+<span class="fc" id="L315">    }</span>
 
     /**
      * clears feedbacklist of user
      * @param feedbacklist 
      */
     public void removeAllFeedback() {
-<span class="fc" id="L323">        this.feedbacklist.clear();</span>
-<span class="fc" id="L324">    }</span>
+<span class="fc" id="L322">        this.feedbacklist.clear();</span>
+<span class="fc" id="L323">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

@@ -60,7 +60,6 @@ public class Product implements Serializable {
      * sets random category, for testing purpose
      */
     public void randomEnum(){
-        int pick = new Random().nextInt(CategoryEnum.values().length);
         if (this.name.contains("Volvo")){
             this.category = CategoryEnum.Vehicles;
         }

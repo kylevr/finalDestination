@@ -76,7 +76,8 @@ public class LoginController implements Initializable {
             
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+                                                                   Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+ex.printStackTrace();
         }
 
         //tijdelijke oplossing user getten

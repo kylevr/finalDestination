@@ -61,12 +61,17 @@ public class Countdown extends Auction implements Serializable {
     public void setPrice() {
 <span class="fc" id="L62">        long now = System.currentTimeMillis();</span>
 <span class="fc" id="L63">        long then = creationDate.getTime();</span>
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if(priceloweringDelay &gt; 0){</span>
-<span class="fc" id="L65">            long periods = (now - then) / 60000 / (long) priceloweringDelay;</span>
-<span class="fc" id="L66">        double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);</span>
-<span class="fc" id="L67">        setCurrentPrice(newPrice);</span>
+        
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if(this.getCurrentPrice() &lt;= 0){</span>
+<span class="nc" id="L66">            this.setCurrentPrice(0);</span>
         }
-<span class="fc" id="L69">    }</span>
+        
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if(priceloweringDelay &gt; 0){</span>
+<span class="fc" id="L70">            long periods = (now - then) / 60000 / (long) priceloweringDelay;</span>
+<span class="fc" id="L71">        double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);</span>
+<span class="fc" id="L72">        setCurrentPrice(newPrice);</span>
+        }
+<span class="fc" id="L74">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

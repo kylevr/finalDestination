@@ -33,8 +33,7 @@ public class QueuePurchaseConnection {
     static final String SET_QUEUEPURCHASE_NEW = "INSERT INTO queuepurchase(quantity, minprice, maxprice, productid, placerID) VALUES (?,?,?,?,?)";
     static final String GET_ALL_QUEUEPURCHASE = "SELECT * FROM queuepurchase";
     static final String GET_QUEUEPURCHASE = "SELECT * FROM queuepurchase WHERE id = ?";
-    
-    
+
     // Constructor
     public QueuePurchaseConnection() {
     }
@@ -47,15 +46,13 @@ public class QueuePurchaseConnection {
     public ArrayList<Queue_Purchase> getQueuePurchases() {
 
         ArrayList<Queue_Purchase> queuepurchases = new ArrayList<>();
-        Queue_Purchase queuepurchase = null;
+        Queue_Purchase queuepurchase;
         int id;
         int quantity;
         double minPrice;
         double maxPrice;
         int productID;
         int placerID;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultset = null;
         try {
             conn.getConnection();
             pstmt = conn.getMyConn().prepareStatement(GET_ALL_QUEUEPURCHASE);
@@ -67,34 +64,37 @@ public class QueuePurchaseConnection {
         try {
             System.out.println("DOET NIKS");
             while (myRs.next()) {
-                    id = myRs.getInt("id");
-                    quantity = myRs.getInt("quantity");
-                    minPrice = myRs.getDouble("minprice");
-                    maxPrice = myRs.getDouble("maxprice");
-                    productID = myRs.getInt("productid");
-                    placerID = myRs.getInt("placerID");
-                    queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
-                    queuepurchase.setID(id);
-                    queuepurchases.add(queuepurchase);
-                
+                id = myRs.getInt("id");
+                quantity = myRs.getInt("quantity");
+                minPrice = myRs.getDouble("minprice");
+                maxPrice = myRs.getDouble("maxprice");
+                productID = myRs.getInt("productid");
+                placerID = myRs.getInt("placerID");
+                queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
+                queuepurchase.setID(id);
+                queuepurchases.add(queuepurchase);
+
             }
-            
+
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+                            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println(ex.getMessage());
             System.out.println("Queuepurchases not retrieved from database");
         }
-        
-        try{ 
+
+        try {
             conn.closeConnection();
-        } catch( Exception ex) {
-            System.out.println("Cant close");
+        } catch (Exception ex) {
+                            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Cant close");
         }
-        
+
         return queuepurchases;
     }
 
     /**
      * Insert a QueuePurchase into the database.
+     *
      * @param quantity The ammount
      * @param minprice The minimum price.
      * @param maxprice The maximum price.
@@ -124,45 +124,48 @@ public class QueuePurchaseConnection {
                 return false;
             }
         } catch (SQLException ex) {
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex.getMessage());
             conn.closeConnection();
             return false;
         }
 
     }
-    
+
     /**
      * Deletes a Queue_Purchase with the given id.
+     *
      * @param queueID The id of the Queue_Purchase that needs to be deleted
      * @return Queue_Purchase
      */
     public void deleteQueuePurchase(int queueID) {
-        
+
         conn.getConnection();
         PreparedStatement preparedStatement;
         ResultSet resultset;
 
-            try {
-                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);
-                preparedStatement.setInt(1, queueID);
-                resultset = preparedStatement.executeQuery();
-                resultset.next();
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        try {
+            preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);
+            preparedStatement.setInt(1, queueID);
+            resultset = preparedStatement.executeQuery();
+            resultset.next();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            conn.getConnection();
-            getQueuePurchase(queueID);
+        conn.getConnection();
+        getQueuePurchase(queueID);
     }
-    
+
     /**
      * Get a Queue_Purchase with the given id.
+     *
      * @param queueID The id of the Queue_Purchase
      * @return Queue_Purchase with the given id.
      */
     public Queue_Purchase getQueuePurchase(int queueID) {
-        
+
         conn.getConnection();
         Queue_Purchase queuepurchase = null;
         int id;
@@ -174,35 +177,30 @@ public class QueuePurchaseConnection {
         PreparedStatement preparedStatement = null;
         ResultSet resultset = null;
 
-            try {
-                preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);
-                preparedStatement.setInt(1, queueID);
-                resultset = preparedStatement.executeQuery();
-                resultset.next();
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        try {
+            preparedStatement = conn.getMyConn().prepareStatement(GET_QUEUEPURCHASE);
+            preparedStatement.setInt(1, queueID);
+            resultset = preparedStatement.executeQuery();
+            resultset.next();
 
-            try {
-                id = resultset.getInt("id");
-                quantity = resultset.getInt("quantity");
-                minPrice = resultset.getDouble("minprice");
-                maxPrice = resultset.getDouble("maxprice");
-                productID = resultset.getInt("productid");
-                placerID = resultset.getInt("placerID");
+            id = resultset.getInt("id");
+            quantity = resultset.getInt("quantity");
+            minPrice = resultset.getDouble("minprice");
+            maxPrice = resultset.getDouble("maxprice");
+            productID = resultset.getInt("productid");
+            placerID = resultset.getInt("placerID");
 
-                queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
-                queuepurchase.setID(id);
-                conn.closeConnection();
-                return queuepurchase;
-            } catch (SQLException ex) {
-                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            queuepurchase = new Queue_Purchase(quantity, minPrice, maxPrice, productID, placerID);
+            queuepurchase.setID(id);
+            conn.closeConnection();
+            return queuepurchase;
+        } catch (SQLException ex) {
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            conn.getConnection();
-            //getQueuePurchase(queueID);
-        
+        conn.getConnection();
+        //getQueuePurchase(queueID);
+
         return queuepurchase;
     }
 }

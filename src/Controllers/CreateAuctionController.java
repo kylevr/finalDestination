@@ -16,6 +16,8 @@ import static java.lang.Math.toIntExact;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -78,7 +80,7 @@ public class CreateAuctionController implements Initializable {
 
     public void createAuction() throws RemoteException {
 
-        if (tbAuctionTitle.getText().equals("") || tbGtin.getText().equals("") || tbStartingPrice.getText().equals("") || tbQuantity.getText().equals("") || tbDescription.getText().equals("")) {
+        if ("".equals(tbAuctionTitle.getText()) || "".equals(tbGtin.getText()) || "".equals(tbStartingPrice.getText()) || "".equals(tbQuantity.getText()) || "".equals(tbDescription.getText())) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Empty Field Error");
             alert.setHeaderText("You didn't enter all required fields.");
@@ -124,7 +126,7 @@ public class CreateAuctionController implements Initializable {
                 }
                 int priceloweringAmount = 0;
                 int priceloweringdelay = 0;
-                if (auctionType.equalsIgnoreCase("countdown")) {
+                if ("countdown".equalsIgnoreCase(auctionType)) {
                     priceloweringAmount = toIntExact(Math.round(startingPrice / 100));
                     priceloweringdelay = 10;
                 }
@@ -137,6 +139,7 @@ public class CreateAuctionController implements Initializable {
                         JOptionPane.showMessageDialog(null, "Your auction isn't added to our database.", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (Exception ex) {
+                    Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(null, "Your auction isn't added to our database", "InfoBox: " + "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
 

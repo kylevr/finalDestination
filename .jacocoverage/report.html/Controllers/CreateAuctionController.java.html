@@ -16,6 +16,8 @@ import static java.lang.Math.toIntExact;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,7 +34,7 @@ import javax.swing.JOptionPane;
  *
  * @author lesley
  */
-<span class="nc" id="L35">public class CreateAuctionController implements Initializable {</span>
+<span class="nc" id="L37">public class CreateAuctionController implements Initializable {</span>
 
     @FXML
     private ComboBox&lt;String&gt; cbAuctionType;
@@ -67,86 +69,88 @@ import javax.swing.JOptionPane;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-<span class="nc" id="L70">    }</span>
+<span class="nc" id="L72">    }</span>
 
     public void setUp(RegistryManager RM) {
-<span class="nc" id="L73">        this.RM = RM;</span>
-<span class="nc" id="L74">        cbAuctionType.getItems().addAll(&quot;Standard Auction&quot;, &quot;Countdown Auction&quot;, &quot;Direct Auction&quot;);</span>
-<span class="nc" id="L75">        cbAuctionType.setValue(&quot;Standard Auction&quot;);</span>
-<span class="nc" id="L76">        selectedOption = &quot;Standard Auction&quot;;</span>
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L75">        this.RM = RM;</span>
+<span class="nc" id="L76">        cbAuctionType.getItems().addAll(&quot;Standard Auction&quot;, &quot;Countdown Auction&quot;, &quot;Direct Auction&quot;);</span>
+<span class="nc" id="L77">        cbAuctionType.setValue(&quot;Standard Auction&quot;);</span>
+<span class="nc" id="L78">        selectedOption = &quot;Standard Auction&quot;;</span>
+<span class="nc" id="L79">    }</span>
 
     public void createAuction() throws RemoteException {
 
-<span class="nc" id="L81">        RM.getAuctionInterface();</span>
-<span class="nc" id="L82">        RM.getProductInterface();</span>
-<span class="nc" id="L83">        productInterface = RM.getProduct();</span>
-<span class="nc" id="L84">        auctionInterface = RM.getAuction();</span>
-        
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (&quot;Standard Auction&quot;.equals(selectedOption)) {</span>
-<span class="nc" id="L87">            auctionType = &quot;standard&quot;;</span>
-        }
-<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (&quot;Countdown Auction&quot;.equals(selectedOption)) {</span>
-<span class="nc" id="L90">            auctionType = &quot;countdown&quot;;</span>
-        }
-<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (&quot;Direct Auction&quot;.equals(selectedOption)) {</span>
-<span class="nc" id="L93">            auctionType = &quot;direct&quot;;</span>
-        }
-<span class="nc" id="L95">        String productName = tbAuctionTitle.getText();</span>
-<span class="nc" id="L96">        int Gtin = Integer.parseInt(tbGtin.getText());</span>
-<span class="nc" id="L97">        double startingPrice = Double.parseDouble(tbStartingPrice.getText());</span>
-<span class="nc" id="L98">        boolean instabuy = cbInstaBuy.isSelected();</span>
-<span class="nc" id="L99">        double instabuyPrice = 0;</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (instabuy) {</span>
-<span class="nc" id="L101">            instabuyPrice = Double.parseDouble(tbInstabuyPrice.getText());</span>
-        }
-<span class="nc" id="L103">        String amount = tbQuantity.getText();</span>
-<span class="nc" id="L104">        int quantity = Integer.parseInt(amount);</span>
-<span class="nc" id="L105">        String description = tbDescription.getText();</span>
-<span class="nc" id="L106">        String imageUrl = tbImageUrl.getText();</span>
+<span class="nc bnc" id="L83" title="All 10 branches missed.">        if (&quot;&quot;.equals(tbAuctionTitle.getText()) || &quot;&quot;.equals(tbGtin.getText()) || &quot;&quot;.equals(tbStartingPrice.getText()) || &quot;&quot;.equals(tbQuantity.getText()) || &quot;&quot;.equals(tbDescription.getText())) {</span>
+<span class="nc" id="L84">            Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L85">            alert.setTitle(&quot;Empty Field Error&quot;);</span>
+<span class="nc" id="L86">            alert.setHeaderText(&quot;You didn't enter all required fields.&quot;);</span>
+<span class="nc" id="L87">            alert.setContentText(&quot;Please fill in all the required fields and try again.&quot;);</span>
 
-<span class="nc bnc" id="L108" title="All 12 branches missed.">        if (&quot;&quot;.equals(cbAuctionType.getValue()) || &quot;&quot;.equals(productName) || &quot;&quot;.equals(tbGtin.getText()) || &quot;&quot;.equals(tbStartingPrice.getText()) || &quot;&quot;.equals(tbQuantity.getText()) || &quot;&quot;.equals(description)) {</span>
-<span class="nc" id="L109">            Alert alert = new Alert(Alert.AlertType.ERROR);</span>
-<span class="nc" id="L110">            alert.setTitle(&quot;Empty Field Error&quot;);</span>
-<span class="nc" id="L111">            alert.setHeaderText(&quot;You didn't enter all required fields.&quot;);</span>
-<span class="nc" id="L112">            alert.setContentText(&quot;Please fill in all the required fields and try again.&quot;);</span>
+<span class="nc" id="L89">            alert.showAndWait();</span>
+<span class="nc" id="L90">        } else {</span>
 
-<span class="nc" id="L114">            alert.showAndWait();</span>
-<span class="nc" id="L115">        } else {</span>
+<span class="nc" id="L92">            RM.getAuctionInterface();</span>
+<span class="nc" id="L93">            RM.getProductInterface();</span>
+<span class="nc" id="L94">            productInterface = RM.getProduct();</span>
+<span class="nc" id="L95">            auctionInterface = RM.getAuction();</span>
+
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            if (&quot;Standard Auction&quot;.equals(selectedOption)) {</span>
+<span class="nc" id="L98">                auctionType = &quot;standard&quot;;</span>
+            }
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (&quot;Countdown Auction&quot;.equals(selectedOption)) {</span>
+<span class="nc" id="L101">                auctionType = &quot;countdown&quot;;</span>
+            }
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            if (&quot;Direct Auction&quot;.equals(selectedOption)) {</span>
+<span class="nc" id="L104">                auctionType = &quot;direct&quot;;</span>
+            }
+<span class="nc" id="L106">            String productName = tbAuctionTitle.getText();</span>
+<span class="nc" id="L107">            int Gtin = Integer.parseInt(tbGtin.getText());</span>
+<span class="nc" id="L108">            double startingPrice = Double.parseDouble(tbStartingPrice.getText());</span>
+<span class="nc" id="L109">            boolean instabuy = cbInstaBuy.isSelected();</span>
+<span class="nc" id="L110">            double instabuyPrice = 0;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (instabuy) {</span>
+<span class="nc" id="L112">                instabuyPrice = Double.parseDouble(tbInstabuyPrice.getText());</span>
+            }
+<span class="nc" id="L114">            String amount = tbQuantity.getText();</span>
+<span class="nc" id="L115">            int quantity = Integer.parseInt(amount);</span>
+<span class="nc" id="L116">            String description = tbDescription.getText();</span>
+<span class="nc" id="L117">            String imageUrl = tbImageUrl.getText();</span>
+
             int productid;
-<span class="nc" id="L117">            productid = productInterface.createProduct(Gtin, productName, description);</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (productid != 0) {</span>
-<span class="nc" id="L119">                int userid = RM.getUser().getUserID();</span>
-<span class="nc" id="L120">                int instabuyable = 0;</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (instabuy) {</span>
-<span class="nc" id="L122">                    instabuyable = 1;</span>
+<span class="nc" id="L120">            productid = productInterface.createProduct(Gtin, productName, description);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (productid != 0) {</span>
+<span class="nc" id="L122">                int userid = RM.getUser().getUserID();</span>
+<span class="nc" id="L123">                int instabuyable = 0;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">                if (instabuy) {</span>
+<span class="nc" id="L125">                    instabuyable = 1;</span>
                 }
-<span class="nc" id="L124">                int priceloweringAmount = 0;</span>
-<span class="nc" id="L125">                int priceloweringdelay = 0;</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">                if(auctionType.equalsIgnoreCase(&quot;countdown&quot;)){</span>
-<span class="nc" id="L127">                    priceloweringAmount = toIntExact(Math.round(startingPrice / 100));</span>
-<span class="nc" id="L128">                    priceloweringdelay = 10;</span>
+<span class="nc" id="L127">                int priceloweringAmount = 0;</span>
+<span class="nc" id="L128">                int priceloweringdelay = 0;</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (&quot;countdown&quot;.equalsIgnoreCase(auctionType)) {</span>
+<span class="nc" id="L130">                    priceloweringAmount = toIntExact(Math.round(startingPrice / 100));</span>
+<span class="nc" id="L131">                    priceloweringdelay = 10;</span>
                 }
-<span class="nc" id="L130">                boolean succeeded = false;</span>
-                try{
-<span class="nc" id="L132">                    succeeded = auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, priceloweringAmount, priceloweringdelay, auctionType, 1, imageUrl, description);</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">                    if(succeeded){</span>
-<span class="nc" id="L134">                    JOptionPane.showMessageDialog(null, &quot;Your auction has been added!&quot;, &quot;InfoBox: &quot; + &quot;Succes&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
-                }else{
-<span class="nc" id="L136">                    JOptionPane.showMessageDialog(null, &quot;Your auction isn't added to our database.&quot;, &quot;InfoBox: &quot; + &quot;Error&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
-                }
-<span class="nc" id="L138">                }catch(Exception ex){</span>
-<span class="nc" id="L139">                    JOptionPane.showMessageDialog(null, &quot;Your auction isn't added to our database&quot;, &quot;InfoBox: &quot; + &quot;Error&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
-<span class="nc" id="L140">                }</span>
-                
-<span class="nc" id="L142">            } else {</span>
-<span class="nc" id="L143">                System.out.print(&quot;Cant insert product to database.&quot;);</span>
+<span class="nc" id="L133">                boolean succeeded = false;</span>
+                try {
+<span class="nc" id="L135">                    succeeded = auctionInterface.addAuction(userid, productid, startingPrice, instabuyPrice, instabuyable, quantity, priceloweringAmount, priceloweringdelay, auctionType, 1, imageUrl, description);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">                    if (succeeded) {</span>
+<span class="nc" id="L137">                        JOptionPane.showMessageDialog(null, &quot;Your auction has been added!&quot;, &quot;InfoBox: &quot; + &quot;Succes&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+                    } else {
+<span class="nc" id="L139">                        JOptionPane.showMessageDialog(null, &quot;Your auction isn't added to our database.&quot;, &quot;InfoBox: &quot; + &quot;Error&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+                    }
+<span class="nc" id="L141">                } catch (Exception ex) {</span>
+<span class="nc" id="L142">                    Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L143">                    JOptionPane.showMessageDialog(null, &quot;Your auction isn't added to our database&quot;, &quot;InfoBox: &quot; + &quot;Error&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="nc" id="L144">                }</span>
+
+<span class="nc" id="L146">            } else {</span>
+<span class="nc" id="L147">                System.out.print(&quot;Cant insert product to database.&quot;);</span>
             }
         }
-<span class="nc" id="L146">    }</span>
+<span class="nc" id="L150">    }</span>
 
     public void handleComboBoxAction(ActionEvent event) {
-<span class="nc" id="L149">        selectedOption = cbAuctionType.getSelectionModel().getSelectedItem();</span>
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L153">        selectedOption = cbAuctionType.getSelectionModel().getSelectedItem();</span>
+<span class="nc" id="L154">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

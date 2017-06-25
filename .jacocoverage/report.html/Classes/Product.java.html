@@ -60,13 +60,12 @@ public class Product implements Serializable {
      * sets random category, for testing purpose
      */
     public void randomEnum(){
-<span class="fc" id="L63">        int pick = new Random().nextInt(CategoryEnum.values().length);</span>
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (this.name.contains(&quot;Volvo&quot;)){</span>
-<span class="nc" id="L65">            this.category = CategoryEnum.Vehicles;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (this.name.contains(&quot;Volvo&quot;)){</span>
+<span class="nc" id="L64">            this.category = CategoryEnum.Vehicles;</span>
         }
         else{
-<span class="fc" id="L68">        this.category = CategoryEnum.Electronics;</span>
+<span class="fc" id="L67">        this.category = CategoryEnum.Electronics;</span>
         }           
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L69">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

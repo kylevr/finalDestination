@@ -40,7 +40,8 @@ public class Server {
             GE = new Grand_Exchange();
             System.out.println("Server: Grand Exchange created !");
         } catch (RemoteException ex) {
-            System.out.println("Server: Cannot create Grand Exchange Object");
+                                                                              Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+ System.out.println("Server: Cannot create Grand Exchange Object");
             System.out.println("Server: RemoteException: " + ex.getMessage());
             GE = null;
         }
@@ -50,7 +51,8 @@ public class Server {
             registry = LocateRegistry.createRegistry(portNumber);
             System.out.println("Server: Registry created on port number " + portNumber);
         } catch (RemoteException ex) {
-            System.out.println("Server: Cannot create registry");
+                                                                               Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Server: Cannot create registry");
             System.out.println("Server: RemoteException: " + ex.getMessage());
             registry = null;
         }
@@ -59,7 +61,8 @@ public class Server {
         try {
             registry.rebind(bindingName, GE);
         } catch (RemoteException ex) {
-            System.out.println("Server: Cannot bind Grand Exchange");
+                                                                   Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("Server: Cannot bind Grand Exchange");
             System.out.println("Server: RemoteException: " + ex.getMessage());
         }
         try {

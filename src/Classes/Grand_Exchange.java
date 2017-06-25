@@ -95,7 +95,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             users.add(user);
         }
     }
-    
+
     public void closeAuction() throws SQLException {
         auctionConn.closeAuction();
     }
@@ -278,7 +278,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         ArrayList<Product> tempList = new ArrayList<>();
         String productName = name.toLowerCase();
         for (Product p : products) {
-            if (productName.equals("")) {
+            if ("".equals(productName)) {
                 if (p.getCategory().equals(category)) {
                     tempList.add(p);
                 }
@@ -328,6 +328,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             auctionConn.InstabuyItem(amount, auctionID, 1);
             return true;
         } catch (Exception Ex) {
+            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, Ex);
+
             return false;
         }
     }
@@ -404,10 +406,10 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     @Override
     public void update(Observable o, Object arg) {
         String type = arg.toString();
-        if (type.equals("Auction")) {
+        if ("Auction".equals(type)) {
             System.out.println("New auctions found.");
             updateAuctionsFromDB(dbListener.getUpdateAuctionList());
-        } else if (type.equals("Queue")) {
+        } else if ("Queue".equals(type)) {
             System.out.println("New QueuePurchase found.");
             updateQueuePurchaseFromDB(dbListener.getUpdateQueuepurchaseList());
         }
@@ -554,7 +556,6 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
                 errorMsg += "\n -BSN field must constain a number";
             } finally {
                 System.out.println(errorMsg);
-                return errorMsg;
             }
         } else {
             errorMsg += "\n -BSN field must constain a number";
@@ -600,7 +601,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     public boolean placeBid(double amount, int userid, int auctionid, double price) throws RemoteException, NotEnoughMoneyException {
         auctionConn = new AuctionConnection();
         return auctionConn.insertBid(price, userid, auctionid);
-        
+
     }
 
     /**
@@ -623,8 +624,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
                 break;
             }
         }
-        int index2 = -1;
-        User u = null;
+        User u;
         u = DB.getUser(userName);
         System.out.println(userName);
         System.out.println(u.getUserID());
@@ -633,10 +633,10 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         for (int i = 0; i < amount; i++) {
             auctions.get(index).addBid(new Bid(AuctionID, u, price));
         }
-        
+
         Auction a = auctions.get(index);
-        if (a.getCurrentPrice() < 0){
-            
+        if (a.getCurrentPrice() < 0) {
+
         }
 //        if(auctions.get(index).getCurrentPrice() )
         auctions.get(index).setProductQuantity(amount);
@@ -697,7 +697,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         transport.close();
     }
 
-    int id=10;
+    int id = 10;
+
     @Override
     public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
 

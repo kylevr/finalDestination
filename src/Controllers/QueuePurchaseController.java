@@ -133,7 +133,6 @@ public class QueuePurchaseController implements Initializable {
                     new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    ImageView i = (ImageView) e.getSource();
                     lblProductName.setText(p.getName() + " " + p.getGTIN());
                     selectedProductID = p.getId();
                     System.out.println(p.getId());
@@ -172,7 +171,7 @@ public class QueuePurchaseController implements Initializable {
         
         
         
-        if (txtQuantity.getText().equals("") || txtMinPrice.getText().equals("") || txtMaxPrice.getText().equals("") || selectedProductID == 0){
+        if ("".equals(txtQuantity.getText()) || "".equals(txtMinPrice.getText()) || "".equals(txtMaxPrice.getText()) || selectedProductID == 0){
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Error!");
             alert.setHeaderText("Alle velden moeten ingevuld zijn.");

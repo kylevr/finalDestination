@@ -165,7 +165,6 @@ public class User implements Serializable {
      * enough money
      */
     public void addSaldo(double amount) throws NotEnoughMoneyException {
-        double oldSaldo = this.saldo;
         this.saldo += amount;
         if (this.saldo < 0) {
             throw new NotEnoughMoneyException("Not enough money.");

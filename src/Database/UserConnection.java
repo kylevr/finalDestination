@@ -184,7 +184,8 @@ public class UserConnection {
                 user = new User(userID, usernm, pass, alias, email, verified, saldo, imgURL);
                 conn.closeConnection();
             } catch (SQLException ex) {
-                System.out.println("User not found");
+                                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+System.out.println("User not found");
                 conn.closeConnection();
             }
         }
@@ -260,7 +261,6 @@ public class UserConnection {
 
             try {
                 conn.getConnection();
-                myConn = conn.getMyConn();
                 myConn = conn.getMyConn();
                 preparedStatement = myConn.prepareStatement(GET_FROM_USER_ALLUSERS);
                 resultset = preparedStatement.executeQuery();
