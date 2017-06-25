@@ -13,17 +13,13 @@
   <children>
     <ScrollPane fx:id="auctionsPane" content="$null" hbarPolicy="NEVER" layoutX="500.0" layoutY="0.0" prefHeight="800.0" prefWidth="700.0" style="&#10;" />
     <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Settings" />
-    <ScrollPane fx:id="scrollPaneBiddedAuctions" content="$null" layoutX="15.0" layoutY="330.0" prefHeight="214.0" prefWidth="474.0" />
-    <Label layoutX="15.0" layoutY="310.0" text="Auctions You've placed a bid on:">
+    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="15.0" layoutY="42.0" pickOnBounds="true" preserveRatio="false" />
+    <CheckBox layoutX="290.0" layoutY="43.0" mnemonicParsing="false" prefWidth="199.0" text="Direct Auctions" />
+    <Label layoutX="290.0" layoutY="24.0" text="Filters:">
       <font>
         <Font size="15.0" fx:id="x1" />
       </font>
     </Label>
-    <ScrollPane fx:id="scrollPaneWonBought" content="$null" layoutX="15.0" layoutY="572.0" prefHeight="214.0" prefWidth="474.0" />
-    <Label font="$x1" layoutX="15.0" layoutY="552.0" text="Auctions You've won / Bought:" />
-    <ImageView fx:id="loggedInUserImage" fitHeight="150.0" fitWidth="150.0" layoutX="15.0" layoutY="42.0" pickOnBounds="true" preserveRatio="false" />
-    <CheckBox layoutX="290.0" layoutY="43.0" mnemonicParsing="false" prefWidth="199.0" text="Direct Auctions" />
-    <Label font="$x1" layoutX="290.0" layoutY="24.0" text="Filters:" />
     <CheckBox layoutX="290.0" layoutY="75.0" mnemonicParsing="false" prefWidth="199.0" text="Countdown Auctions" />
     <CheckBox layoutX="290.0" layoutY="59.0" mnemonicParsing="false" prefWidth="199.0" text="Ascending Auctions" />
     <ListView fx:id="lstCategory" layoutX="290.0" layoutY="149.0" onMouseClicked="#CategoryDelete" prefHeight="161.0" prefWidth="199.0" />

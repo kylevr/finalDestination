@@ -60,10 +60,6 @@ public class MainController implements Initializable {
     @FXML
     private ListView lstCategory;
     @FXML
-    private ScrollPane scrollPaneBiddedAuctions;
-    @FXML
-    private ScrollPane scrollPaneWonBought;
-    @FXML
     private Button btnQueuePurchase;
     @FXML
     private TextField textField_usernameOfFeedbackOwner;
