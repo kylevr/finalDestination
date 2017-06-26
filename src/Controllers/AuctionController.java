@@ -204,12 +204,13 @@ public class AuctionController implements Initializable {
         imagePane.setPrefWidth(85 * auction.getImageURLs().length);
         imagePane.setPrefHeight(70);
         for (String URL : auction.getImageURLs()) {
+            if(URL != null){
             ImageView image = null;
             try {
                 image = new ImageView(new Image(URL));
             } catch (Exception ex) {
                 image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                        Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+                       System.out.println("Geen image url toegevoegd.");
             }
             image.setFitWidth(80);
             image.setFitHeight(60);
@@ -226,16 +227,20 @@ public class AuctionController implements Initializable {
             try {
                 bigImage = new Image(auction.getImageURLs()[0]);
             } catch (Exception ex) {
-                bigImage = new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm());
-                                    Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex.getMessage());
 }
 
             bigProductImage.setImage(bigImage);
             imagePane.getChildren().add(image);
             i++;
         }
-
+        }
+        
+        try{
         sellerImage.setImage(new Image(auction.getSeller().getImageURL()));
+        }catch(Exception ex){
+            
+        }
         sellerName.setText(auction.getSeller().getUsername());
         imagesPane.setContent(imagePane);
 
@@ -269,7 +274,10 @@ public class AuctionController implements Initializable {
             InstabuyCurrentPrice.setText("€" + countdownAuction.getInstabuyPrice());
             long now = System.currentTimeMillis();
             long then = countdownAuction.getCreationDate().getTime();
-            long periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
+            long periods_passed = 0;
+            if(countdownAuction.getPriceLoweringDelay() != 0){
+                periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
+            }
             long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();
             if (timeline != null) {
                 timeline.stop();

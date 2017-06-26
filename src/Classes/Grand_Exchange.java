@@ -419,10 +419,13 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     /**
      * updates auction from DB
      *
+     * @param auctionid
+     * @param amount
      * @param auction :auction to be updated
+     * @return 
      */
-    public void updateAuction(Auction auction) {
-        auctionConn.updateAuction(auction);
+    public boolean updateAuction(int auctionid, double amount) {
+        return auctionConn.updateAuction(auctionid, amount);
     }
 
     /**
@@ -600,7 +603,11 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     @Override
     public boolean placeBid(double amount, int userid, int auctionid, double price) throws RemoteException, NotEnoughMoneyException {
         auctionConn = new AuctionConnection();
-        return auctionConn.insertBid(price, userid, auctionid);
+       if(auctionConn.insertBid(price, userid, auctionid)){
+           return updateAuction(auctionid, price);
+       } else{
+           return false;
+       }
 
     }
 
@@ -717,5 +724,10 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 //        Product p = products.get(index);
 //        auctions.add(new Standard(id,new User("test2222","password","xtest2222","test@test.nl",true,500,"https://fiom.nl/sites/default/files/styles/section_quote/public/nieuws_tiener.jpg?"),p,startingprice,quantity, new Timestamp(2017,6,2,15,35,52,2),new Timestamp(2017,6,20,15,35,52,2),StatusEnum.New,description,imageUrl,3000));
         return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);
+    }
+
+    @Override
+    public void updateAuction(Auction auction) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

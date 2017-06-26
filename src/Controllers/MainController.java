@@ -85,69 +85,72 @@ public class MainController implements Initializable {
         allAuctions.setPrefHeight(150 * auctionInterface.getAuctions().size());
         int i = 0;
         for (Auction a : auctionInterface.getAuctions()) {
-            Pane Auction = new Pane();
-            Auction.setPrefWidth(800);
-            Auction.setPrefHeight(150);
-            Auction.relocate(0, 150 * i);
-            if ((i % 2) == 0) {
-                Auction.setStyle("-fx-background-color: lightgrey ");
-            }
-            Label productName = new Label();
-            productName.setText(a.getProduct().getName());
-            productName.setFont(new Font("Arial", 25));
-            productName.relocate(150, 25);
-
-            Label price = new Label();
-            price.setText("€" + a.getCurrentPrice());
-            price.setFont(new Font("Arial", 20));
-            price.relocate(550, 120);
-
-            Label seller = new Label();
-            seller.setText(a.getSeller().getUsername());
-            seller.setFont(new Font("Arial", 15));
-            seller.relocate(550, 20);
-
-            TextArea description = new TextArea();
-            description.setPrefSize(200, 60);
-            description.relocate(150, 65);
-            description.setText(a.getDescription());
-            description.wrapTextProperty().setValue(Boolean.TRUE);
-            description.setEditable(false);
-
-            //setting image of auction
-            ImageView image;
             try {
-                image = new ImageView(new Image(a.getImageURLs()[0]));
-            } catch (Exception ex) {
-                image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
-
-            }
-            image.setFitWidth(100);
-            image.setFitHeight(100);
-            image.relocate(25, 25);
-            image.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                    new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    try {
-                        showAuction(a);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                Pane Auction = new Pane();
+                Auction.setPrefWidth(800);
+                Auction.setPrefHeight(150);
+                Auction.relocate(0, 150 * i);
+                if ((i % 2) == 0) {
+                    Auction.setStyle("-fx-background-color: lightgrey ");
                 }
-            });
-            Auction.getChildren().addAll(productName, image, price, seller, description);
-            allAuctions.getChildren().add(Auction);
-            i++;
+                Label productName = new Label();
+                productName.setText(a.getProduct().getName());
+                productName.setFont(new Font("Arial", 25));
+                productName.relocate(150, 25);
+
+                Label price = new Label();
+                price.setText("€" + a.getCurrentPrice());
+                price.setFont(new Font("Arial", 20));
+                price.relocate(550, 120);
+
+                Label seller = new Label();
+                seller.setText(a.getSeller().getUsername());
+                seller.setFont(new Font("Arial", 15));
+                seller.relocate(550, 20);
+
+                TextArea description = new TextArea();
+                description.setPrefSize(200, 60);
+                description.relocate(150, 65);
+                description.setText(a.getDescription());
+                description.wrapTextProperty().setValue(Boolean.TRUE);
+                description.setEditable(false);
+
+                //setting image of auction
+                ImageView image;
+                try {
+                    image = new ImageView(new Image(a.getImageURLs()[0]));
+                } catch (Exception ex) {
+                    image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+                }
+                image.setFitWidth(100);
+                image.setFitHeight(100);
+                image.relocate(25, 25);
+                image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                        new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        try {
+                            showAuction(a);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                Auction.getChildren().addAll(productName, image, price, seller, description);
+                allAuctions.getChildren().add(Auction);
+                i++;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
         }
         auctionsPane.setContent(allAuctions);
 
         try {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
         } catch (NullPointerException ex) {
+            loggedInUserImage.setImage(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+
             System.out.println("LoggedInUser doesn't have an imageURL yet");
-            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
 
         }
         comboBoxCategory.getItems().setAll(CategoryEnum.values());

@@ -50,6 +50,7 @@ public class AuctionConnection {
     static final String SET_AUCTION_NEW = "INSERT INTO auction(sellerID, productID, timecreated, currentprice, instabuyprice, instabuyable, productquantity, timeend, priceloweringAmount, priceloweringdelay, type, status, imageUrl, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     static final String SET_BID_NEW = "INSERT INTO bid(amount, timeCreated, placerID, auctionID) VALUES (?,?,?,?)";
     static final String SET_CLOSE_AUCTION = "DELETE FROM `auction` WHERE  `productquantity` < 1";
+    static final String UPDATE_CURRENT_PRICE = "UPDATE auction SET currentprice = ? WHERE id = ?";
 
     // Constructor
     public AuctionConnection() {
@@ -460,7 +461,36 @@ public class AuctionConnection {
      *
      * @param auction the auction that need to be updated
      */
-    public void updateAuction(Auction auction) {
+    public boolean updateAuction(int auctionid, double amount) {
+        conn.getConnection();
+        myConn = conn.getMyConn();
+        if (myConn != null) {
+                try {
+                    conn.getConnection();
+                    myConn = conn.getMyConn();
+                    pstmt = myConn.prepareStatement(UPDATE_CURRENT_PRICE);
+                    pstmt.setDouble(1, amount);
+                    pstmt.setInt(2, auctionid);
+
+                    if (pstmt.executeUpdate() > 0) {
+                        System.out.println("Auction with id: " + auctionid + " is updated");
+                        return true;
+                    } else {
+                        System.out.println("Can't update auction with id: " + auctionid);
+                        return false;
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("Can't update auction with id: " + auctionid);
+                    ex.printStackTrace();
+                     Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+                    conn.closeConnection();
+                    return false;
+                }
+            
+        } else {
+            System.out.println("Can't update auction with id: " + auctionid);
+            return false;
+        }
     }
 
     /**
