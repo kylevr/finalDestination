@@ -50,11 +50,12 @@ public class AuctionConnection {
     static final String SET_AUCTION_NEW = &quot;INSERT INTO auction(sellerID, productID, timecreated, currentprice, instabuyprice, instabuyable, productquantity, timeend, priceloweringAmount, priceloweringdelay, type, status, imageUrl, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;;
     static final String SET_BID_NEW = &quot;INSERT INTO bid(amount, timeCreated, placerID, auctionID) VALUES (?,?,?,?)&quot;;
     static final String SET_CLOSE_AUCTION = &quot;DELETE FROM `auction` WHERE  `productquantity` &lt; 1&quot;;
+    static final String UPDATE_CURRENT_PRICE = &quot;UPDATE auction SET currentprice = ? WHERE id = ?&quot;;
 
     // Constructor
-<span class="fc" id="L55">    public AuctionConnection() {</span>
-<span class="fc" id="L56">        myConn = conn.getMyConn();</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L56">    public AuctionConnection() {</span>
+<span class="fc" id="L57">        myConn = conn.getMyConn();</span>
+<span class="fc" id="L58">    }</span>
 
     /**
      * Get the Auction with the given id.
@@ -78,80 +79,80 @@ public class AuctionConnection {
         ArrayList&lt;Bid&gt; bids;
 
         try {
-<span class="fc" id="L81">            conn.getConnection();</span>
-<span class="fc" id="L82">            pstmt = conn.getMyConn().prepareStatement(GET_AUCTION_BY_ID);</span>
-<span class="fc" id="L83">            pstmt.setInt(1, id);</span>
+<span class="fc" id="L82">            conn.getConnection();</span>
+<span class="fc" id="L83">            pstmt = conn.getMyConn().prepareStatement(GET_AUCTION_BY_ID);</span>
+<span class="fc" id="L84">            pstmt.setInt(1, id);</span>
 
-<span class="fc" id="L85">            myRs = pstmt.executeQuery();</span>
-<span class="nc" id="L86">        } catch (SQLException ex) {</span>
-<span class="nc" id="L87">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L88">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="fc" id="L89">        }</span>
+<span class="fc" id="L86">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L87">        } catch (SQLException ex) {</span>
+<span class="nc" id="L88">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L89">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L90">        }</span>
 
         try {
-<span class="fc" id="L92">            myRs.next();</span>
-<span class="pc bpc" id="L93" title="11 of 14 branches missed.">            switch (myRs.getString(&quot;type&quot;)) {</span>
+<span class="fc" id="L93">            myRs.next();</span>
+<span class="pc bpc" id="L94" title="11 of 14 branches missed.">            switch (myRs.getString(&quot;type&quot;)) {</span>
                 case &quot;countdown&quot;:
-<span class="fc" id="L95">                    id = myRs.getInt(&quot;id&quot;);</span>
-<span class="fc" id="L96">                    user = userConn.getUser((myRs.getInt(&quot;sellerID&quot;)));</span>
-<span class="fc" id="L97">                    product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
-<span class="fc" id="L98">                    quantity = myRs.getInt(&quot;productquantity&quot;);</span>
-<span class="fc" id="L99">                    price = myRs.getDouble(&quot;currentprice&quot;);</span>
-<span class="fc" id="L100">                    priceloweringAmount = myRs.getDouble(&quot;priceloweringAmount&quot;);</span>
-<span class="fc" id="L101">                    priceloweringDelay = myRs.getDouble(&quot;priceloweringdelay&quot;);</span>
-<span class="fc" id="L102">                    minprice = myRs.getDouble(&quot;minPrice&quot;);</span>
-<span class="fc" id="L103">                    status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
-<span class="fc" id="L104">                    description = myRs.getString(&quot;description&quot;);</span>
-<span class="fc" id="L105">                    imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
-<span class="fc" id="L106">                    instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
-<span class="fc" id="L107">                    date = myRs.getTimestamp(&quot;timecreated&quot;);</span>
-<span class="fc" id="L108">                    auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);</span>
-<span class="fc" id="L109">                    auction.addBid(getBids(id));</span>
-<span class="fc" id="L110">                    break;</span>
+<span class="fc" id="L96">                    id = myRs.getInt(&quot;id&quot;);</span>
+<span class="fc" id="L97">                    user = userConn.getUser((myRs.getInt(&quot;sellerID&quot;)));</span>
+<span class="fc" id="L98">                    product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
+<span class="fc" id="L99">                    quantity = myRs.getInt(&quot;productquantity&quot;);</span>
+<span class="fc" id="L100">                    price = myRs.getDouble(&quot;currentprice&quot;);</span>
+<span class="fc" id="L101">                    priceloweringAmount = myRs.getDouble(&quot;priceloweringAmount&quot;);</span>
+<span class="fc" id="L102">                    priceloweringDelay = myRs.getDouble(&quot;priceloweringdelay&quot;);</span>
+<span class="fc" id="L103">                    minprice = myRs.getDouble(&quot;minPrice&quot;);</span>
+<span class="fc" id="L104">                    status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
+<span class="fc" id="L105">                    description = myRs.getString(&quot;description&quot;);</span>
+<span class="fc" id="L106">                    imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="fc" id="L107">                    instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
+<span class="fc" id="L108">                    date = myRs.getTimestamp(&quot;timecreated&quot;);</span>
+<span class="fc" id="L109">                    auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);</span>
+<span class="fc" id="L110">                    auction.addBid(getBids(id));</span>
+<span class="fc" id="L111">                    break;</span>
                 case &quot;direct&quot;: {
-<span class="nc" id="L112">                    id = myRs.getInt(&quot;id&quot;);</span>
-<span class="nc" id="L113">                    user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
-<span class="nc" id="L114">                    product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
-<span class="nc" id="L115">                    price = myRs.getDouble(&quot;currentprice&quot;);</span>
-<span class="nc" id="L116">                    quantity = myRs.getInt(&quot;productquantity&quot;);</span>
-<span class="nc" id="L117">                    Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
-<span class="nc" id="L118">                    status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
-<span class="nc" id="L119">                    description = myRs.getString(&quot;description&quot;);</span>
-<span class="nc" id="L120">                    imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
-<span class="nc" id="L121">                    instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
-<span class="nc" id="L122">                    auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);</span>
-<span class="nc" id="L123">                    auction.addBid(getBids(id));</span>
-<span class="nc" id="L124">                    break;</span>
+<span class="nc" id="L113">                    id = myRs.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L114">                    user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
+<span class="nc" id="L115">                    product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
+<span class="nc" id="L116">                    price = myRs.getDouble(&quot;currentprice&quot;);</span>
+<span class="nc" id="L117">                    quantity = myRs.getInt(&quot;productquantity&quot;);</span>
+<span class="nc" id="L118">                    Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
+<span class="nc" id="L119">                    status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
+<span class="nc" id="L120">                    description = myRs.getString(&quot;description&quot;);</span>
+<span class="nc" id="L121">                    imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="nc" id="L122">                    instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
+<span class="nc" id="L123">                    auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);</span>
+<span class="nc" id="L124">                    auction.addBid(getBids(id));</span>
+<span class="nc" id="L125">                    break;</span>
                 }
                 case &quot;standard&quot;: {
-<span class="nc" id="L127">                    id = myRs.getInt(&quot;id&quot;);</span>
-<span class="nc" id="L128">                    user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
-<span class="nc" id="L129">                    product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
-<span class="nc" id="L130">                    price = myRs.getDouble(&quot;currentprice&quot;);</span>
-<span class="nc" id="L131">                    quantity = myRs.getInt(&quot;productquantity&quot;);</span>
-<span class="nc" id="L132">                    Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
-<span class="nc" id="L133">                    date = myRs.getTimestamp(&quot;timeend&quot;);</span>
-<span class="nc" id="L134">                    status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
-<span class="nc" id="L135">                    description = myRs.getString(&quot;description&quot;);</span>
-<span class="nc" id="L136">                    imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
-<span class="nc" id="L137">                    instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
-<span class="nc" id="L138">                    auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);</span>
-<span class="nc" id="L139">                    auction.addBid(getBids(id));</span>
-<span class="nc" id="L140">                    break;</span>
+<span class="nc" id="L128">                    id = myRs.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L129">                    user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
+<span class="nc" id="L130">                    product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
+<span class="nc" id="L131">                    price = myRs.getDouble(&quot;currentprice&quot;);</span>
+<span class="nc" id="L132">                    quantity = myRs.getInt(&quot;productquantity&quot;);</span>
+<span class="nc" id="L133">                    Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
+<span class="nc" id="L134">                    date = myRs.getTimestamp(&quot;timeend&quot;);</span>
+<span class="nc" id="L135">                    status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
+<span class="nc" id="L136">                    description = myRs.getString(&quot;description&quot;);</span>
+<span class="nc" id="L137">                    imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="nc" id="L138">                    instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
+<span class="nc" id="L139">                    auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);</span>
+<span class="nc" id="L140">                    auction.addBid(getBids(id));</span>
+<span class="nc" id="L141">                    break;</span>
                 }
                 default:
                     break;
             }
-<span class="fc" id="L145">            return auction;</span>
+<span class="fc" id="L146">            return auction;</span>
 
-<span class="nc" id="L147">        } catch (Exception ex) {</span>
-<span class="nc" id="L148">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L149">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L150">            System.out.println(&quot;Failed to get auction by ID&quot;);</span>
+<span class="nc" id="L148">        } catch (Exception ex) {</span>
+<span class="nc" id="L149">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L150">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L151">            System.out.println(&quot;Failed to get auction by ID&quot;);</span>
         }
 
-<span class="nc" id="L153">        conn.closeConnection();</span>
-<span class="nc" id="L154">        return null;</span>
+<span class="nc" id="L154">        conn.closeConnection();</span>
+<span class="nc" id="L155">        return null;</span>
     }
 
     /**
@@ -164,7 +165,7 @@ public class AuctionConnection {
      */
     public ArrayList&lt;Auction&gt; getAuctions(String selectFrom, String where, String is) {
 
-<span class="fc" id="L167">        auctions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L168">        auctions = new ArrayList&lt;&gt;();</span>
         int id;
         User user;
         Product product;
@@ -177,88 +178,88 @@ public class AuctionConnection {
         ArrayList&lt;Bid&gt; bids;
 
         try {
-<span class="fc" id="L180">            conn.getConnection();</span>
-<span class="fc" id="L181">            pstmt = conn.getMyConn().prepareStatement(GET_FROM_AUCTIONS);</span>
-<span class="fc" id="L182">            myRs = pstmt.executeQuery();</span>
-<span class="nc" id="L183">        } catch (SQLException ex) {</span>
-<span class="nc" id="L184">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L185">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="fc" id="L186">        }</span>
+<span class="fc" id="L181">            conn.getConnection();</span>
+<span class="fc" id="L182">            pstmt = conn.getMyConn().prepareStatement(GET_FROM_AUCTIONS);</span>
+<span class="fc" id="L183">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L184">        } catch (SQLException ex) {</span>
+<span class="nc" id="L185">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L186">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L187">        }</span>
 
         try {
-<span class="fc bfc" id="L189" title="All 2 branches covered.">            while (myRs.next()) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">            while (myRs.next()) {</span>
 
-<span class="pc bpc" id="L191" title="5 of 14 branches missed.">                switch (myRs.getString(&quot;type&quot;)) {</span>
+<span class="pc bpc" id="L192" title="3 of 14 branches missed.">                switch (myRs.getString(&quot;type&quot;)) {</span>
                     // In case of Direct
                     case &quot;countdown&quot;:
-<span class="fc" id="L194">                        id = myRs.getInt(&quot;id&quot;);</span>
-<span class="fc" id="L195">                        user = userConn.getUser((myRs.getInt(&quot;sellerID&quot;)));</span>
-<span class="fc" id="L196">                        product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
-<span class="fc" id="L197">                        quantity = myRs.getInt(&quot;productquantity&quot;);</span>
-<span class="fc" id="L198">                        price = myRs.getDouble(&quot;currentprice&quot;);</span>
-<span class="fc" id="L199">                        priceloweringAmount = myRs.getDouble(&quot;priceloweringAmount&quot;);</span>
-<span class="fc" id="L200">                        priceloweringDelay = myRs.getDouble(&quot;priceloweringdelay&quot;);</span>
-<span class="fc" id="L201">                        minprice = myRs.getDouble(&quot;minPrice&quot;);</span>
-<span class="fc" id="L202">                        status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
-<span class="fc" id="L203">                        description = myRs.getString(&quot;description&quot;);</span>
-<span class="fc" id="L204">                        imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
-<span class="fc" id="L205">                        instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
-<span class="fc" id="L206">                        date = myRs.getTimestamp(&quot;timecreated&quot;);</span>
-<span class="fc" id="L207">                        auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);</span>
+<span class="fc" id="L195">                        id = myRs.getInt(&quot;id&quot;);</span>
+<span class="fc" id="L196">                        user = userConn.getUser((myRs.getInt(&quot;sellerID&quot;)));</span>
+<span class="fc" id="L197">                        product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
+<span class="fc" id="L198">                        quantity = myRs.getInt(&quot;productquantity&quot;);</span>
+<span class="fc" id="L199">                        price = myRs.getDouble(&quot;currentprice&quot;);</span>
+<span class="fc" id="L200">                        priceloweringAmount = myRs.getDouble(&quot;priceloweringAmount&quot;);</span>
+<span class="fc" id="L201">                        priceloweringDelay = myRs.getDouble(&quot;priceloweringdelay&quot;);</span>
+<span class="fc" id="L202">                        minprice = myRs.getDouble(&quot;minPrice&quot;);</span>
+<span class="fc" id="L203">                        status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
+<span class="fc" id="L204">                        description = myRs.getString(&quot;description&quot;);</span>
+<span class="fc" id="L205">                        imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="fc" id="L206">                        instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
+<span class="fc" id="L207">                        date = myRs.getTimestamp(&quot;timecreated&quot;);</span>
+<span class="fc" id="L208">                        auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);</span>
                         //auction.addBid(getBids(id));
-<span class="fc" id="L209">                        break;</span>
+<span class="fc" id="L210">                        break;</span>
                     case &quot;direct&quot;: {
-<span class="fc" id="L211">                        id = myRs.getInt(&quot;id&quot;);</span>
-<span class="fc" id="L212">                        user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
-<span class="fc" id="L213">                        product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
-<span class="fc" id="L214">                        price = myRs.getDouble(&quot;currentprice&quot;);</span>
-<span class="fc" id="L215">                        quantity = myRs.getInt(&quot;productquantity&quot;);</span>
-<span class="fc" id="L216">                        Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
-<span class="fc" id="L217">                        status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
-<span class="fc" id="L218">                        description = myRs.getString(&quot;description&quot;);</span>
-<span class="fc" id="L219">                        imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
-<span class="fc" id="L220">                        instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
-<span class="fc" id="L221">                        auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);</span>
+<span class="fc" id="L212">                        id = myRs.getInt(&quot;id&quot;);</span>
+<span class="fc" id="L213">                        user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
+<span class="fc" id="L214">                        product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
+<span class="fc" id="L215">                        price = myRs.getDouble(&quot;currentprice&quot;);</span>
+<span class="fc" id="L216">                        quantity = myRs.getInt(&quot;productquantity&quot;);</span>
+<span class="fc" id="L217">                        Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
+<span class="fc" id="L218">                        status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
+<span class="fc" id="L219">                        description = myRs.getString(&quot;description&quot;);</span>
+<span class="fc" id="L220">                        imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="fc" id="L221">                        instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
+<span class="fc" id="L222">                        auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);</span>
                         //auction.addBid(getBids(id));
-<span class="fc" id="L223">                        break;</span>
+<span class="fc" id="L224">                        break;</span>
                     }
                     case &quot;standard&quot;: {
-<span class="fc" id="L226">                        id = myRs.getInt(&quot;id&quot;);</span>
-<span class="fc" id="L227">                        user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
-<span class="fc" id="L228">                        product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
-<span class="fc" id="L229">                        price = myRs.getDouble(&quot;currentprice&quot;);</span>
-<span class="fc" id="L230">                        quantity = myRs.getInt(&quot;productquantity&quot;);</span>
-<span class="fc" id="L231">                        Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
-<span class="fc" id="L232">                        date = myRs.getTimestamp(&quot;timeend&quot;);</span>
-<span class="fc" id="L233">                        status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
-<span class="fc" id="L234">                        description = myRs.getString(&quot;description&quot;);</span>
-<span class="fc" id="L235">                        imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
-<span class="fc" id="L236">                        instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
-<span class="fc" id="L237">                        auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);</span>
+<span class="fc" id="L227">                        id = myRs.getInt(&quot;id&quot;);</span>
+<span class="fc" id="L228">                        user = userConn.getUser(myRs.getInt(&quot;sellerID&quot;));</span>
+<span class="fc" id="L229">                        product = productConn.getProduct(myRs.getInt(&quot;productID&quot;));</span>
+<span class="fc" id="L230">                        price = myRs.getDouble(&quot;currentprice&quot;);</span>
+<span class="fc" id="L231">                        quantity = myRs.getInt(&quot;productquantity&quot;);</span>
+<span class="fc" id="L232">                        Timestamp begin = myRs.getTimestamp(&quot;timecreated&quot;);</span>
+<span class="fc" id="L233">                        date = myRs.getTimestamp(&quot;timeend&quot;);</span>
+<span class="fc" id="L234">                        status = StatusEnum.values()[myRs.getInt(&quot;status&quot;)];</span>
+<span class="fc" id="L235">                        description = myRs.getString(&quot;description&quot;);</span>
+<span class="fc" id="L236">                        imageURL = myRs.getString(&quot;imageUrl&quot;);</span>
+<span class="fc" id="L237">                        instabuyprice = myRs.getDouble(&quot;instabuyprice&quot;);</span>
+<span class="fc" id="L238">                        auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);</span>
                         //auction.addBid(getBids(id));
-<span class="fc" id="L239">                        break;</span>
+<span class="fc" id="L240">                        break;</span>
                     }
                     default:
                         break;
                 }
 
-<span class="fc" id="L245">                auctions.add(auction);</span>
-<span class="fc" id="L246">                auction = null;</span>
+<span class="fc" id="L246">                auctions.add(auction);</span>
+<span class="fc" id="L247">                auction = null;</span>
             }
-<span class="fc" id="L248">            System.out.println(&quot;Auctions retrieved from DB&quot;);</span>
-<span class="nc" id="L249">        } catch (Exception ex) {</span>
-<span class="nc" id="L250">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L251">            System.out.println(&quot;Auctions NOT retrieved from DB&quot;);</span>
-<span class="nc" id="L252"> Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="fc" id="L253">        }</span>
+<span class="fc" id="L249">            System.out.println(&quot;Auctions retrieved from DB&quot;);</span>
+<span class="nc" id="L250">        } catch (Exception ex) {</span>
+<span class="nc" id="L251">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L252">            System.out.println(&quot;Auctions NOT retrieved from DB&quot;);</span>
+<span class="nc" id="L253"> Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L254">        }</span>
 
         try {
-<span class="fc" id="L256">            conn.closeConnection();</span>
-<span class="nc" id="L257">        } catch (Exception ex) {</span>
+<span class="fc" id="L257">            conn.closeConnection();</span>
+<span class="nc" id="L258">        } catch (Exception ex) {</span>
 
-<span class="fc" id="L259">        }</span>
+<span class="fc" id="L260">        }</span>
 
-<span class="fc" id="L261">        return auctions;</span>
+<span class="fc" id="L262">        return auctions;</span>
     }
 
     /**
@@ -269,7 +270,7 @@ public class AuctionConnection {
      */
     public ArrayList&lt;Bid&gt; getBids(int id) {
 
-<span class="fc" id="L272">        ArrayList&lt;Bid&gt; bids = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L273">        ArrayList&lt;Bid&gt; bids = new ArrayList&lt;&gt;();</span>
         Bid bid;
         User user;
         int auctionId;
@@ -278,23 +279,23 @@ public class AuctionConnection {
         PreparedStatement preparedStatement;
         ResultSet resultset;
         try {
-<span class="fc" id="L281">            conn.getConnection();</span>
-<span class="fc" id="L282">            pstmt = conn.getMyConn().prepareStatement(GET_BID_FROM_AUCTION_ID);</span>
-<span class="fc" id="L283">            pstmt.setInt(1, id);</span>
-<span class="fc" id="L284">            resultset = pstmt.executeQuery();</span>
-<span class="fc bfc" id="L285" title="All 2 branches covered.">            while (resultset.next()) {</span>
-<span class="fc" id="L286">                auctionId = resultset.getInt(&quot;auctionID&quot;);</span>
-<span class="fc" id="L287">                buyerId = resultset.getInt(&quot;placerID&quot;);</span>
-<span class="fc" id="L288">                price = resultset.getDouble(&quot;amount&quot;);</span>
-<span class="fc" id="L289">                user = userConn.getUser(buyerId);</span>
-<span class="fc" id="L290">                bid = new Bid(auctionId, user, price);</span>
-<span class="fc" id="L291">                bids.add(bid);</span>
+<span class="fc" id="L282">            conn.getConnection();</span>
+<span class="fc" id="L283">            pstmt = conn.getMyConn().prepareStatement(GET_BID_FROM_AUCTION_ID);</span>
+<span class="fc" id="L284">            pstmt.setInt(1, id);</span>
+<span class="fc" id="L285">            resultset = pstmt.executeQuery();</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">            while (resultset.next()) {</span>
+<span class="fc" id="L287">                auctionId = resultset.getInt(&quot;auctionID&quot;);</span>
+<span class="fc" id="L288">                buyerId = resultset.getInt(&quot;placerID&quot;);</span>
+<span class="fc" id="L289">                price = resultset.getDouble(&quot;amount&quot;);</span>
+<span class="fc" id="L290">                user = userConn.getUser(buyerId);</span>
+<span class="fc" id="L291">                bid = new Bid(auctionId, user, price);</span>
+<span class="fc" id="L292">                bids.add(bid);</span>
             }
-<span class="nc" id="L293">        } catch (SQLException ex) {</span>
-<span class="nc" id="L294">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L295">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="fc" id="L296">        }</span>
-<span class="fc" id="L297">        return bids;</span>
+<span class="nc" id="L294">        } catch (SQLException ex) {</span>
+<span class="nc" id="L295">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L296">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="fc" id="L297">        }</span>
+<span class="fc" id="L298">        return bids;</span>
     }
 
     /**
@@ -310,42 +311,42 @@ public class AuctionConnection {
      * @throws SQLException if failed to insert bid into the database.
      */
     public Boolean addBid(double amount, int auctionID, int userID, double price) throws SQLException {
-<span class="fc" id="L313">        conn.getConnection();</span>
-<span class="fc" id="L314">        User user = userConn.getUser(userID);</span>
-<span class="fc" id="L315">        Auction auction = getAuction(auctionID);</span>
+<span class="fc" id="L314">        conn.getConnection();</span>
+<span class="fc" id="L315">        User user = userConn.getUser(userID);</span>
+<span class="fc" id="L316">        Auction auction = getAuction(auctionID);</span>
 
         // Checks if User exsists
-<span class="pc bpc" id="L318" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">        if (user != null) {</span>
             // Checks if Saldo is high enough
-<span class="pc bpc" id="L320" title="1 of 2 branches missed.">            if (user.getSaldo() &gt;= auction.getCurrentPrice()) {</span>
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">            if (user.getSaldo() &gt;= auction.getCurrentPrice()) {</span>
                 try {
-<span class="fc" id="L322">                    conn.getConnection();</span>
-<span class="fc" id="L323">                    pstmt = conn.getMyConn().prepareStatement(&quot;INSERT INTO bid (amount, placerID, auctionID) VALUES (?,?,?);&quot;);</span>
-<span class="fc" id="L324">                    pstmt.setDouble(1, price);</span>
-<span class="fc" id="L325">                    pstmt.setInt(2, userID);</span>
-<span class="fc" id="L326">                    pstmt.setInt(3, auctionID);</span>
+<span class="nc" id="L323">                    conn.getConnection();</span>
+<span class="nc" id="L324">                    pstmt = conn.getMyConn().prepareStatement(&quot;INSERT INTO bid (amount, placerID, auctionID) VALUES (?,?,?);&quot;);</span>
+<span class="nc" id="L325">                    pstmt.setDouble(1, price);</span>
+<span class="nc" id="L326">                    pstmt.setInt(2, userID);</span>
+<span class="nc" id="L327">                    pstmt.setInt(3, auctionID);</span>
 
-<span class="nc" id="L328">                    pstmt.executeQuery();</span>
-<span class="nc" id="L329">                    System.out.println(&quot;GELUKT!!&quot;);</span>
-<span class="nc" id="L330">                    myStmt.close();</span>
-<span class="nc" id="L331">                    conn.closeConnection();</span>
-<span class="nc" id="L332">                    return true;</span>
-<span class="fc" id="L333">                } catch (SQLException ex) {</span>
-<span class="fc" id="L334">                    conn.closeConnection();</span>
-<span class="nc" id="L335">                    myStmt.close();</span>
-<span class="nc" id="L336">                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L337">                    System.out.println(ex);</span>
-<span class="nc" id="L338">                    return false;</span>
+<span class="nc" id="L329">                    pstmt.executeQuery();</span>
+<span class="nc" id="L330">                    System.out.println(&quot;GELUKT!!&quot;);</span>
+<span class="nc" id="L331">                    myStmt.close();</span>
+<span class="nc" id="L332">                    conn.closeConnection();</span>
+<span class="nc" id="L333">                    return true;</span>
+<span class="nc" id="L334">                } catch (SQLException ex) {</span>
+<span class="nc" id="L335">                    conn.closeConnection();</span>
+<span class="nc" id="L336">                    myStmt.close();</span>
+<span class="nc" id="L337">                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L338">                    System.out.println(ex);</span>
+<span class="nc" id="L339">                    return false;</span>
                 }
             } else {
-<span class="nc" id="L341">                conn.closeConnection();</span>
-<span class="nc" id="L342">                System.out.println(&quot;Te weinig Saldo!&quot;);</span>
-<span class="nc" id="L343">                return false;</span>
+<span class="fc" id="L342">                conn.closeConnection();</span>
+<span class="fc" id="L343">                System.out.println(&quot;Te weinig Saldo!&quot;);</span>
+<span class="fc" id="L344">                return false;</span>
             }
         } else {
-<span class="nc" id="L346">            System.out.println(&quot;User is Null&quot;);</span>
-<span class="nc" id="L347">            conn.closeConnection();</span>
-<span class="nc" id="L348">            return false;</span>
+<span class="nc" id="L347">            System.out.println(&quot;User is Null&quot;);</span>
+<span class="nc" id="L348">            conn.closeConnection();</span>
+<span class="nc" id="L349">            return false;</span>
         }
     }
 
@@ -370,71 +371,71 @@ public class AuctionConnection {
     public Boolean insertAuction(int sellerid, int productid, double currentprice, double instabuyprice, int instabuyable, int quantity, double loweringamount, int loweringdelay, String type, int status, String imgurl, String description) {
 
 
-<span class="fc" id="L373">        conn.getConnection();</span>
+<span class="fc" id="L374">        conn.getConnection();</span>
   
         try {
-<span class="fc" id="L376">            pstmt = conn.getMyConn().prepareStatement(SET_AUCTION_NEW);</span>
-<span class="fc" id="L377">            pstmt.setInt(1, 1);</span>
-<span class="fc" id="L378">            pstmt.setInt(2, productid);</span>
-<span class="fc" id="L379">            Timestamp created = new Timestamp(System.currentTimeMillis());</span>
-<span class="fc" id="L380">            pstmt.setTimestamp(3, created);</span>
-<span class="fc" id="L381">            pstmt.setDouble(4, currentprice);</span>
-<span class="fc" id="L382">            pstmt.setDouble(5, instabuyprice);</span>
-<span class="fc" id="L383">            pstmt.setInt(6, instabuyable);</span>
-<span class="fc" id="L384">            pstmt.setInt(7, quantity);</span>
-<span class="fc" id="L385">            Timestamp end = new Timestamp(System.currentTimeMillis() + 10000);</span>
-<span class="fc" id="L386">            pstmt.setTimestamp(8, end);</span>
-<span class="fc" id="L387">            pstmt.setDouble(9, loweringamount);</span>
-<span class="fc" id="L388">            pstmt.setInt(10, loweringdelay);</span>
-<span class="fc" id="L389">            pstmt.setString(11, type);</span>
-<span class="fc" id="L390">            pstmt.setInt(12, status);</span>
-<span class="fc" id="L391">            pstmt.setString(13, imgurl);</span>
-<span class="fc" id="L392">            pstmt.setString(14, description);</span>
+<span class="fc" id="L377">            pstmt = conn.getMyConn().prepareStatement(SET_AUCTION_NEW);</span>
+<span class="fc" id="L378">            pstmt.setInt(1, 1);</span>
+<span class="fc" id="L379">            pstmt.setInt(2, productid);</span>
+<span class="fc" id="L380">            Timestamp created = new Timestamp(System.currentTimeMillis());</span>
+<span class="fc" id="L381">            pstmt.setTimestamp(3, created);</span>
+<span class="fc" id="L382">            pstmt.setDouble(4, currentprice);</span>
+<span class="fc" id="L383">            pstmt.setDouble(5, instabuyprice);</span>
+<span class="fc" id="L384">            pstmt.setInt(6, instabuyable);</span>
+<span class="fc" id="L385">            pstmt.setInt(7, quantity);</span>
+<span class="fc" id="L386">            Timestamp end = new Timestamp(System.currentTimeMillis() + 10000);</span>
+<span class="fc" id="L387">            pstmt.setTimestamp(8, end);</span>
+<span class="fc" id="L388">            pstmt.setDouble(9, loweringamount);</span>
+<span class="fc" id="L389">            pstmt.setInt(10, loweringdelay);</span>
+<span class="fc" id="L390">            pstmt.setString(11, type);</span>
+<span class="fc" id="L391">            pstmt.setInt(12, status);</span>
+<span class="fc" id="L392">            pstmt.setString(13, imgurl);</span>
+<span class="fc" id="L393">            pstmt.setString(14, description);</span>
 
-<span class="pc bpc" id="L394" title="1 of 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
-<span class="fc" id="L395">                System.out.println(&quot;succesfully registered new queuePurchase: &quot;);</span>
-<span class="fc" id="L396">                conn.closeConnection();</span>
-<span class="fc" id="L397">                return true;</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="fc" id="L396">                System.out.println(&quot;succesfully registered new queuePurchase: &quot;);</span>
+<span class="fc" id="L397">                conn.closeConnection();</span>
+<span class="fc" id="L398">                return true;</span>
             } else {
-<span class="nc" id="L399">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
-<span class="nc" id="L400">                conn.closeConnection();</span>
-<span class="nc" id="L401">                return false;</span>
+<span class="nc" id="L400">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L401">                conn.closeConnection();</span>
+<span class="nc" id="L402">                return false;</span>
             }
-<span class="nc" id="L403">        } catch (SQLException ex) {</span>
-<span class="nc" id="L404">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L405">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L406">            conn.closeConnection();</span>
-<span class="nc" id="L407">            return false;</span>
+<span class="nc" id="L404">        } catch (SQLException ex) {</span>
+<span class="nc" id="L405">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L406">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L407">            conn.closeConnection();</span>
+<span class="nc" id="L408">            return false;</span>
         }
     }
     
     public Boolean insertBid(double amount, int userid, int auctionid) {
 
 
-<span class="nc" id="L414">        conn.getConnection();</span>
+<span class="nc" id="L415">        conn.getConnection();</span>
   
         try {
-<span class="nc" id="L417">            pstmt = conn.getMyConn().prepareStatement(SET_BID_NEW);</span>
-<span class="nc" id="L418">            pstmt.setDouble(1, amount);</span>
-<span class="nc" id="L419">            Timestamp created = new Timestamp(System.currentTimeMillis());</span>
-<span class="nc" id="L420">            pstmt.setTimestamp(2, created);</span>
-<span class="nc" id="L421">            pstmt.setInt(3, userid);</span>
-<span class="nc" id="L422">            pstmt.setInt(4, auctionid);</span>
+<span class="nc" id="L418">            pstmt = conn.getMyConn().prepareStatement(SET_BID_NEW);</span>
+<span class="nc" id="L419">            pstmt.setDouble(1, amount);</span>
+<span class="nc" id="L420">            Timestamp created = new Timestamp(System.currentTimeMillis());</span>
+<span class="nc" id="L421">            pstmt.setTimestamp(2, created);</span>
+<span class="nc" id="L422">            pstmt.setInt(3, userid);</span>
+<span class="nc" id="L423">            pstmt.setInt(4, auctionid);</span>
 
-<span class="nc bnc" id="L424" title="All 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
-<span class="nc" id="L425">                System.out.println(&quot;succesfully registered new queuePurchase: &quot;);</span>
-<span class="nc" id="L426">                conn.closeConnection();</span>
-<span class="nc" id="L427">                return true;</span>
+<span class="nc bnc" id="L425" title="All 2 branches missed.">            if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L426">                System.out.println(&quot;succesfully registered new queuePurchase: &quot;);</span>
+<span class="nc" id="L427">                conn.closeConnection();</span>
+<span class="nc" id="L428">                return true;</span>
             } else {
-<span class="nc" id="L429">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
-<span class="nc" id="L430">                conn.closeConnection();</span>
-<span class="nc" id="L431">                return false;</span>
+<span class="nc" id="L430">                System.out.println(&quot;Couldn't insert new queuePurchase. Rows are unaffected.&quot;);</span>
+<span class="nc" id="L431">                conn.closeConnection();</span>
+<span class="nc" id="L432">                return false;</span>
             }
-<span class="nc" id="L433">        } catch (SQLException ex) {</span>
-<span class="nc" id="L434">            System.out.println(ex.getMessage());</span>
-<span class="nc" id="L435">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L436">            conn.closeConnection();</span>
-<span class="nc" id="L437">            return false;</span>
+<span class="nc" id="L434">        } catch (SQLException ex) {</span>
+<span class="nc" id="L435">            System.out.println(ex.getMessage());</span>
+<span class="nc" id="L436">            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L437">            conn.closeConnection();</span>
+<span class="nc" id="L438">            return false;</span>
         }
     }
     
@@ -444,24 +445,53 @@ public class AuctionConnection {
      */
     public void closeAuction() throws SQLException {
         try {
-<span class="nc" id="L447">            conn.getConnection();</span>
-<span class="nc" id="L448">            pstmt = conn.getMyConn().prepareStatement(SET_CLOSE_AUCTION);</span>
-<span class="nc" id="L449">            myRs = pstmt.executeQuery();</span>
+<span class="nc" id="L448">            conn.getConnection();</span>
+<span class="nc" id="L449">            pstmt = conn.getMyConn().prepareStatement(SET_CLOSE_AUCTION);</span>
+<span class="nc" id="L450">            myRs = pstmt.executeQuery();</span>
 
-<span class="nc" id="L451">        } catch (Exception ex) {</span>
-<span class="nc" id="L452">            System.out.println(ex);</span>
+<span class="nc" id="L452">        } catch (Exception ex) {</span>
+<span class="nc" id="L453">            System.out.println(ex);</span>
         } finally {
-<span class="nc" id="L454">            conn.closeConnection();</span>
-<span class="nc" id="L455">        }</span>
-<span class="nc" id="L456">    }</span>
+<span class="nc" id="L455">            conn.closeConnection();</span>
+<span class="nc" id="L456">        }</span>
+<span class="nc" id="L457">    }</span>
 
     /**
      * Updates the auction given in the parameter.
      *
      * @param auction the auction that need to be updated
      */
-    public void updateAuction(Auction auction) {
-<span class="fc" id="L464">    }</span>
+    public boolean updateAuction(int auctionid, double amount) {
+<span class="nc" id="L465">        conn.getConnection();</span>
+<span class="nc" id="L466">        myConn = conn.getMyConn();</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">        if (myConn != null) {</span>
+                try {
+<span class="nc" id="L469">                    conn.getConnection();</span>
+<span class="nc" id="L470">                    myConn = conn.getMyConn();</span>
+<span class="nc" id="L471">                    pstmt = myConn.prepareStatement(UPDATE_CURRENT_PRICE);</span>
+<span class="nc" id="L472">                    pstmt.setDouble(1, amount);</span>
+<span class="nc" id="L473">                    pstmt.setInt(2, auctionid);</span>
+
+<span class="nc bnc" id="L475" title="All 2 branches missed.">                    if (pstmt.executeUpdate() &gt; 0) {</span>
+<span class="nc" id="L476">                        System.out.println(&quot;Auction with id: &quot; + auctionid + &quot; is updated&quot;);</span>
+<span class="nc" id="L477">                        return true;</span>
+                    } else {
+<span class="nc" id="L479">                        System.out.println(&quot;Can't update auction with id: &quot; + auctionid);</span>
+<span class="nc" id="L480">                        return false;</span>
+                    }
+<span class="nc" id="L482">                } catch (SQLException ex) {</span>
+<span class="nc" id="L483">                    System.out.println(&quot;Can't update auction with id: &quot; + auctionid);</span>
+<span class="nc" id="L484">                    ex.printStackTrace();</span>
+<span class="nc" id="L485">                     Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L486">                    conn.closeConnection();</span>
+<span class="nc" id="L487">                    return false;</span>
+                }
+            
+        } else {
+<span class="nc" id="L491">            System.out.println(&quot;Can't update auction with id: &quot; + auctionid);</span>
+<span class="nc" id="L492">            return false;</span>
+        }
+    }
 
     /**
      * Buy a instabuy item and put it into the database
@@ -472,40 +502,40 @@ public class AuctionConnection {
      * @return True if instabuy item is be brought, false if its not.
      */
     public Boolean InstabuyItem(int amount, int auctionID, int userID) {
-<span class="fc" id="L475">        conn.getConnection();</span>
-<span class="fc" id="L476">        User user = userConn.getUser(userID);</span>
-<span class="fc" id="L477">        Auction auction = getAuction(auctionID);</span>
+<span class="fc" id="L505">        conn.getConnection();</span>
+<span class="fc" id="L506">        User user = userConn.getUser(userID);</span>
+<span class="fc" id="L507">        Auction auction = getAuction(auctionID);</span>
 
         // Checks if User exsists
-<span class="pc bpc" id="L480" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="pc bpc" id="L510" title="1 of 2 branches missed.">        if (user != null) {</span>
             // Checks if Saldo is high enough
-<span class="pc bpc" id="L482" title="1 of 2 branches missed.">            if (user.getSaldo() &gt;= auction.getCurrentPrice()) {</span>
+<span class="pc bpc" id="L512" title="1 of 2 branches missed.">            if (user.getSaldo() &gt;= auction.getCurrentPrice()) {</span>
                 try {
-<span class="fc" id="L484">                    myConn = DriverManager.getConnection(&quot;jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?noAccessToProcedureBodies=true&quot;, &quot;lesleya213_pts&quot;, &quot;wachtwoord123&quot;);</span>
-<span class="fc" id="L485">                    CallableStatement myStmt = myConn.prepareCall(&quot;{call instabuy(?,?,?)}&quot;);</span>
-<span class="fc" id="L486">                    myStmt.setInt(1, amount);</span>
-<span class="fc" id="L487">                    myStmt.setInt(2, auctionID);</span>
-<span class="fc" id="L488">                    myStmt.setInt(3, userID);</span>
+<span class="nc" id="L514">                    myConn = DriverManager.getConnection(&quot;jdbc:mysql://vserver213.axc.nl:3306/lesleya213_pts?noAccessToProcedureBodies=true&quot;, &quot;lesleya213_pts&quot;, &quot;wachtwoord123&quot;);</span>
+<span class="nc" id="L515">                    CallableStatement myStmt = myConn.prepareCall(&quot;{call instabuy(?,?,?)}&quot;);</span>
+<span class="nc" id="L516">                    myStmt.setInt(1, amount);</span>
+<span class="nc" id="L517">                    myStmt.setInt(2, auctionID);</span>
+<span class="nc" id="L518">                    myStmt.setInt(3, userID);</span>
 
-<span class="fc" id="L490">                    myStmt.execute();</span>
-<span class="fc" id="L491">                    System.out.println(&quot;GELUKT!!&quot;);</span>
-<span class="fc" id="L492">                    conn.closeConnection();</span>
-<span class="fc" id="L493">                    return true;</span>
-<span class="nc" id="L494">                } catch (SQLException ex) {</span>
-<span class="nc" id="L495">                    conn.closeConnection();</span>
-<span class="nc" id="L496">                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L497">                    System.out.println(ex);</span>
-<span class="nc" id="L498">                    return false;</span>
+<span class="nc" id="L520">                    myStmt.execute();</span>
+<span class="nc" id="L521">                    System.out.println(&quot;GELUKT!!&quot;);</span>
+<span class="nc" id="L522">                    conn.closeConnection();</span>
+<span class="nc" id="L523">                    return true;</span>
+<span class="nc" id="L524">                } catch (SQLException ex) {</span>
+<span class="nc" id="L525">                    conn.closeConnection();</span>
+<span class="nc" id="L526">                    Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L527">                    System.out.println(ex);</span>
+<span class="nc" id="L528">                    return false;</span>
                 }
             } else {
-<span class="nc" id="L501">                conn.closeConnection();</span>
-<span class="nc" id="L502">                System.out.println(&quot;Te weinig Saldo!&quot;);</span>
-<span class="nc" id="L503">                return false;</span>
+<span class="fc" id="L531">                conn.closeConnection();</span>
+<span class="fc" id="L532">                System.out.println(&quot;Te weinig Saldo!&quot;);</span>
+<span class="fc" id="L533">                return false;</span>
             }
         } else {
-<span class="nc" id="L506">            System.out.println(&quot;User is Null&quot;);</span>
-<span class="nc" id="L507">            conn.closeConnection();</span>
-<span class="nc" id="L508">            return false;</span>
+<span class="nc" id="L536">            System.out.println(&quot;User is Null&quot;);</span>
+<span class="nc" id="L537">            conn.closeConnection();</span>
+<span class="nc" id="L538">            return false;</span>
         }
     }
 }

@@ -50,29 +50,29 @@ public class DatabaseListener extends Observable{
 
     private void updateAuctionList() {
         ResultSet tempResultSet;
-<span class="fc" id="L53">        java.sql.Connection tempCon = getConnection();</span>
+<span class="nc" id="L53">        java.sql.Connection tempCon = getConnection();</span>
         CallableStatement tempStatement;
 
         try {
-<span class="fc" id="L57">            tempStatement = tempCon.prepareCall(&quot;{call get_updated_auction_ids()}&quot;);</span>
-<span class="fc" id="L58">            tempStatement.execute();</span>
-<span class="fc" id="L59">            tempResultSet = tempStatement.getResultSet();</span>
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">            if (tempResultSet != null){</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">            while (tempResultSet.next()) {</span>
-<span class="fc" id="L62">                auctionIdList.add(tempResultSet.getInt(&quot;auctionID&quot;));</span>
-<span class="fc" id="L63">                System.out.println(tempResultSet.getInt(&quot;auctionID&quot;));</span>
+<span class="nc" id="L57">            tempStatement = tempCon.prepareCall(&quot;{call get_updated_auction_ids()}&quot;);</span>
+<span class="nc" id="L58">            tempStatement.execute();</span>
+<span class="nc" id="L59">            tempResultSet = tempStatement.getResultSet();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            if (tempResultSet != null){</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            while (tempResultSet.next()) {</span>
+<span class="nc" id="L62">                auctionIdList.add(tempResultSet.getInt(&quot;auctionID&quot;));</span>
+<span class="nc" id="L63">                System.out.println(tempResultSet.getInt(&quot;auctionID&quot;));</span>
             }
             
             }
             else{
 <span class="nc" id="L68">                System.out.println(&quot;resultSet of NEW auction id's is empty ?!&quot;);</span>
             }
-<span class="fc" id="L70">            tempStatement.closeOnCompletion();</span>
+<span class="nc" id="L70">            tempStatement.closeOnCompletion();</span>
 
 <span class="nc" id="L72">        } catch (SQLException ex) {</span>
 <span class="nc" id="L73">            Logger.getLogger(DatabaseListener.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="fc" id="L74">        }</span>
-<span class="fc" id="L75">    }</span>
+<span class="nc" id="L74">        }</span>
+<span class="nc" id="L75">    }</span>
     
     private void updateQueueList() {
         ResultSet tempResultSet;
@@ -145,14 +145,14 @@ public class DatabaseListener extends Observable{
                     }
 
 <span class="pc bpc" id="L147" title="1 of 2 branches missed.">                    if (myStmt.getInt(1) &gt;= 1) {</span>
-<span class="fc" id="L148">                        type = &quot;Auction&quot;;</span>
-<span class="fc" id="L149">                        updateAuctionList();</span>
-<span class="fc" id="L150">                        setChanged();</span>
-<span class="fc" id="L151">                        notifyObservers(type);</span>
-<span class="fc" id="L152">                        getUpdateAuctionList().clear();</span>
+<span class="nc" id="L148">                        type = &quot;Auction&quot;;</span>
+<span class="nc" id="L149">                        updateAuctionList();</span>
+<span class="nc" id="L150">                        setChanged();</span>
+<span class="nc" id="L151">                        notifyObservers(type);</span>
+<span class="nc" id="L152">                        getUpdateAuctionList().clear();</span>
                     } else {
-<span class="nc" id="L154">                        System.out.println(myStmt.getInt(1));</span>
-<span class="nc" id="L155">                        System.out.println(&quot;No new auctions !&quot;);</span>
+<span class="fc" id="L154">                        System.out.println(myStmt.getInt(1));</span>
+<span class="fc" id="L155">                        System.out.println(&quot;No new auctions !&quot;);</span>
                     }
 
 <span class="nc" id="L158">                    Thread.sleep(5000);</span>

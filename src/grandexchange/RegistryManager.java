@@ -47,7 +47,7 @@ public class RegistryManager {
     // References to registry and Grand Exchange
     private Registry registry = null;
     private InetAddress localhost;
-    private String ipAddress = "192.168.137.1";
+    private String ipAddress = "192.168.0.100";
 
     public RegistryManager() {
         getLocalHostIp();
@@ -61,7 +61,9 @@ public class RegistryManager {
     public ICreateProduct getProduct() {
         return product;
     }
-
+public String getIp() {
+        return ipAddress;
+    }
     public ICreateQueuePurchase getQueuePurchase() {
         return queuePurchase;
     }

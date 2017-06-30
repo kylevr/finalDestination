@@ -43,6 +43,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
+import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -165,6 +167,13 @@ public class MainController implements Initializable {
         Stage inputStage = new Stage();
         inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);
+        inputStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+                System.out.println("Stage X Disabled");
+                we.consume();
+               JOptionPane.showMessageDialog(null, "Please use the close button located on the top left of the screen");
+            }
+        });
         inputStage.showAndWait();
     }
 

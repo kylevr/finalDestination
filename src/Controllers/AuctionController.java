@@ -16,9 +16,17 @@ import Classes.User;
 import Exceptions.NotEnoughMoneyException;
 import Interfaces.IAuction;
 import Interfaces.IPlaceBid;
+import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.IRemotePublisherForListener;
 import grandexchange.RegistryManager;
+import java.beans.PropertyChangeEvent;
 import java.net.URL;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -28,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -46,6 +55,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javax.swing.JOptionPane;
 
@@ -54,7 +64,7 @@ import javax.swing.JOptionPane;
  *
  * @author piete
  */
-public class AuctionController implements Initializable {
+public class AuctionController extends UnicastRemoteObject implements IRemotePropertyListener, Initializable {
 
     @FXML
     private ImageView bigProductImage;
@@ -108,13 +118,12 @@ public class AuctionController implements Initializable {
     private Button BidBtn;
     @FXML
     private Button buyButton;
-
+    IRemotePublisherForListener auctionPublisher;
     IAuction auctionInterface;
     IPlaceBid bid;
     Auction auction;
     Direct directAuction;
     Standard standardAuction;
-    Grand_Exchange GX;
     private User loggedInUser;
     private String type;
     private RegistryManager RM;
@@ -133,30 +142,54 @@ public class AuctionController implements Initializable {
 
     }
 
+    public AuctionController() throws RemoteException {
+
+    }
+
     public void setUp(Auction auction, RegistryManager RM) throws RemoteException {
-        this.GX = new Grand_Exchange();
         this.RM = RM;
         this.auction = auction;
         loggedInUser = RM.getUser();
         update();
-        timeline1 = new Timeline();
-        timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
+        Registry registry = LocateRegistry.getRegistry(RM.getIp(), 1099);
+        try {
+            auctionPublisher = (IRemotePublisherForListener) registry.lookup("auctionPublisher");
+        } catch (NotBoundException | AccessException ex) {
+            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        auctionPublisher.subscribeRemoteListener(this, "A" + auction.getId());
+        System.out.println(auctionPublisher.toString());
+        System.out.println("subscribed");
+        Stage thisStage = (Stage) BidBtn.getParent().getScene().getWindow();
 
-            @Override
-            public void handle(Event event) {
-                liveUpdate();
-            }
-        }));
-        timeline1.playFromStart();
-
+//        timeline1 = new Timeline();
+//        timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
+//
+//            @Override
+//            public void handle(Event event) {
+//                liveUpdate();
+//            }
+//        }));
+//        timeline1.playFromStart();
+//        timeline1 = new Timeline();
+//        timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
+//
+//            @Override
+//            public void handle(Event event) {
+//                liveUpdate();
+//            }
+//        }));
+//        timeline1.playFromStart();
     }
 
     public void liveUpdate() {
         int updateid = auction.getId();
         try {
             auction = RM.getAuction().getAuction(updateid);
+
         } catch (RemoteException ex) {
-            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AuctionController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         if (auction instanceof Countdown) {
             //setting auction
@@ -192,8 +225,10 @@ public class AuctionController implements Initializable {
         int updateid = auction.getId();
         try {
             auction = RM.getAuction().getAuction(updateid);
+
         } catch (RemoteException ex) {
-            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AuctionController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         productTitle.setText(auction.getProduct().getName());
         productDescription.setText(auction.getProduct().getDescription());
@@ -204,42 +239,42 @@ public class AuctionController implements Initializable {
         imagePane.setPrefWidth(85 * auction.getImageURLs().length);
         imagePane.setPrefHeight(70);
         for (String URL : auction.getImageURLs()) {
-            if(URL != null){
-            ImageView image = null;
-            try {
-                image = new ImageView(new Image(URL));
-            } catch (Exception ex) {
-                image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                       System.out.println("Geen image url toegevoegd.");
-            }
-            image.setFitWidth(80);
-            image.setFitHeight(60);
-            image.relocate(85 * i, 5);
-            image.addEventHandler(MouseEvent.MOUSE_ENTERED,
-                    new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    ImageView i = (ImageView) e.getSource();
-                    bigProductImage.setImage(i.getImage());
+            if (URL != null) {
+                ImageView image = null;
+                try {
+                    image = new ImageView(new Image(URL));
+                } catch (Exception ex) {
+                    image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+                    System.out.println("Geen image url toegevoegd.");
                 }
-            });
-            Image bigImage = null;
-            try {
-                bigImage = new Image(auction.getImageURLs()[0]);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-}
+                image.setFitWidth(80);
+                image.setFitHeight(60);
+                image.relocate(85 * i, 5);
+                image.addEventHandler(MouseEvent.MOUSE_ENTERED,
+                        new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        ImageView i = (ImageView) e.getSource();
+                        bigProductImage.setImage(i.getImage());
+                    }
+                });
+                Image bigImage = null;
+                try {
+                    bigImage = new Image(auction.getImageURLs()[0]);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
 
-            bigProductImage.setImage(bigImage);
-            imagePane.getChildren().add(image);
-            i++;
+                bigProductImage.setImage(bigImage);
+                imagePane.getChildren().add(image);
+                i++;
+            }
         }
-        }
-        
-        try{
-        sellerImage.setImage(new Image(auction.getSeller().getImageURL()));
-        }catch(Exception ex){
-            
+
+        try {
+            sellerImage.setImage(new Image(auction.getSeller().getImageURL()));
+        } catch (Exception ex) {
+
         }
         sellerName.setText(auction.getSeller().getUsername());
         imagesPane.setContent(imagePane);
@@ -275,7 +310,7 @@ public class AuctionController implements Initializable {
             long now = System.currentTimeMillis();
             long then = countdownAuction.getCreationDate().getTime();
             long periods_passed = 0;
-            if(countdownAuction.getPriceLoweringDelay() != 0){
+            if (countdownAuction.getPriceLoweringDelay() != 0) {
                 periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
             }
             long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();
@@ -371,8 +406,8 @@ public class AuctionController implements Initializable {
                     int timeDays = timeSeconds;
                     int daysToGo = (int) Math.floor(timeDays / 60.0 / 60 / 24.0);
                     int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60.0) - daysToGo * 24;
-                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0)-(hoursToGo*60)-(daysToGo*24*60);
-                    int secondsToGo = timeSeconds -(hoursToGo*60*60)-(daysToGo*24*60*60)-(minutesToGo*60);
+                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0) - (hoursToGo * 60) - (daysToGo * 24 * 60);
+                    int secondsToGo = timeSeconds - (hoursToGo * 60 * 60) - (daysToGo * 24 * 60 * 60) - (minutesToGo * 60);
                     String hours = Integer.toString(hoursToGo);
                     String minutes = Integer.toString(minutesToGo);
                     String seconds = Integer.toString(secondsToGo);
@@ -388,7 +423,7 @@ public class AuctionController implements Initializable {
                     CreateDate.setText(daysToGo + "Days,  " + hours + ":" + minutes + ":" + seconds);
                     if (timeSeconds <= 0) {
                         timeline.stop();
-                        update();
+                        //update();
                     }
                 }
             }));
@@ -461,28 +496,29 @@ public class AuctionController implements Initializable {
         this.bid = RM.getBid();
         System.out.println("Saldo = " + RM.getUser().getSaldo());
         RM.getUser().getSaldo();
-        
+
         double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
-        if(RM.getUser().getSaldo() < totalprice){
+        if (RM.getUser().getSaldo() < totalprice) {
             JOptionPane.showMessageDialog(null, "You don't have enough money on your account to perform this action.");
-        }else{
-        if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
-            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
-            if (reply == JOptionPane.YES_OPTION) {
-                int units = Integer.parseInt(txtUnitstoBuyBid.getText());
-                bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());
-                update();
-                JOptionPane.showMessageDialog(null, "Your order has been placed");
-            } else {
-                JOptionPane.showMessageDialog(null, "Canceled");
-            }
-        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
-            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
-        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > auction.getProductQuantity()) {
-            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
         } else {
-            JOptionPane.showMessageDialog(null, "Something went wrong");
-        }}
+            if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
+                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION) {
+                    int units = Integer.parseInt(txtUnitstoBuyBid.getText());
+                    bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());
+                    //update();
+                    JOptionPane.showMessageDialog(null, "Your order has been placed");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Canceled");
+                }
+            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
+                JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
+            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > auction.getProductQuantity()) {
+                JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
+            } else {
+                JOptionPane.showMessageDialog(null, "Something went wrong");
+            }
+        }
         checkAuctionStatus();
     }
 
@@ -490,15 +526,15 @@ public class AuctionController implements Initializable {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
         double price = Double.parseDouble(txtPriceToBid.getText());
-        if (auction.getCurrentPrice() < price ) {
+        if (auction.getCurrentPrice() < price) {
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Bid " + txtPriceToBid.getText(), "Are You Sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                if(bid.placeBid(1, RM.getUser().getUserID(), auction.getId(), price)){
+                if (bid.placeBid(1, RM.getUser().getUserID(), auction.getId(), price)) {
                     JOptionPane.showMessageDialog(null, "Your bid has been placed.");
-                }else{
-                    JOptionPane.showMessageDialog(null, "Something went wrong while placing your bid.");
+                } else {
+                    //JOptionPane.showMessageDialog(null, "Something went wrong while placing your bid.");
                 }
-                update();
+                //update();
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
@@ -521,7 +557,7 @@ public class AuctionController implements Initializable {
             if (reply == JOptionPane.YES_OPTION) {
                 int units = Integer.parseInt(txtUnitstoBuy.getText());
                 bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());
-                update();
+                //update();
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
@@ -534,6 +570,7 @@ public class AuctionController implements Initializable {
     }
 
     public void setCountdownBuys(Auction auction) {
+
         Pane BuyPane = new Pane();
         BuyPane.setPrefWidth(371);
         BuyPane.setPrefHeight(75 * auction.getBids().size());
@@ -564,8 +601,8 @@ public class AuctionController implements Initializable {
             BuyPane.getChildren().add(p);
             a++;
         }
-
         recentPurchasesPane.setContent(BuyPane);
+
     }
 
     /**
@@ -575,21 +612,21 @@ public class AuctionController implements Initializable {
         if (auction instanceof Countdown) {
             Countdown countdown = (Countdown) auction;
             if (countdown.getProductQuantity() < 1) {
-                GX.closeAuction();
+                //GX.closeAuction();
                 System.out.println("Verwijderd uit de databsase");
                 closeButtonClick();
             }
         } else if (auction instanceof Direct) {
             Direct direct = (Direct) auction;
             if (direct.getProductQuantity() < 1) {
-                GX.closeAuction();
+                //GX.closeAuction();
                 System.out.println("Verwijderd uit de databsase");
                 closeButtonClick();
             }
         } else if (auction instanceof Standard) {
             Standard standard = (Standard) auction;
             if (standard.getProductQuantity() < 1) {
-                GX.closeAuction();
+                //GX.closeAuction();
                 System.out.println("Verwijderd uit de databsase");
                 closeButtonClick();
             }
@@ -599,8 +636,42 @@ public class AuctionController implements Initializable {
 
     @FXML
     private void closeButtonClick() {
+        try {
+            auctionPublisher.unsubscribeRemoteListener(this, "A" + auction.getId());
+            System.out.println("Unsubscribed Succesfully!");
+        } catch (RemoteException ex) {
+            Logger.getLogger(AuctionController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
+        System.out.println("Price: " + (Double) evt.getOldValue());
+        Bid b = (Bid) evt.getNewValue();
+        System.out.println("Bid: " + b.getPlacerUsername());
+        this.auction.setCurrentPrice((Double) evt.getOldValue());
+        this.auction.addBid((Bid) evt.getNewValue());
+        Platform.runLater(() -> {
+            this.countdownCurrentPrice.setText("€" + (Double) evt.getOldValue());
+            setCountdownBuys(this.auction);
+            if (auction instanceof Countdown) {
+            countdownCurrentPrice.setText("€" + auction.getCurrentPrice());
+            timeline.playFromStart();
+            if (auction.getProductQuantity()
+                    > 1) {
+                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
+            } else if (auction.getProductQuantity()
+                    == 1) {
+                countdownAvailableUnits.setText("There is just 1 item left");
+            } else if (auction.getProductQuantity()
+                    == 0) {
+                countdownAvailableUnits.setText("There are no items left, you missed it");
+            }
+            }
+        });
     }
 
 }

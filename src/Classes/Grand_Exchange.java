@@ -13,6 +13,7 @@ import Interfaces.IAuthorized;
 import Interfaces.ICreateProduct;
 import Interfaces.ICreateQueuePurchase;
 import Interfaces.IPlaceBid;
+import fontyspublisher.RemotePublisher;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -36,6 +37,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     ArrayList<User> users;
     ArrayList<Auction> auctions;
     ArrayList<Queue_Purchase> queuepurchases;
+    RemotePublisher auctionPublisher;
     Connection con;
     AuctionConnection auctionConn;
     ProductConnection productConn;
@@ -60,8 +62,11 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     /**
      * initialize GX
+     *
+     * @param publisher
      */
-    public Grand_Exchange() throws RemoteException {
+    public Grand_Exchange(RemotePublisher publisher) throws RemoteException {
+        this.auctionPublisher = publisher;
         products = new ArrayList<>();
         users = new ArrayList<>();
         auctions = new ArrayList<>();
@@ -78,9 +83,17 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         auctions = auctionConn.getAuctions("*", "auction", "''");
         products = productConn.getProducts();
         queuepurchases = qPConn.getQueuePurchases();
-
-        dbListener = new DatabaseListener();
-        dbListener.addObserver(this);
+        for (Auction a : auctions) {
+            if (a != null) {
+                try {
+                    auctionPublisher.registerProperty("A" + a.getId());
+                } catch (Exception ex) {
+                    Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+//        dbListener = new DatabaseListener();
+//        dbListener.addObserver(this);
     }
 
     /**
@@ -422,7 +435,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @param auctionid
      * @param amount
      * @param auction :auction to be updated
-     * @return 
+     * @return
      */
     public boolean updateAuction(int auctionid, double amount) {
         return auctionConn.updateAuction(auctionid, amount);
@@ -603,11 +616,28 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     @Override
     public boolean placeBid(double amount, int userid, int auctionid, double price) throws RemoteException, NotEnoughMoneyException {
         auctionConn = new AuctionConnection();
-       if(auctionConn.insertBid(price, userid, auctionid)){
-           return updateAuction(auctionid, price);
-       } else{
-           return false;
-       }
+        User u = null;
+        for (User b : users) {
+            if (b.getUserID() == userid) {
+                u = b;
+            }
+        }
+        if (u == null) {
+
+        }
+        for (Auction a : auctions) {
+            if (a != null) {
+                if (a.getId() == auctionid) {
+                    a.addBid(new Bid(auctionid, u, price));
+                    auctionPublisher.inform(("A" + a.getId()), price, new Bid(auctionid, u, price));
+                }
+            }
+        }
+        if (auctionConn.insertBid(price, userid, auctionid)) {
+            return updateAuction(auctionid, price);
+        } else {
+            return false;
+        }
 
     }
 
@@ -639,6 +669,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         System.out.println(AuctionID);
         for (int i = 0; i < amount; i++) {
             auctions.get(index).addBid(new Bid(AuctionID, u, price));
+            auctionPublisher.inform(("A" + auctions.get(index).getId()), price, new Bid(AuctionID, u, price));
+
         }
 
         Auction a = auctions.get(index);
@@ -714,15 +746,21 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             System.out.println("startingprice mag niet lager zijn dan instabuy");
             throw new IllegalArgumentException();
         }
-//        int index = -1;
-//        for (int i = 0; i < auctions.size(); i++) {
-//            if (Integer.parseInt(products.get(i).getGTIN()) == productID) {
-//                index = i;
-//                break;
-//            }
-//        }
-//        Product p = products.get(index);
-//        auctions.add(new Standard(id,new User("test2222","password","xtest2222","test@test.nl",true,500,"https://fiom.nl/sites/default/files/styles/section_quote/public/nieuws_tiener.jpg?"),p,startingprice,quantity, new Timestamp(2017,6,2,15,35,52,2),new Timestamp(2017,6,20,15,35,52,2),StatusEnum.New,description,imageUrl,3000));
+        int index = -1;
+        for (int i = 0; i < auctions.size(); i++) {
+            if (Integer.parseInt(products.get(i).getGTIN()) == productID) {
+                index = i;
+                break;
+            }
+        }
+        User u = null;
+        for (User b : users) {
+            if (b.getUserID() == userID) {
+                u = b;
+            }
+        }
+        Product p = products.get(index);
+        auctions.add(new Standard(id,u,p,startingprice,quantity, new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()+1000000),StatusEnum.New,description,imageUrl,3000));
         return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);
     }
 

@@ -62,14 +62,14 @@ public class Countdown extends Auction implements Serializable {
 <span class="fc" id="L62">        long now = System.currentTimeMillis();</span>
 <span class="fc" id="L63">        long then = creationDate.getTime();</span>
         
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if(this.getCurrentPrice() &lt;= 0){</span>
-<span class="nc" id="L66">            this.setCurrentPrice(0);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if(priceloweringDelay &gt; 0){</span>
+<span class="fc" id="L66">            long periods = (now - then) / 60000 / (long) priceloweringDelay;</span>
+<span class="fc" id="L67">        double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if(newPrice &lt; 0.01){</span>
+<span class="fc" id="L69">            setCurrentPrice(0.01);</span>
+        }else{
+<span class="fc" id="L71">            setCurrentPrice(newPrice);</span>
         }
-        
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if(priceloweringDelay &gt; 0){</span>
-<span class="fc" id="L70">            long periods = (now - then) / 60000 / (long) priceloweringDelay;</span>
-<span class="fc" id="L71">        double newPrice = startingPrice - ((int) periods * (int) priceloweringAmount);</span>
-<span class="fc" id="L72">        setCurrentPrice(newPrice);</span>
         }
 <span class="fc" id="L74">    }</span>
 

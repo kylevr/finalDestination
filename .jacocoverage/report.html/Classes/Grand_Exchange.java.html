@@ -419,11 +419,14 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     /**
      * updates auction from DB
      *
+     * @param auctionid
+     * @param amount
      * @param auction :auction to be updated
+     * @return 
      */
-    public void updateAuction(Auction auction) {
-<span class="nc" id="L425">        auctionConn.updateAuction(auction);</span>
-<span class="nc" id="L426">    }</span>
+    public boolean updateAuction(int auctionid, double amount) {
+<span class="nc" id="L428">        return auctionConn.updateAuction(auctionid, amount);</span>
+    }
 
     /**
      * gest user from collection of users with given username
@@ -431,33 +434,33 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @param userName
      */
     public User getUser(String userName) throws RemoteException {
-<span class="nc" id="L434">        User missingUser = null;</span>
-<span class="nc bnc" id="L435" title="All 2 branches missed.">        for (User u : this.users) {</span>
-<span class="nc bnc" id="L436" title="All 2 branches missed.">            if (u.getUsername().equals(userName)) {</span>
-<span class="nc" id="L437">                missingUser = u;</span>
+<span class="nc" id="L437">        User missingUser = null;</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">        for (User u : this.users) {</span>
+<span class="nc bnc" id="L439" title="All 2 branches missed.">            if (u.getUsername().equals(userName)) {</span>
+<span class="nc" id="L440">                missingUser = u;</span>
             }
-<span class="nc" id="L439">        }</span>
-<span class="nc" id="L440">        return missingUser;</span>
+<span class="nc" id="L442">        }</span>
+<span class="nc" id="L443">        return missingUser;</span>
     }
 
     /**
      * updates all users from database
      */
     public void updateUsers() {
-<span class="nc" id="L447">        this.users.clear();</span>
-<span class="nc bnc" id="L448" title="All 2 branches missed.">        for (User u : this.userConn.getAllUsers()) {</span>
-<span class="nc" id="L449">            this.addUser(u);</span>
-<span class="nc" id="L450">        }</span>
-<span class="nc" id="L451">    }</span>
+<span class="nc" id="L450">        this.users.clear();</span>
+<span class="nc bnc" id="L451" title="All 2 branches missed.">        for (User u : this.userConn.getAllUsers()) {</span>
+<span class="nc" id="L452">            this.addUser(u);</span>
+<span class="nc" id="L453">        }</span>
+<span class="nc" id="L454">    }</span>
 
     @Override
     public List&lt;Bid&gt; getBids(int auctionId) {
-<span class="nc" id="L455">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;); //To change body of generated methods, choose Tools | Templates.</span>
+<span class="nc" id="L458">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;); //To change body of generated methods, choose Tools | Templates.</span>
     }
 
     @Override
     public void addFeedback(Feedback feedback) throws RemoteException {
-<span class="nc" id="L460">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;); //To change body of generated methods, choose Tools | Templates.</span>
+<span class="nc" id="L463">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;); //To change body of generated methods, choose Tools | Templates.</span>
     }
 
     /**
@@ -467,12 +470,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @return true if successful, false if not successful
      */
     public boolean submitFeedbackToDB(Feedback feedback) {
-<span class="nc" id="L470">        boolean success = false;</span>
-<span class="nc" id="L471">        UserConnection conn = new UserConnection();</span>
-<span class="nc bnc" id="L472" title="All 2 branches missed.">        if (conn.submitFeedback(feedback.getRating(), feedback.getDescription(), feedback.getUserFrom_Username(), feedback.getUserTo_Username())) {</span>
-<span class="nc" id="L473">            success = true;</span>
+<span class="nc" id="L473">        boolean success = false;</span>
+<span class="nc" id="L474">        UserConnection conn = new UserConnection();</span>
+<span class="nc bnc" id="L475" title="All 2 branches missed.">        if (conn.submitFeedback(feedback.getRating(), feedback.getDescription(), feedback.getUserFrom_Username(), feedback.getUserTo_Username())) {</span>
+<span class="nc" id="L476">            success = true;</span>
         }
-<span class="nc" id="L475">        return success;</span>
+<span class="nc" id="L478">        return success;</span>
     }
 
     /**
@@ -482,26 +485,26 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @return True if succesfull, false if username doesn't exist
      */
     public boolean updateFeedbacklist(String username) {
-<span class="nc" id="L485">        Connection conn = new Connection();</span>
-<span class="nc" id="L486">        conn.getConnection();</span>
-<span class="nc" id="L487">        boolean successful = false;</span>
+<span class="nc" id="L488">        Connection conn = new Connection();</span>
+<span class="nc" id="L489">        conn.getConnection();</span>
+<span class="nc" id="L490">        boolean successful = false;</span>
 
-<span class="nc bnc" id="L489" title="All 2 branches missed.">        if (userConn.getUser(username) != null) {</span>
-<span class="nc bnc" id="L490" title="All 2 branches missed.">            for (User u : this.users) {</span>
-<span class="nc bnc" id="L491" title="All 2 branches missed.">                if (u.getUsername().equals(username)) {</span>
-<span class="nc" id="L492">                    u.removeAllFeedback();</span>
-<span class="nc bnc" id="L493" title="All 2 branches missed.">                    for (Feedback f : userConn.getFeedbackToSeller(username)) {</span>
-<span class="nc" id="L494">                        u.addFeedback(f);</span>
-<span class="nc" id="L495">                    }</span>
-<span class="nc bnc" id="L496" title="All 2 branches missed.">                    for (Feedback f : userConn.getFeedbackFromBuyer(username)) {</span>
+<span class="nc bnc" id="L492" title="All 2 branches missed.">        if (userConn.getUser(username) != null) {</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">            for (User u : this.users) {</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">                if (u.getUsername().equals(username)) {</span>
+<span class="nc" id="L495">                    u.removeAllFeedback();</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">                    for (Feedback f : userConn.getFeedbackToSeller(username)) {</span>
 <span class="nc" id="L497">                        u.addFeedback(f);</span>
 <span class="nc" id="L498">                    }</span>
-<span class="nc" id="L499">                    u.sortFeedbacklistByDate();</span>
-<span class="nc" id="L500">                    successful = true;</span>
+<span class="nc bnc" id="L499" title="All 2 branches missed.">                    for (Feedback f : userConn.getFeedbackFromBuyer(username)) {</span>
+<span class="nc" id="L500">                        u.addFeedback(f);</span>
+<span class="nc" id="L501">                    }</span>
+<span class="nc" id="L502">                    u.sortFeedbacklistByDate();</span>
+<span class="nc" id="L503">                    successful = true;</span>
                 }
-<span class="nc" id="L502">            }</span>
+<span class="nc" id="L505">            }</span>
         }
-<span class="nc" id="L504">        return successful;</span>
+<span class="nc" id="L507">        return successful;</span>
     }
 
     /**
@@ -515,92 +518,96 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     @Override
     public String registerUser(String username, String password, String alias, String email) {
-<span class="nc" id="L518">        String errorMsg = &quot;Failed to register user:&quot;;</span>
+<span class="nc" id="L521">        String errorMsg = &quot;Failed to register user:&quot;;</span>
 
         //als er internetconnectie is met de database, voer code uit
-<span class="nc" id="L521">        Connection conn = new Connection();</span>
-<span class="nc bnc" id="L522" title="All 2 branches missed.">        if (conn.getConnection()) {</span>
+<span class="nc" id="L524">        Connection conn = new Connection();</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">        if (conn.getConnection()) {</span>
             try {
-<span class="nc" id="L524">                this.userConn = new UserConnection();</span>
+<span class="nc" id="L527">                this.userConn = new UserConnection();</span>
 
-<span class="nc" id="L526">                username = username.trim();</span>
-<span class="nc" id="L527">                password = password.trim();</span>
-<span class="nc" id="L528">                alias = alias.trim();</span>
-<span class="nc" id="L529">                email = email.trim();</span>
+<span class="nc" id="L529">                username = username.trim();</span>
+<span class="nc" id="L530">                password = password.trim();</span>
+<span class="nc" id="L531">                alias = alias.trim();</span>
+<span class="nc" id="L532">                email = email.trim();</span>
 
-<span class="nc" id="L531">                System.out.println(&quot;Starting registration...&quot;);</span>
+<span class="nc" id="L534">                System.out.println(&quot;Starting registration...&quot;);</span>
 
-<span class="nc bnc" id="L533" title="All 8 branches missed.">                if (username.isEmpty() || password.isEmpty() || email.isEmpty() || alias.isEmpty()) {</span>
-<span class="nc" id="L534">                    errorMsg += &quot;\n -All fields must be filled&quot;;</span>
+<span class="nc bnc" id="L536" title="All 8 branches missed.">                if (username.isEmpty() || password.isEmpty() || email.isEmpty() || alias.isEmpty()) {</span>
+<span class="nc" id="L537">                    errorMsg += &quot;\n -All fields must be filled&quot;;</span>
                 } else {
-<span class="nc" id="L536">                    boolean duplicateUsername = userConn.hasDuplicateUsername(username);</span>
-<span class="nc" id="L537">                    boolean duplicateAlias = userConn.hasDuplicateAlias(alias);</span>
-<span class="nc" id="L538">                    boolean duplicateEmail = userConn.hasDuplicateEmail(email);</span>
+<span class="nc" id="L539">                    boolean duplicateUsername = userConn.hasDuplicateUsername(username);</span>
+<span class="nc" id="L540">                    boolean duplicateAlias = userConn.hasDuplicateAlias(alias);</span>
+<span class="nc" id="L541">                    boolean duplicateEmail = userConn.hasDuplicateEmail(email);</span>
 
-<span class="nc bnc" id="L540" title="All 2 branches missed.">                    if (duplicateUsername) {</span>
-<span class="nc" id="L541">                        errorMsg += &quot;\n -Username is already used&quot;;</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">                    if (duplicateUsername) {</span>
+<span class="nc" id="L544">                        errorMsg += &quot;\n -Username is already used&quot;;</span>
                     }
-<span class="nc bnc" id="L543" title="All 2 branches missed.">                    if (duplicateAlias) {</span>
-<span class="nc" id="L544">                        errorMsg += &quot;\n -Alias is already used&quot;;</span>
+<span class="nc bnc" id="L546" title="All 2 branches missed.">                    if (duplicateAlias) {</span>
+<span class="nc" id="L547">                        errorMsg += &quot;\n -Alias is already used&quot;;</span>
                     }
-<span class="nc bnc" id="L546" title="All 2 branches missed.">                    if (duplicateEmail) {</span>
-<span class="nc" id="L547">                        errorMsg += &quot;\n -Email is already used&quot;;</span>
+<span class="nc bnc" id="L549" title="All 2 branches missed.">                    if (duplicateEmail) {</span>
+<span class="nc" id="L550">                        errorMsg += &quot;\n -Email is already used&quot;;</span>
                     }
 
-<span class="nc bnc" id="L550" title="All 6 branches missed.">                    if (!duplicateUsername &amp;&amp; !duplicateAlias &amp;&amp; !duplicateEmail) {</span>
-<span class="nc" id="L551">                        userConn.setUser_REGISTER(username, password, alias, email, null, 0);</span>
-<span class="nc" id="L552">                        errorMsg = &quot;Succesfully registered new user!&quot;;</span>
+<span class="nc bnc" id="L553" title="All 6 branches missed.">                    if (!duplicateUsername &amp;&amp; !duplicateAlias &amp;&amp; !duplicateEmail) {</span>
+<span class="nc" id="L554">                        userConn.setUser_REGISTER(username, password, alias, email, null, 0);</span>
+<span class="nc" id="L555">                        errorMsg = &quot;Succesfully registered new user!&quot;;</span>
                     }
                 }
-<span class="nc" id="L555">            } catch (NumberFormatException ex) {</span>
-<span class="nc" id="L556">                errorMsg += &quot;\n -BSN field must constain a number&quot;;</span>
+<span class="nc" id="L558">            } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L559">                errorMsg += &quot;\n -BSN field must constain a number&quot;;</span>
             } finally {
-<span class="nc" id="L558">                System.out.println(errorMsg);</span>
-<span class="nc" id="L559">            }</span>
+<span class="nc" id="L561">                System.out.println(errorMsg);</span>
+<span class="nc" id="L562">            }</span>
         } else {
-<span class="nc" id="L561">            errorMsg += &quot;\n -BSN field must constain a number&quot;;</span>
+<span class="nc" id="L564">            errorMsg += &quot;\n -BSN field must constain a number&quot;;</span>
         }
-<span class="nc" id="L563">        return errorMsg;</span>
+<span class="nc" id="L566">        return errorMsg;</span>
     }
 
     @Override
     public int createProduct(int GTIN, String name, String description) throws RemoteException {
-<span class="nc" id="L568">        int newProductID = productConn.insertProduct(name, description, GTIN);</span>
-<span class="nc" id="L569">        productConn = new ProductConnection();</span>
-<span class="nc bnc" id="L570" title="All 2 branches missed.">        if (newProductID != 0) {</span>
-<span class="nc" id="L571">            Product newProduct = productConn.getProduct(newProductID);</span>
-<span class="nc" id="L572">            products.add(newProduct);</span>
+<span class="nc" id="L571">        int newProductID = productConn.insertProduct(name, description, GTIN);</span>
+<span class="nc" id="L572">        productConn = new ProductConnection();</span>
+<span class="nc bnc" id="L573" title="All 2 branches missed.">        if (newProductID != 0) {</span>
+<span class="nc" id="L574">            Product newProduct = productConn.getProduct(newProductID);</span>
+<span class="nc" id="L575">            products.add(newProduct);</span>
         }
-<span class="nc" id="L574">        return newProductID;</span>
+<span class="nc" id="L577">        return newProductID;</span>
     }
 
     @Override
     public boolean createQueuePurchase(int Quantity, double minPrice, double maxPrice, int productID, int placerID) throws RemoteException {
-<span class="nc" id="L579">        User user = userConn.getUser(placerID);</span>
-<span class="nc" id="L580">        double totalMaxPrice = Quantity * maxPrice;</span>
-<span class="nc bnc" id="L581" title="All 2 branches missed.">        if (user.getSaldo() &lt; totalMaxPrice) {</span>
-<span class="nc" id="L582">            System.out.print(user.getUsername() + &quot; has not enough credits for this queue purchase.&quot;);</span>
-<span class="nc" id="L583">            return false;</span>
+<span class="nc" id="L582">        User user = userConn.getUser(placerID);</span>
+<span class="nc" id="L583">        double totalMaxPrice = Quantity * maxPrice;</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">        if (user.getSaldo() &lt; totalMaxPrice) {</span>
+<span class="nc" id="L585">            System.out.print(user.getUsername() + &quot; has not enough credits for this queue purchase.&quot;);</span>
+<span class="nc" id="L586">            return false;</span>
         }
-<span class="nc bnc" id="L585" title="All 2 branches missed.">        if (Quantity &lt; 1) {</span>
-<span class="nc" id="L586">            System.out.print(&quot;Quantity has to be more than 0 in order to create a queue purchase&quot;);</span>
-<span class="nc" id="L587">            return false;</span>
+<span class="nc bnc" id="L588" title="All 2 branches missed.">        if (Quantity &lt; 1) {</span>
+<span class="nc" id="L589">            System.out.print(&quot;Quantity has to be more than 0 in order to create a queue purchase&quot;);</span>
+<span class="nc" id="L590">            return false;</span>
         }
-<span class="nc bnc" id="L589" title="All 2 branches missed.">        if (minPrice &gt; maxPrice) {</span>
-<span class="nc" id="L590">            System.out.print(&quot;The maximum price has to be more then the minumum price.&quot;);</span>
-<span class="nc" id="L591">            return false;</span>
+<span class="nc bnc" id="L592" title="All 2 branches missed.">        if (minPrice &gt; maxPrice) {</span>
+<span class="nc" id="L593">            System.out.print(&quot;The maximum price has to be more then the minumum price.&quot;);</span>
+<span class="nc" id="L594">            return false;</span>
         }
-<span class="nc bnc" id="L593" title="All 2 branches missed.">        if (productConn.getProduct(productID) == null) {</span>
-<span class="nc" id="L594">            System.out.print(&quot;That product doesn't excist&quot;);</span>
-<span class="nc" id="L595">            return false;</span>
+<span class="nc bnc" id="L596" title="All 2 branches missed.">        if (productConn.getProduct(productID) == null) {</span>
+<span class="nc" id="L597">            System.out.print(&quot;That product doesn't excist&quot;);</span>
+<span class="nc" id="L598">            return false;</span>
         }
-<span class="nc" id="L597">        return qPConn.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);</span>
+<span class="nc" id="L600">        return qPConn.insertQueuePurchase(Quantity, minPrice, maxPrice, productID, placerID);</span>
     }
 
     @Override
     public boolean placeBid(double amount, int userid, int auctionid, double price) throws RemoteException, NotEnoughMoneyException {
-<span class="nc" id="L602">        auctionConn = new AuctionConnection();</span>
-<span class="nc" id="L603">        return auctionConn.insertBid(price, userid, auctionid);</span>
+<span class="nc" id="L605">        auctionConn = new AuctionConnection();</span>
+<span class="nc bnc" id="L606" title="All 2 branches missed.">       if(auctionConn.insertBid(price, userid, auctionid)){</span>
+<span class="nc" id="L607">           return updateAuction(auctionid, price);</span>
+       } else{
+<span class="nc" id="L609">           return false;</span>
+       }
 
     }
 
@@ -616,96 +623,96 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     @Override
     public boolean placeBuy(int amount, String userName, int AuctionID, double price) throws RemoteException, NotEnoughMoneyException {
-<span class="nc" id="L619">        UserConnection DB = new UserConnection();</span>
-<span class="nc" id="L620">        int index = -1;</span>
-<span class="nc bnc" id="L621" title="All 2 branches missed.">        for (int i = 0; i &lt; auctions.size(); i++) {</span>
-<span class="nc bnc" id="L622" title="All 2 branches missed.">            if (auctions.get(i).getId() == AuctionID) {</span>
-<span class="nc" id="L623">                index = i;</span>
-<span class="nc" id="L624">                break;</span>
+<span class="nc" id="L626">        UserConnection DB = new UserConnection();</span>
+<span class="nc" id="L627">        int index = -1;</span>
+<span class="nc bnc" id="L628" title="All 2 branches missed.">        for (int i = 0; i &lt; auctions.size(); i++) {</span>
+<span class="nc bnc" id="L629" title="All 2 branches missed.">            if (auctions.get(i).getId() == AuctionID) {</span>
+<span class="nc" id="L630">                index = i;</span>
+<span class="nc" id="L631">                break;</span>
             }
         }
         User u;
-<span class="nc" id="L628">        u = DB.getUser(userName);</span>
-<span class="nc" id="L629">        System.out.println(userName);</span>
-<span class="nc" id="L630">        System.out.println(u.getUserID());</span>
-<span class="nc" id="L631">        System.out.println(price);</span>
-<span class="nc" id="L632">        System.out.println(AuctionID);</span>
-<span class="nc bnc" id="L633" title="All 2 branches missed.">        for (int i = 0; i &lt; amount; i++) {</span>
-<span class="nc" id="L634">            auctions.get(index).addBid(new Bid(AuctionID, u, price));</span>
+<span class="nc" id="L635">        u = DB.getUser(userName);</span>
+<span class="nc" id="L636">        System.out.println(userName);</span>
+<span class="nc" id="L637">        System.out.println(u.getUserID());</span>
+<span class="nc" id="L638">        System.out.println(price);</span>
+<span class="nc" id="L639">        System.out.println(AuctionID);</span>
+<span class="nc bnc" id="L640" title="All 2 branches missed.">        for (int i = 0; i &lt; amount; i++) {</span>
+<span class="nc" id="L641">            auctions.get(index).addBid(new Bid(AuctionID, u, price));</span>
         }
 
-<span class="nc" id="L637">        Auction a = auctions.get(index);</span>
-<span class="nc bnc" id="L638" title="All 2 branches missed.">        if (a.getCurrentPrice() &lt; 0) {</span>
+<span class="nc" id="L644">        Auction a = auctions.get(index);</span>
+<span class="nc bnc" id="L645" title="All 2 branches missed.">        if (a.getCurrentPrice() &lt; 0) {</span>
 
         }
 //        if(auctions.get(index).getCurrentPrice() )
-<span class="nc" id="L642">        auctions.get(index).setProductQuantity(amount);</span>
+<span class="nc" id="L649">        auctions.get(index).setProductQuantity(amount);</span>
         //return auctionConn.addBid(amount, AuctionID, userID, price);
-<span class="nc" id="L644">        return true;</span>
+<span class="nc" id="L651">        return true;</span>
     }
 
     @Override
     public boolean logout(String username) throws RemoteException {
-<span class="nc bnc" id="L649" title="All 2 branches missed.">        if (this.setIsAuthorized(username, false)) {</span>
-<span class="nc" id="L650">            System.out.println(&quot;User with username &quot; + username + &quot; is logged out&quot;);</span>
-<span class="nc" id="L651">            return true;</span>
+<span class="nc bnc" id="L656" title="All 2 branches missed.">        if (this.setIsAuthorized(username, false)) {</span>
+<span class="nc" id="L657">            System.out.println(&quot;User with username &quot; + username + &quot; is logged out&quot;);</span>
+<span class="nc" id="L658">            return true;</span>
         } else {
-<span class="nc" id="L653">            System.out.println(&quot;Failed to logout User with username &quot; + username);</span>
-<span class="nc" id="L654">            return false;</span>
+<span class="nc" id="L660">            System.out.println(&quot;Failed to logout User with username &quot; + username);</span>
+<span class="nc" id="L661">            return false;</span>
         }
     }
 
     @Override
     public boolean setIsAuthorized(String username, boolean isAuthorized) throws RemoteException {
-<span class="nc" id="L660">        boolean successful = this.userConn.setAuthorized(username, isAuthorized);</span>
-<span class="nc" id="L661">        return successful;</span>
+<span class="nc" id="L667">        boolean successful = this.userConn.setAuthorized(username, isAuthorized);</span>
+<span class="nc" id="L668">        return successful;</span>
     }
 
     @Override
     public void sendMail(int senderId, int receiverId, String content) throws RemoteException {
-<span class="nc" id="L666">        User sender = userConn.getUser(senderId);</span>
-<span class="nc" id="L667">        User receiver = userConn.getUser(receiverId);</span>
+<span class="nc" id="L673">        User sender = userConn.getUser(senderId);</span>
+<span class="nc" id="L674">        User receiver = userConn.getUser(receiverId);</span>
         try {
-<span class="nc" id="L669">            generateAndSendEmail(sender.getUsername(), receiver.getUserEmail(), content);</span>
-<span class="nc" id="L670">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L671">            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L672">        }</span>
-<span class="nc" id="L673">    }</span>
+<span class="nc" id="L676">            generateAndSendEmail(sender.getUsername(), receiver.getUserEmail(), content);</span>
+<span class="nc" id="L677">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L678">            Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L679">        }</span>
+<span class="nc" id="L680">    }</span>
 
     public static void generateAndSendEmail(String senderUsername, String receiverEmail, String message) throws AddressException, MessagingException {
 
         // Step1
-<span class="nc" id="L678">        mailServerProperties = System.getProperties();</span>
-<span class="nc" id="L679">        mailServerProperties.put(&quot;mail.smtp.port&quot;, &quot;587&quot;);</span>
-<span class="nc" id="L680">        mailServerProperties.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</span>
-<span class="nc" id="L681">        mailServerProperties.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L685">        mailServerProperties = System.getProperties();</span>
+<span class="nc" id="L686">        mailServerProperties.put(&quot;mail.smtp.port&quot;, &quot;587&quot;);</span>
+<span class="nc" id="L687">        mailServerProperties.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L688">        mailServerProperties.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
 
         // Step2
-<span class="nc" id="L684">        getMailSession = Session.getDefaultInstance(mailServerProperties, null);</span>
-<span class="nc" id="L685">        generateMailMessage = new MimeMessage(getMailSession);</span>
-<span class="nc" id="L686">        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));</span>
-<span class="nc" id="L687">        generateMailMessage.setSubject(&quot;Message from GrandExchange user: &quot; + senderUsername);</span>
-<span class="nc" id="L688">        generateMailMessage.setContent(message, &quot;text/html&quot;);</span>
+<span class="nc" id="L691">        getMailSession = Session.getDefaultInstance(mailServerProperties, null);</span>
+<span class="nc" id="L692">        generateMailMessage = new MimeMessage(getMailSession);</span>
+<span class="nc" id="L693">        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));</span>
+<span class="nc" id="L694">        generateMailMessage.setSubject(&quot;Message from GrandExchange user: &quot; + senderUsername);</span>
+<span class="nc" id="L695">        generateMailMessage.setContent(message, &quot;text/html&quot;);</span>
 
         // Step3
-<span class="nc" id="L691">        Transport transport = getMailSession.getTransport(&quot;smtp&quot;);</span>
+<span class="nc" id="L698">        Transport transport = getMailSession.getTransport(&quot;smtp&quot;);</span>
 
         // Enter your correct gmail UserID and Password
         // if you have 2FA enabled then provide App Specific Password
-<span class="nc" id="L695">        transport.connect(&quot;smtp.gmail.com&quot;, &quot;grandexchangemail@gmail.com&quot;, &quot;Wachtwoord123&quot;);</span>
-<span class="nc" id="L696">        transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());</span>
-<span class="nc" id="L697">        transport.close();</span>
-<span class="nc" id="L698">    }</span>
+<span class="nc" id="L702">        transport.connect(&quot;smtp.gmail.com&quot;, &quot;grandexchangemail@gmail.com&quot;, &quot;Wachtwoord123&quot;);</span>
+<span class="nc" id="L703">        transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());</span>
+<span class="nc" id="L704">        transport.close();</span>
+<span class="nc" id="L705">    }</span>
 
-<span class="nc" id="L700">    int id = 10;</span>
+<span class="nc" id="L707">    int id = 10;</span>
 
     @Override
     public boolean addAuction(int userID, int productID, double startingprice, double instabuyPrice, int instabuyable, int quantity, int iets, int iets2, String auctionType, int iets3, String imageUrl, String description) throws RemoteException {
 
-<span class="nc bnc" id="L705" title="All 4 branches missed.">        if (instabuyable == 1 &amp;&amp; startingprice &gt; instabuyPrice) {</span>
+<span class="nc bnc" id="L712" title="All 4 branches missed.">        if (instabuyable == 1 &amp;&amp; startingprice &gt; instabuyPrice) {</span>
 
-<span class="nc" id="L707">            System.out.println(&quot;startingprice mag niet lager zijn dan instabuy&quot;);</span>
-<span class="nc" id="L708">            throw new IllegalArgumentException();</span>
+<span class="nc" id="L714">            System.out.println(&quot;startingprice mag niet lager zijn dan instabuy&quot;);</span>
+<span class="nc" id="L715">            throw new IllegalArgumentException();</span>
         }
 //        int index = -1;
 //        for (int i = 0; i &lt; auctions.size(); i++) {
@@ -716,7 +723,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 //        }
 //        Product p = products.get(index);
 //        auctions.add(new Standard(id,new User(&quot;test2222&quot;,&quot;password&quot;,&quot;xtest2222&quot;,&quot;test@test.nl&quot;,true,500,&quot;https://fiom.nl/sites/default/files/styles/section_quote/public/nieuws_tiener.jpg?&quot;),p,startingprice,quantity, new Timestamp(2017,6,2,15,35,52,2),new Timestamp(2017,6,20,15,35,52,2),StatusEnum.New,description,imageUrl,3000));
-<span class="nc" id="L719">        return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);</span>
+<span class="nc" id="L726">        return addAuctionToDB(userID, productID, startingprice, instabuyPrice, instabuyable, quantity, iets, iets2, auctionType, iets3, imageUrl, description);</span>
+    }
+
+    @Override
+    public void updateAuction(Auction auction) throws RemoteException {
+<span class="nc" id="L731">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;); //To change body of generated methods, choose Tools | Templates.</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

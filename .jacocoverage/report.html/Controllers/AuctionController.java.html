@@ -204,224 +204,232 @@ import javax.swing.JOptionPane;
 <span class="nc" id="L204">        imagePane.setPrefWidth(85 * auction.getImageURLs().length);</span>
 <span class="nc" id="L205">        imagePane.setPrefHeight(70);</span>
 <span class="nc bnc" id="L206" title="All 2 branches missed.">        for (String URL : auction.getImageURLs()) {</span>
-<span class="nc" id="L207">            ImageView image = null;</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if(URL != null){</span>
+<span class="nc" id="L208">            ImageView image = null;</span>
             try {
-<span class="nc" id="L209">                image = new ImageView(new Image(URL));</span>
-<span class="nc" id="L210">            } catch (Exception ex) {</span>
-<span class="nc" id="L211">                image = new ImageView(new Image(this.getClass().getResource(&quot;/Classes/unavailable.jpg&quot;).toExternalForm()));</span>
-<span class="nc" id="L212">                        Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);</span>
-<span class="nc" id="L213">            }</span>
-<span class="nc" id="L214">            image.setFitWidth(80);</span>
-<span class="nc" id="L215">            image.setFitHeight(60);</span>
-<span class="nc" id="L216">            image.relocate(85 * i, 5);</span>
-<span class="nc" id="L217">            image.addEventHandler(MouseEvent.MOUSE_ENTERED,</span>
-<span class="nc" id="L218">                    new EventHandler&lt;MouseEvent&gt;() {</span>
+<span class="nc" id="L210">                image = new ImageView(new Image(URL));</span>
+<span class="nc" id="L211">            } catch (Exception ex) {</span>
+<span class="nc" id="L212">                image = new ImageView(new Image(this.getClass().getResource(&quot;/Classes/unavailable.jpg&quot;).toExternalForm()));</span>
+<span class="nc" id="L213">                       System.out.println(&quot;Geen image url toegevoegd.&quot;);</span>
+<span class="nc" id="L214">            }</span>
+<span class="nc" id="L215">            image.setFitWidth(80);</span>
+<span class="nc" id="L216">            image.setFitHeight(60);</span>
+<span class="nc" id="L217">            image.relocate(85 * i, 5);</span>
+<span class="nc" id="L218">            image.addEventHandler(MouseEvent.MOUSE_ENTERED,</span>
+<span class="nc" id="L219">                    new EventHandler&lt;MouseEvent&gt;() {</span>
                 @Override
                 public void handle(MouseEvent e) {
-<span class="nc" id="L221">                    ImageView i = (ImageView) e.getSource();</span>
-<span class="nc" id="L222">                    bigProductImage.setImage(i.getImage());</span>
-<span class="nc" id="L223">                }</span>
+<span class="nc" id="L222">                    ImageView i = (ImageView) e.getSource();</span>
+<span class="nc" id="L223">                    bigProductImage.setImage(i.getImage());</span>
+<span class="nc" id="L224">                }</span>
             });
-<span class="nc" id="L225">            Image bigImage = null;</span>
+<span class="nc" id="L226">            Image bigImage = null;</span>
             try {
-<span class="nc" id="L227">                bigImage = new Image(auction.getImageURLs()[0]);</span>
-<span class="nc" id="L228">            } catch (Exception ex) {</span>
-<span class="nc" id="L229">                bigImage = new Image(this.getClass().getResource(&quot;/Classes/unavailable.jpg&quot;).toExternalForm());</span>
-<span class="nc" id="L230">                                    Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L228">                bigImage = new Image(auction.getImageURLs()[0]);</span>
+<span class="nc" id="L229">            } catch (Exception ex) {</span>
+<span class="nc" id="L230">                System.out.println(ex.getMessage());</span>
 <span class="nc" id="L231">}</span>
 
 <span class="nc" id="L233">            bigProductImage.setImage(bigImage);</span>
 <span class="nc" id="L234">            imagePane.getChildren().add(image);</span>
 <span class="nc" id="L235">            i++;</span>
         }
-
-<span class="nc" id="L238">        sellerImage.setImage(new Image(auction.getSeller().getImageURL()));</span>
-<span class="nc" id="L239">        sellerName.setText(auction.getSeller().getUsername());</span>
-<span class="nc" id="L240">        imagesPane.setContent(imagePane);</span>
+        }
+        
+        try{
+<span class="nc" id="L240">        sellerImage.setImage(new Image(auction.getSeller().getImageURL()));</span>
+<span class="nc" id="L241">        }catch(Exception ex){</span>
+            
+<span class="nc" id="L243">        }</span>
+<span class="nc" id="L244">        sellerName.setText(auction.getSeller().getUsername());</span>
+<span class="nc" id="L245">        imagesPane.setContent(imagePane);</span>
 
         // Checks if auction has instabuy.
-<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (auction.isInstabuyable() == true) {</span>
-<span class="nc" id="L244">            countdownBuyBtn.setDisable(false);</span>
-<span class="nc" id="L245">            txtUnitstoBuy.setDisable(false);</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (auction.isInstabuyable() == true) {</span>
+<span class="nc" id="L249">            countdownBuyBtn.setDisable(false);</span>
+<span class="nc" id="L250">            txtUnitstoBuy.setDisable(false);</span>
 
         } else {
-<span class="nc" id="L248">            countdownBuyBtn.setDisable(true);</span>
-<span class="nc" id="L249">            txtUnitstoBuy.setDisable(true);</span>
+<span class="nc" id="L253">            countdownBuyBtn.setDisable(true);</span>
+<span class="nc" id="L254">            txtUnitstoBuy.setDisable(true);</span>
         }
 
         //Checks if auction is of instance Countdown
-<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (auction instanceof Countdown) {</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        if (auction instanceof Countdown) {</span>
             //setting auction
-<span class="nc" id="L255">            auctiontype.setText(&quot;Countdown Auction&quot;);</span>
-<span class="nc" id="L256">            Countdown countdownAuction = (Countdown) auction;</span>
-<span class="nc" id="L257">            countdownAuction.setPrice();</span>
+<span class="nc" id="L260">            auctiontype.setText(&quot;Countdown Auction&quot;);</span>
+<span class="nc" id="L261">            Countdown countdownAuction = (Countdown) auction;</span>
+<span class="nc" id="L262">            countdownAuction.setPrice();</span>
 
             //setting buttons etc:
-<span class="nc" id="L260">            txtPriceToBid.setVisible(false);</span>
-<span class="nc" id="L261">            txtPriceToBid.setText(countdownAuction.getCurrentPrice() + &quot;&quot;);</span>
-<span class="nc" id="L262">            BidBtn.setVisible(false);</span>
-<span class="nc" id="L263">            lblBid.setVisible(false);</span>
-<span class="nc" id="L264">            txtUnitstoBuyBid.setVisible(true);</span>
-<span class="nc" id="L265">            buyButton.setVisible(true);</span>
-<span class="nc" id="L266">            lblUnits.setVisible(true);</span>
+<span class="nc" id="L265">            txtPriceToBid.setVisible(false);</span>
+<span class="nc" id="L266">            txtPriceToBid.setText(countdownAuction.getCurrentPrice() + &quot;&quot;);</span>
+<span class="nc" id="L267">            BidBtn.setVisible(false);</span>
+<span class="nc" id="L268">            lblBid.setVisible(false);</span>
+<span class="nc" id="L269">            txtUnitstoBuyBid.setVisible(true);</span>
+<span class="nc" id="L270">            buyButton.setVisible(true);</span>
+<span class="nc" id="L271">            lblUnits.setVisible(true);</span>
 
-<span class="nc" id="L268">            countdownCurrentPrice.setText(&quot;€&quot; + countdownAuction.getCurrentPrice());</span>
-<span class="nc" id="L269">            InstabuyCurrentPrice.setText(&quot;€&quot; + countdownAuction.getInstabuyPrice());</span>
-<span class="nc" id="L270">            long now = System.currentTimeMillis();</span>
-<span class="nc" id="L271">            long then = countdownAuction.getCreationDate().getTime();</span>
-<span class="nc" id="L272">            long periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));</span>
-<span class="nc" id="L273">            long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">            if (timeline != null) {</span>
-<span class="nc" id="L275">                timeline.stop();</span>
+<span class="nc" id="L273">            countdownCurrentPrice.setText(&quot;€&quot; + countdownAuction.getCurrentPrice());</span>
+<span class="nc" id="L274">            InstabuyCurrentPrice.setText(&quot;€&quot; + countdownAuction.getInstabuyPrice());</span>
+<span class="nc" id="L275">            long now = System.currentTimeMillis();</span>
+<span class="nc" id="L276">            long then = countdownAuction.getCreationDate().getTime();</span>
+<span class="nc" id="L277">            long periods_passed = 0;</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            if(countdownAuction.getPriceLoweringDelay() != 0){</span>
+<span class="nc" id="L279">                periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));</span>
             }
-<span class="nc" id="L277">            timeline = null;</span>
-<span class="nc" id="L278">            timeline = new Timeline();</span>
-<span class="nc" id="L279">            timeline.setCycleCount(Timeline.INDEFINITE);</span>
-<span class="nc" id="L280">            long duration = (next_period_begin - System.currentTimeMillis()) / 1000;</span>
-<span class="nc" id="L281">            timeSeconds = (int) duration;</span>
-<span class="nc" id="L282">            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {</span>
+<span class="nc" id="L281">            long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">            if (timeline != null) {</span>
+<span class="nc" id="L283">                timeline.stop();</span>
+            }
+<span class="nc" id="L285">            timeline = null;</span>
+<span class="nc" id="L286">            timeline = new Timeline();</span>
+<span class="nc" id="L287">            timeline.setCycleCount(Timeline.INDEFINITE);</span>
+<span class="nc" id="L288">            long duration = (next_period_begin - System.currentTimeMillis()) / 1000;</span>
+<span class="nc" id="L289">            timeSeconds = (int) duration;</span>
+<span class="nc" id="L290">            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {</span>
 
                 @Override
                 public void handle(Event event) {
-<span class="nc" id="L286">                    timeSeconds--;</span>
-<span class="nc" id="L287">                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0);</span>
-<span class="nc" id="L288">                    int secondsToGo = timeSeconds - (minutesToGo * 60);</span>
-<span class="nc" id="L289">                    String minutes = Integer.toString(minutesToGo);</span>
-<span class="nc" id="L290">                    String seconds = Integer.toString(secondsToGo);</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">                    if (minutesToGo &lt; 10) {</span>
-<span class="nc" id="L292">                        minutes = &quot;0&quot; + minutes;</span>
+<span class="nc" id="L294">                    timeSeconds--;</span>
+<span class="nc" id="L295">                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0);</span>
+<span class="nc" id="L296">                    int secondsToGo = timeSeconds - (minutesToGo * 60);</span>
+<span class="nc" id="L297">                    String minutes = Integer.toString(minutesToGo);</span>
+<span class="nc" id="L298">                    String seconds = Integer.toString(secondsToGo);</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">                    if (minutesToGo &lt; 10) {</span>
+<span class="nc" id="L300">                        minutes = &quot;0&quot; + minutes;</span>
                     }
-<span class="nc bnc" id="L294" title="All 2 branches missed.">                    if (secondsToGo &lt; 10) {</span>
-<span class="nc" id="L295">                        seconds = &quot;0&quot; + seconds;</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">                    if (secondsToGo &lt; 10) {</span>
+<span class="nc" id="L303">                        seconds = &quot;0&quot; + seconds;</span>
                     }
-<span class="nc" id="L297">                    CreateDate.setText(minutes + &quot;:&quot; + seconds);</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">                    if (minutesToGo &lt;= 0) {</span>
-<span class="nc" id="L299">                        minutesBar.setProgress(-1);</span>
+<span class="nc" id="L305">                    CreateDate.setText(minutes + &quot;:&quot; + seconds);</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">                    if (minutesToGo &lt;= 0) {</span>
+<span class="nc" id="L307">                        minutesBar.setProgress(-1);</span>
                     } else {
-<span class="nc" id="L301">                        minutesBar.setProgress(timeSeconds / (countdownAuction.getPriceLoweringDelay() * 60));</span>
+<span class="nc" id="L309">                        minutesBar.setProgress(timeSeconds / (countdownAuction.getPriceLoweringDelay() * 60));</span>
                     }
-<span class="nc bnc" id="L303" title="All 2 branches missed.">                    if (timeSeconds &lt;= 0) {</span>
-<span class="nc" id="L304">                        timeline.stop();</span>
-<span class="nc" id="L305">                        update();</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">                    if (timeSeconds &lt;= 0) {</span>
+<span class="nc" id="L312">                        timeline.stop();</span>
+<span class="nc" id="L313">                        update();</span>
                     }
-<span class="nc" id="L307">                }</span>
+<span class="nc" id="L315">                }</span>
             }));
-<span class="nc" id="L309">            timeline.playFromStart();</span>
+<span class="nc" id="L317">            timeline.playFromStart();</span>
 
-<span class="nc bnc" id="L311" title="All 2 branches missed.">            if (auction.getProductQuantity()</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">            if (auction.getProductQuantity()</span>
                     &gt; 1) {
-<span class="nc" id="L313">                countdownAvailableUnits.setText(&quot;There are &quot; + auction.getProductQuantity() + &quot; units available&quot;);</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
+<span class="nc" id="L321">                countdownAvailableUnits.setText(&quot;There are &quot; + auction.getProductQuantity() + &quot; units available&quot;);</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
                     == 1) {
-<span class="nc" id="L316">                countdownAvailableUnits.setText(&quot;There is just 1 item left&quot;);</span>
-<span class="nc bnc" id="L317" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
+<span class="nc" id="L324">                countdownAvailableUnits.setText(&quot;There is just 1 item left&quot;);</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
                     == 0) {
-<span class="nc" id="L319">                countdownAvailableUnits.setText(&quot;There are no items left, you missed it&quot;);</span>
+<span class="nc" id="L327">                countdownAvailableUnits.setText(&quot;There are no items left, you missed it&quot;);</span>
             }
 
-<span class="nc" id="L322">            setCountdownBuys(auction);</span>
+<span class="nc" id="L330">            setCountdownBuys(auction);</span>
 
-<span class="nc bnc" id="L324" title="All 2 branches missed.">        } else if (auction instanceof Standard) {</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">        } else if (auction instanceof Standard) {</span>
             //setting correct buttons:           
-<span class="nc" id="L326">            txtPriceToBid.setVisible(true);</span>
-<span class="nc" id="L327">            BidBtn.setVisible(true);</span>
-<span class="nc" id="L328">            lblBid.setVisible(true);</span>
-<span class="nc" id="L329">            txtUnitstoBuyBid.setVisible(false);</span>
-<span class="nc" id="L330">            buyButton.setVisible(false);</span>
-<span class="nc" id="L331">            lblUnits.setVisible(false);</span>
+<span class="nc" id="L334">            txtPriceToBid.setVisible(true);</span>
+<span class="nc" id="L335">            BidBtn.setVisible(true);</span>
+<span class="nc" id="L336">            lblBid.setVisible(true);</span>
+<span class="nc" id="L337">            txtUnitstoBuyBid.setVisible(false);</span>
+<span class="nc" id="L338">            buyButton.setVisible(false);</span>
+<span class="nc" id="L339">            lblUnits.setVisible(false);</span>
 
-<span class="nc" id="L333">            this.type = &quot;standard&quot;;</span>
-<span class="nc" id="L334">            this.minutesBar.setVisible(false);</span>
-<span class="nc" id="L335">            auctiontype.setText(&quot;Standard Auction&quot;);</span>
-<span class="nc" id="L336">            standardAuction = (Standard) auction;</span>
-<span class="nc" id="L337">            countdownCurrentPrice.setText(&quot;€&quot; + standardAuction.getCurrentPrice());</span>
-<span class="nc" id="L338">            InstabuyCurrentPrice.setText(&quot;€&quot; + standardAuction.getInstabuyPrice());</span>
+<span class="nc" id="L341">            this.type = &quot;standard&quot;;</span>
+<span class="nc" id="L342">            this.minutesBar.setVisible(false);</span>
+<span class="nc" id="L343">            auctiontype.setText(&quot;Standard Auction&quot;);</span>
+<span class="nc" id="L344">            standardAuction = (Standard) auction;</span>
+<span class="nc" id="L345">            countdownCurrentPrice.setText(&quot;€&quot; + standardAuction.getCurrentPrice());</span>
+<span class="nc" id="L346">            InstabuyCurrentPrice.setText(&quot;€&quot; + standardAuction.getInstabuyPrice());</span>
 
-<span class="nc" id="L340">            Timestamp newDate = standardAuction.getCreationDate();</span>
-<span class="nc" id="L341">            CreateDate.setText(newDate.getMonth() + &quot;/&quot; + newDate.getDay() + &quot;  &quot; + newDate.getHours() + &quot;:&quot; + newDate.getMinutes() + &quot;:&quot; + newDate.getSeconds());</span>
+<span class="nc" id="L348">            Timestamp newDate = standardAuction.getCreationDate();</span>
+<span class="nc" id="L349">            CreateDate.setText(newDate.getMonth() + &quot;/&quot; + newDate.getDay() + &quot;  &quot; + newDate.getHours() + &quot;:&quot; + newDate.getMinutes() + &quot;:&quot; + newDate.getSeconds());</span>
 
-<span class="nc bnc" id="L343" title="All 2 branches missed.">            if (auction.getProductQuantity()</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">            if (auction.getProductQuantity()</span>
                     &gt;= 1) {
-<span class="nc" id="L345">                countdownAvailableUnits.setText(&quot;You're Buying &quot; + auction.getProductQuantity() + &quot; units for this price!&quot;);</span>
+<span class="nc" id="L353">                countdownAvailableUnits.setText(&quot;You're Buying &quot; + auction.getProductQuantity() + &quot; units for this price!&quot;);</span>
             }
 
-<span class="nc" id="L348">            setCountdownBuys(auction);</span>
-<span class="nc" id="L349">            long now = System.currentTimeMillis();</span>
-<span class="nc" id="L350">            long then = standardAuction.getEndDate().getTime();</span>
-<span class="nc" id="L351">            timeSeconds = (int) ((now - then) / 1000);</span>
-<span class="nc bnc" id="L352" title="All 2 branches missed.">            if (timeline != null) {</span>
-<span class="nc" id="L353">                timeline.stop();</span>
+<span class="nc" id="L356">            setCountdownBuys(auction);</span>
+<span class="nc" id="L357">            long now = System.currentTimeMillis();</span>
+<span class="nc" id="L358">            long then = standardAuction.getEndDate().getTime();</span>
+<span class="nc" id="L359">            timeSeconds = (int) ((now - then) / 1000);</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">            if (timeline != null) {</span>
+<span class="nc" id="L361">                timeline.stop();</span>
             }
-<span class="nc" id="L355">            timeline = null;</span>
-<span class="nc" id="L356">            timeline = new Timeline();</span>
-<span class="nc" id="L357">            timeline.setCycleCount(Timeline.INDEFINITE);</span>
-<span class="nc" id="L358">            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {</span>
+<span class="nc" id="L363">            timeline = null;</span>
+<span class="nc" id="L364">            timeline = new Timeline();</span>
+<span class="nc" id="L365">            timeline.setCycleCount(Timeline.INDEFINITE);</span>
+<span class="nc" id="L366">            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {</span>
 
                 @Override
                 public void handle(Event event) {
-<span class="nc" id="L362">                    timeSeconds--;</span>
-<span class="nc" id="L363">                    int timeDays = timeSeconds;</span>
-<span class="nc" id="L364">                    int daysToGo = (int) Math.floor(timeDays / 60.0 / 60 / 24.0);</span>
-<span class="nc" id="L365">                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60.0) - daysToGo * 24;</span>
-<span class="nc" id="L366">                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0)-(hoursToGo*60)-(daysToGo*24*60);</span>
-<span class="nc" id="L367">                    int secondsToGo = timeSeconds -(hoursToGo*60*60)-(daysToGo*24*60*60)-(minutesToGo*60);</span>
-<span class="nc" id="L368">                    String hours = Integer.toString(hoursToGo);</span>
-<span class="nc" id="L369">                    String minutes = Integer.toString(minutesToGo);</span>
-<span class="nc" id="L370">                    String seconds = Integer.toString(secondsToGo);</span>
-<span class="nc bnc" id="L371" title="All 2 branches missed.">                    if (hoursToGo &lt; 10) {</span>
-<span class="nc" id="L372">                        hours = &quot;0&quot; + hours;</span>
+<span class="nc" id="L370">                    timeSeconds--;</span>
+<span class="nc" id="L371">                    int timeDays = timeSeconds;</span>
+<span class="nc" id="L372">                    int daysToGo = (int) Math.floor(timeDays / 60.0 / 60 / 24.0);</span>
+<span class="nc" id="L373">                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60.0) - daysToGo * 24;</span>
+<span class="nc" id="L374">                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0)-(hoursToGo*60)-(daysToGo*24*60);</span>
+<span class="nc" id="L375">                    int secondsToGo = timeSeconds -(hoursToGo*60*60)-(daysToGo*24*60*60)-(minutesToGo*60);</span>
+<span class="nc" id="L376">                    String hours = Integer.toString(hoursToGo);</span>
+<span class="nc" id="L377">                    String minutes = Integer.toString(minutesToGo);</span>
+<span class="nc" id="L378">                    String seconds = Integer.toString(secondsToGo);</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">                    if (hoursToGo &lt; 10) {</span>
+<span class="nc" id="L380">                        hours = &quot;0&quot; + hours;</span>
                     }
-<span class="nc bnc" id="L374" title="All 2 branches missed.">                    if (minutesToGo &lt; 10) {</span>
-<span class="nc" id="L375">                        minutes = &quot;0&quot; + minutes;</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">                    if (minutesToGo &lt; 10) {</span>
+<span class="nc" id="L383">                        minutes = &quot;0&quot; + minutes;</span>
                     }
-<span class="nc bnc" id="L377" title="All 2 branches missed.">                    if (secondsToGo &lt; 10) {</span>
-<span class="nc" id="L378">                        seconds = &quot;0&quot; + seconds;</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">                    if (secondsToGo &lt; 10) {</span>
+<span class="nc" id="L386">                        seconds = &quot;0&quot; + seconds;</span>
                     }
-<span class="nc" id="L380">                    CreateDate.setText(daysToGo + &quot;Days,  &quot; + hours + &quot;:&quot; + minutes + &quot;:&quot; + seconds);</span>
-<span class="nc bnc" id="L381" title="All 2 branches missed.">                    if (timeSeconds &lt;= 0) {</span>
-<span class="nc" id="L382">                        timeline.stop();</span>
-<span class="nc" id="L383">                        update();</span>
+<span class="nc" id="L388">                    CreateDate.setText(daysToGo + &quot;Days,  &quot; + hours + &quot;:&quot; + minutes + &quot;:&quot; + seconds);</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">                    if (timeSeconds &lt;= 0) {</span>
+<span class="nc" id="L390">                        timeline.stop();</span>
+<span class="nc" id="L391">                        update();</span>
                     }
-<span class="nc" id="L385">                }</span>
+<span class="nc" id="L393">                }</span>
             }));
-<span class="nc" id="L387">            timeline.playFromStart();</span>
+<span class="nc" id="L395">            timeline.playFromStart();</span>
 
         }
 
-<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (auction instanceof Direct) {</span>
-<span class="nc" id="L392">            this.type = &quot;direct&quot;;</span>
-<span class="nc" id="L393">            auctiontype.setText(&quot;Direct Auction&quot;);</span>
-<span class="nc" id="L394">            directAuction = (Direct) auction;</span>
-<span class="nc" id="L395">            countdownCurrentPrice.setText(&quot;€&quot; + directAuction.getCurrentPrice());</span>
-<span class="nc" id="L396">            InstabuyCurrentPrice.setText(&quot;€&quot; + directAuction.getInstabuyPrice());</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">        if (auction instanceof Direct) {</span>
+<span class="nc" id="L400">            this.type = &quot;direct&quot;;</span>
+<span class="nc" id="L401">            auctiontype.setText(&quot;Direct Auction&quot;);</span>
+<span class="nc" id="L402">            directAuction = (Direct) auction;</span>
+<span class="nc" id="L403">            countdownCurrentPrice.setText(&quot;€&quot; + directAuction.getCurrentPrice());</span>
+<span class="nc" id="L404">            InstabuyCurrentPrice.setText(&quot;€&quot; + directAuction.getInstabuyPrice());</span>
 
-<span class="nc" id="L398">            Timestamp newDate = directAuction.getCreationDate();</span>
-<span class="nc" id="L399">            CreateDate.setText(newDate.getMonth() + &quot;/&quot; + newDate.getDay() + &quot;  &quot; + newDate.getHours() + &quot;:&quot; + newDate.getMinutes() + &quot;:&quot; + newDate.getSeconds());</span>
+<span class="nc" id="L406">            Timestamp newDate = directAuction.getCreationDate();</span>
+<span class="nc" id="L407">            CreateDate.setText(newDate.getMonth() + &quot;/&quot; + newDate.getDay() + &quot;  &quot; + newDate.getHours() + &quot;:&quot; + newDate.getMinutes() + &quot;:&quot; + newDate.getSeconds());</span>
 
-<span class="nc bnc" id="L401" title="All 2 branches missed.">            if (auction.getProductQuantity()</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">            if (auction.getProductQuantity()</span>
                     &gt; 1) {
-<span class="nc" id="L403">                countdownAvailableUnits.setText(&quot;There are &quot; + auction.getProductQuantity() + &quot; units available&quot;);</span>
-<span class="nc bnc" id="L404" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
+<span class="nc" id="L411">                countdownAvailableUnits.setText(&quot;There are &quot; + auction.getProductQuantity() + &quot; units available&quot;);</span>
+<span class="nc bnc" id="L412" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
                     == 1) {
-<span class="nc" id="L406">                countdownAvailableUnits.setText(&quot;There is just 1 item left&quot;);</span>
-<span class="nc bnc" id="L407" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
+<span class="nc" id="L414">                countdownAvailableUnits.setText(&quot;There is just 1 item left&quot;);</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">            } else if (auction.getProductQuantity()</span>
                     == 0) {
-<span class="nc" id="L409">                countdownAvailableUnits.setText(&quot;There are no items left, you missed it&quot;);</span>
+<span class="nc" id="L417">                countdownAvailableUnits.setText(&quot;There are no items left, you missed it&quot;);</span>
             }
 
-<span class="nc" id="L412">            setCountdownBuys(auction);</span>
+<span class="nc" id="L420">            setCountdownBuys(auction);</span>
 
         }
 
-<span class="nc" id="L416">        txtUnitstoBuy.textProperty().addListener(new ChangeListener&lt;String&gt;() {</span>
+<span class="nc" id="L424">        txtUnitstoBuy.textProperty().addListener(new ChangeListener&lt;String&gt;() {</span>
             @Override
             public void changed(ObservableValue&lt;? extends String&gt; observable, String oldValue, String newValue) {
-<span class="nc bnc" id="L419" title="All 2 branches missed.">                if (!newValue.matches(&quot;\\d*&quot;)) {</span>
-<span class="nc" id="L420">                    txtUnitstoBuy.setText(newValue.replaceAll(&quot;[^\\d]&quot;, &quot;&quot;));</span>
+<span class="nc bnc" id="L427" title="All 2 branches missed.">                if (!newValue.matches(&quot;\\d*&quot;)) {</span>
+<span class="nc" id="L428">                    txtUnitstoBuy.setText(newValue.replaceAll(&quot;[^\\d]&quot;, &quot;&quot;));</span>
                 }
-<span class="nc" id="L422">            }</span>
+<span class="nc" id="L430">            }</span>
         });
-<span class="nc" id="L424">    }</span>
+<span class="nc" id="L432">    }</span>
 
     /**
      * Returns textual status
@@ -430,170 +438,170 @@ import javax.swing.JOptionPane;
      * @return
      */
     public String setStatus(StatusEnum status) {
-<span class="nc bnc" id="L433" title="All 7 branches missed.">        switch (status) {</span>
+<span class="nc bnc" id="L441" title="All 7 branches missed.">        switch (status) {</span>
             case New:
-<span class="nc" id="L435">                return &quot;New&quot;;</span>
+<span class="nc" id="L443">                return &quot;New&quot;;</span>
             case GoodAsNew:
-<span class="nc" id="L437">                return &quot;As good as new&quot;;</span>
+<span class="nc" id="L445">                return &quot;As good as new&quot;;</span>
             case Refurbished:
-<span class="nc" id="L439">                return &quot;Refurbished&quot;;</span>
+<span class="nc" id="L447">                return &quot;Refurbished&quot;;</span>
             case Used_Good:
-<span class="nc" id="L441">                return &quot;little damage(small dents)&quot;;</span>
+<span class="nc" id="L449">                return &quot;little damage(small dents)&quot;;</span>
             case Used_Bad:
-<span class="nc" id="L443">                return &quot;annoying damage(Cracks)&quot;;</span>
+<span class="nc" id="L451">                return &quot;annoying damage(Cracks)&quot;;</span>
             case Broken:
-<span class="nc" id="L445">                return &quot;not fully functional or Broken&quot;;</span>
+<span class="nc" id="L453">                return &quot;not fully functional or Broken&quot;;</span>
             default:
-<span class="nc" id="L447">                return &quot;&quot;;</span>
+<span class="nc" id="L455">                return &quot;&quot;;</span>
         }
     }
 
     public void buyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-<span class="nc" id="L452">        RM.getPlaceBidInterface();</span>
-<span class="nc" id="L453">        this.bid = RM.getBid();</span>
-<span class="nc" id="L454">        System.out.println(&quot;Saldo = &quot; + RM.getUser().getSaldo());</span>
-<span class="nc" id="L455">        RM.getUser().getSaldo();</span>
+<span class="nc" id="L460">        RM.getPlaceBidInterface();</span>
+<span class="nc" id="L461">        this.bid = RM.getBid();</span>
+<span class="nc" id="L462">        System.out.println(&quot;Saldo = &quot; + RM.getUser().getSaldo());</span>
+<span class="nc" id="L463">        RM.getUser().getSaldo();</span>
         
-<span class="nc" id="L457">        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();</span>
-<span class="nc bnc" id="L458" title="All 2 branches missed.">        if(RM.getUser().getSaldo() &lt; totalprice){</span>
-<span class="nc" id="L459">            JOptionPane.showMessageDialog(null, &quot;You don't have enough money on your account to perform this action.&quot;);</span>
+<span class="nc" id="L465">        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        if(RM.getUser().getSaldo() &lt; totalprice){</span>
+<span class="nc" id="L467">            JOptionPane.showMessageDialog(null, &quot;You don't have enough money on your account to perform this action.&quot;);</span>
         }else{
-<span class="nc bnc" id="L461" title="All 4 branches missed.">        if (Integer.parseInt(txtUnitstoBuyBid.getText()) &gt;= 1 &amp;&amp; Integer.parseInt(txtUnitstoBuyBid.getText()) &lt;= auction.getProductQuantity()) {</span>
-<span class="nc" id="L462">            int reply = JOptionPane.showConfirmDialog(null, &quot;Are you sure you want to Buy &quot; + txtUnitstoBuyBid.getText() + &quot; items with a total price of: €&quot; + totalprice + &quot; ?&quot;, &quot;Are You Sure?&quot;, JOptionPane.YES_NO_OPTION);</span>
-<span class="nc bnc" id="L463" title="All 2 branches missed.">            if (reply == JOptionPane.YES_OPTION) {</span>
-<span class="nc" id="L464">                int units = Integer.parseInt(txtUnitstoBuyBid.getText());</span>
-<span class="nc" id="L465">                bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());</span>
-<span class="nc" id="L466">                update();</span>
-<span class="nc" id="L467">                JOptionPane.showMessageDialog(null, &quot;Your order has been placed&quot;);</span>
-<span class="nc" id="L468">            } else {</span>
-<span class="nc" id="L469">                JOptionPane.showMessageDialog(null, &quot;Canceled&quot;);</span>
+<span class="nc bnc" id="L469" title="All 4 branches missed.">        if (Integer.parseInt(txtUnitstoBuyBid.getText()) &gt;= 1 &amp;&amp; Integer.parseInt(txtUnitstoBuyBid.getText()) &lt;= auction.getProductQuantity()) {</span>
+<span class="nc" id="L470">            int reply = JOptionPane.showConfirmDialog(null, &quot;Are you sure you want to Buy &quot; + txtUnitstoBuyBid.getText() + &quot; items with a total price of: €&quot; + totalprice + &quot; ?&quot;, &quot;Are You Sure?&quot;, JOptionPane.YES_NO_OPTION);</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">            if (reply == JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L472">                int units = Integer.parseInt(txtUnitstoBuyBid.getText());</span>
+<span class="nc" id="L473">                bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());</span>
+<span class="nc" id="L474">                update();</span>
+<span class="nc" id="L475">                JOptionPane.showMessageDialog(null, &quot;Your order has been placed&quot;);</span>
+<span class="nc" id="L476">            } else {</span>
+<span class="nc" id="L477">                JOptionPane.showMessageDialog(null, &quot;Canceled&quot;);</span>
             }
-<span class="nc bnc" id="L471" title="All 2 branches missed.">        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) &lt; 1) {</span>
-<span class="nc" id="L472">            JOptionPane.showMessageDialog(null, &quot;You can't buy less than 1 object&quot;);</span>
-<span class="nc bnc" id="L473" title="All 2 branches missed.">        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) &gt; auction.getProductQuantity()) {</span>
-<span class="nc" id="L474">            JOptionPane.showMessageDialog(null, &quot;You can't buy more objects than there are available&quot;);</span>
+<span class="nc bnc" id="L479" title="All 2 branches missed.">        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) &lt; 1) {</span>
+<span class="nc" id="L480">            JOptionPane.showMessageDialog(null, &quot;You can't buy less than 1 object&quot;);</span>
+<span class="nc bnc" id="L481" title="All 2 branches missed.">        } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) &gt; auction.getProductQuantity()) {</span>
+<span class="nc" id="L482">            JOptionPane.showMessageDialog(null, &quot;You can't buy more objects than there are available&quot;);</span>
         } else {
-<span class="nc" id="L476">            JOptionPane.showMessageDialog(null, &quot;Something went wrong&quot;);</span>
+<span class="nc" id="L484">            JOptionPane.showMessageDialog(null, &quot;Something went wrong&quot;);</span>
         }}
-<span class="nc" id="L478">        checkAuctionStatus();</span>
-<span class="nc" id="L479">    }</span>
+<span class="nc" id="L486">        checkAuctionStatus();</span>
+<span class="nc" id="L487">    }</span>
 
     public void bidButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-<span class="nc" id="L482">        RM.getPlaceBidInterface();</span>
-<span class="nc" id="L483">        this.bid = RM.getBid();</span>
-<span class="nc" id="L484">        double price = Double.parseDouble(txtPriceToBid.getText());</span>
-<span class="nc bnc" id="L485" title="All 2 branches missed.">        if (auction.getCurrentPrice() &lt; price ) {</span>
-<span class="nc" id="L486">            int reply = JOptionPane.showConfirmDialog(null, &quot;Are you sure you want to Bid &quot; + txtPriceToBid.getText(), &quot;Are You Sure?&quot;, JOptionPane.YES_NO_OPTION);</span>
-<span class="nc bnc" id="L487" title="All 2 branches missed.">            if (reply == JOptionPane.YES_OPTION) {</span>
-<span class="nc bnc" id="L488" title="All 2 branches missed.">                if(bid.placeBid(1, RM.getUser().getUserID(), auction.getId(), price)){</span>
-<span class="nc" id="L489">                    JOptionPane.showMessageDialog(null, &quot;Your bid has been placed.&quot;);</span>
+<span class="nc" id="L490">        RM.getPlaceBidInterface();</span>
+<span class="nc" id="L491">        this.bid = RM.getBid();</span>
+<span class="nc" id="L492">        double price = Double.parseDouble(txtPriceToBid.getText());</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">        if (auction.getCurrentPrice() &lt; price ) {</span>
+<span class="nc" id="L494">            int reply = JOptionPane.showConfirmDialog(null, &quot;Are you sure you want to Bid &quot; + txtPriceToBid.getText(), &quot;Are You Sure?&quot;, JOptionPane.YES_NO_OPTION);</span>
+<span class="nc bnc" id="L495" title="All 2 branches missed.">            if (reply == JOptionPane.YES_OPTION) {</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">                if(bid.placeBid(1, RM.getUser().getUserID(), auction.getId(), price)){</span>
+<span class="nc" id="L497">                    JOptionPane.showMessageDialog(null, &quot;Your bid has been placed.&quot;);</span>
                 }else{
-<span class="nc" id="L491">                    JOptionPane.showMessageDialog(null, &quot;Something went wrong while placing your bid.&quot;);</span>
+<span class="nc" id="L499">                    JOptionPane.showMessageDialog(null, &quot;Something went wrong while placing your bid.&quot;);</span>
                 }
-<span class="nc" id="L493">                update();</span>
+<span class="nc" id="L501">                update();</span>
             } else {
-<span class="nc" id="L495">                JOptionPane.showMessageDialog(null, &quot;Canceled&quot;);</span>
+<span class="nc" id="L503">                JOptionPane.showMessageDialog(null, &quot;Canceled&quot;);</span>
             }
-<span class="nc bnc" id="L497" title="All 2 branches missed.">        } else if (auction.getCurrentPrice() &gt; Double.parseDouble(txtPriceToBid.getText())) {</span>
-<span class="nc" id="L498">            JOptionPane.showMessageDialog(null, &quot;You can't bid less than current price&quot;);</span>
+<span class="nc bnc" id="L505" title="All 2 branches missed.">        } else if (auction.getCurrentPrice() &gt; Double.parseDouble(txtPriceToBid.getText())) {</span>
+<span class="nc" id="L506">            JOptionPane.showMessageDialog(null, &quot;You can't bid less than current price&quot;);</span>
         } else {
-<span class="nc" id="L500">            JOptionPane.showMessageDialog(null, &quot;Something went wrong&quot;);</span>
+<span class="nc" id="L508">            JOptionPane.showMessageDialog(null, &quot;Something went wrong&quot;);</span>
         }
-<span class="nc" id="L502">        checkAuctionStatus();</span>
-<span class="nc" id="L503">    }</span>
+<span class="nc" id="L510">        checkAuctionStatus();</span>
+<span class="nc" id="L511">    }</span>
 
     public void instabuyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-<span class="nc" id="L506">        RM.getPlaceBidInterface();</span>
-<span class="nc" id="L507">        this.bid = RM.getBid();</span>
+<span class="nc" id="L514">        RM.getPlaceBidInterface();</span>
+<span class="nc" id="L515">        this.bid = RM.getBid();</span>
 
-<span class="nc bnc" id="L509" title="All 6 branches missed.">        if (Integer.parseInt(txtUnitstoBuy.getText()) &lt;= auction.getProductQuantity() &amp;&amp; Integer.parseInt(txtUnitstoBuy.getText()) &gt; 0 &amp;&amp; auction != null) {</span>
-<span class="nc" id="L510">            double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();</span>
+<span class="nc bnc" id="L517" title="All 6 branches missed.">        if (Integer.parseInt(txtUnitstoBuy.getText()) &lt;= auction.getProductQuantity() &amp;&amp; Integer.parseInt(txtUnitstoBuy.getText()) &gt; 0 &amp;&amp; auction != null) {</span>
+<span class="nc" id="L518">            double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();</span>
 
-<span class="nc" id="L512">            int reply = JOptionPane.showConfirmDialog(null, &quot;Are you sure you want to buy &quot; + txtUnitstoBuy.getText() + &quot;\nitems with the price of: €&quot; + auction.getInstabuyPrice() + &quot; a item \nand a total of: €&quot; + totalPrice, &quot;Are you sure?&quot;, JOptionPane.YES_NO_OPTION);</span>
-<span class="nc bnc" id="L513" title="All 2 branches missed.">            if (reply == JOptionPane.YES_OPTION) {</span>
-<span class="nc" id="L514">                int units = Integer.parseInt(txtUnitstoBuy.getText());</span>
-<span class="nc" id="L515">                bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());</span>
-<span class="nc" id="L516">                update();</span>
-<span class="nc" id="L517">            } else {</span>
-<span class="nc" id="L518">                JOptionPane.showMessageDialog(null, &quot;Canceled&quot;);</span>
+<span class="nc" id="L520">            int reply = JOptionPane.showConfirmDialog(null, &quot;Are you sure you want to buy &quot; + txtUnitstoBuy.getText() + &quot;\nitems with the price of: €&quot; + auction.getInstabuyPrice() + &quot; a item \nand a total of: €&quot; + totalPrice, &quot;Are you sure?&quot;, JOptionPane.YES_NO_OPTION);</span>
+<span class="nc bnc" id="L521" title="All 2 branches missed.">            if (reply == JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L522">                int units = Integer.parseInt(txtUnitstoBuy.getText());</span>
+<span class="nc" id="L523">                bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());</span>
+<span class="nc" id="L524">                update();</span>
+<span class="nc" id="L525">            } else {</span>
+<span class="nc" id="L526">                JOptionPane.showMessageDialog(null, &quot;Canceled&quot;);</span>
             }
-<span class="nc bnc" id="L520" title="All 2 branches missed.">        } else if (Integer.parseInt(txtUnitstoBuy.getText()) &lt;= 0) {</span>
-<span class="nc" id="L521">            JOptionPane.showMessageDialog(null, &quot;You can't buy less than 1 object&quot;);</span>
+<span class="nc bnc" id="L528" title="All 2 branches missed.">        } else if (Integer.parseInt(txtUnitstoBuy.getText()) &lt;= 0) {</span>
+<span class="nc" id="L529">            JOptionPane.showMessageDialog(null, &quot;You can't buy less than 1 object&quot;);</span>
         } else {
-<span class="nc" id="L523">            JOptionPane.showMessageDialog(null, &quot;You can't buy more objects than there are available&quot;);</span>
+<span class="nc" id="L531">            JOptionPane.showMessageDialog(null, &quot;You can't buy more objects than there are available&quot;);</span>
         }
-<span class="nc" id="L525">        checkAuctionStatus();</span>
-<span class="nc" id="L526">    }</span>
+<span class="nc" id="L533">        checkAuctionStatus();</span>
+<span class="nc" id="L534">    }</span>
 
     public void setCountdownBuys(Auction auction) {
-<span class="nc" id="L529">        Pane BuyPane = new Pane();</span>
-<span class="nc" id="L530">        BuyPane.setPrefWidth(371);</span>
-<span class="nc" id="L531">        BuyPane.setPrefHeight(75 * auction.getBids().size());</span>
-<span class="nc" id="L532">        int a = 0;</span>
-<span class="nc" id="L533">        ArrayList&lt;Bid&gt; bids = auction.getBids();</span>
-<span class="nc" id="L534">        Collections.reverse(bids);</span>
-<span class="nc bnc" id="L535" title="All 2 branches missed.">        for (Bid b : bids) {</span>
-<span class="nc" id="L536">            Pane p = new Pane();</span>
-<span class="nc" id="L537">            p.setPrefHeight(75);</span>
-<span class="nc" id="L538">            p.setPrefWidth(371);</span>
-<span class="nc" id="L539">            p.relocate(0, a * 75);</span>
-<span class="nc bnc" id="L540" title="All 2 branches missed.">            if ((a % 2) == 0) {</span>
-<span class="nc" id="L541">                p.setStyle(&quot;-fx-background-color: lightgrey &quot;);</span>
+<span class="nc" id="L537">        Pane BuyPane = new Pane();</span>
+<span class="nc" id="L538">        BuyPane.setPrefWidth(371);</span>
+<span class="nc" id="L539">        BuyPane.setPrefHeight(75 * auction.getBids().size());</span>
+<span class="nc" id="L540">        int a = 0;</span>
+<span class="nc" id="L541">        ArrayList&lt;Bid&gt; bids = auction.getBids();</span>
+<span class="nc" id="L542">        Collections.reverse(bids);</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">        for (Bid b : bids) {</span>
+<span class="nc" id="L544">            Pane p = new Pane();</span>
+<span class="nc" id="L545">            p.setPrefHeight(75);</span>
+<span class="nc" id="L546">            p.setPrefWidth(371);</span>
+<span class="nc" id="L547">            p.relocate(0, a * 75);</span>
+<span class="nc bnc" id="L548" title="All 2 branches missed.">            if ((a % 2) == 0) {</span>
+<span class="nc" id="L549">                p.setStyle(&quot;-fx-background-color: lightgrey &quot;);</span>
             }
-<span class="nc" id="L543">            Label name = new Label();</span>
-<span class="nc" id="L544">            name.setText(b.getPlacerUsername());</span>
-<span class="nc" id="L545">            name.setFont(new Font(&quot;Arial&quot;, 17));</span>
-<span class="nc" id="L546">            Label price = new Label();</span>
-<span class="nc bnc" id="L547" title="All 4 branches missed.">            if (auction instanceof Countdown || auction instanceof Direct) {</span>
-<span class="nc" id="L548">                price.setText(&quot;Bought at a price of: €&quot; + b.getAmount());</span>
+<span class="nc" id="L551">            Label name = new Label();</span>
+<span class="nc" id="L552">            name.setText(b.getPlacerUsername());</span>
+<span class="nc" id="L553">            name.setFont(new Font(&quot;Arial&quot;, 17));</span>
+<span class="nc" id="L554">            Label price = new Label();</span>
+<span class="nc bnc" id="L555" title="All 4 branches missed.">            if (auction instanceof Countdown || auction instanceof Direct) {</span>
+<span class="nc" id="L556">                price.setText(&quot;Bought at a price of: €&quot; + b.getAmount());</span>
             } else {
-<span class="nc" id="L550">                price.setText(&quot;Bidded: €&quot; + b.getAmount() + &quot; for this item&quot;);</span>
+<span class="nc" id="L558">                price.setText(&quot;Bidded: €&quot; + b.getAmount() + &quot; for this item&quot;);</span>
             }
-<span class="nc" id="L552">            price.setFont(new Font(&quot;Arial&quot;, 14));</span>
-<span class="nc" id="L553">            name.relocate(10, 15);</span>
-<span class="nc" id="L554">            price.relocate(10, 45);</span>
-<span class="nc" id="L555">            p.getChildren().addAll(price, name);</span>
-<span class="nc" id="L556">            BuyPane.getChildren().add(p);</span>
-<span class="nc" id="L557">            a++;</span>
-<span class="nc" id="L558">        }</span>
+<span class="nc" id="L560">            price.setFont(new Font(&quot;Arial&quot;, 14));</span>
+<span class="nc" id="L561">            name.relocate(10, 15);</span>
+<span class="nc" id="L562">            price.relocate(10, 45);</span>
+<span class="nc" id="L563">            p.getChildren().addAll(price, name);</span>
+<span class="nc" id="L564">            BuyPane.getChildren().add(p);</span>
+<span class="nc" id="L565">            a++;</span>
+<span class="nc" id="L566">        }</span>
 
-<span class="nc" id="L560">        recentPurchasesPane.setContent(BuyPane);</span>
-<span class="nc" id="L561">    }</span>
+<span class="nc" id="L568">        recentPurchasesPane.setContent(BuyPane);</span>
+<span class="nc" id="L569">    }</span>
 
     /**
      * if items in the auction are less then one, the auction closes
      */
     public void checkAuctionStatus() throws SQLException {
-<span class="nc bnc" id="L567" title="All 2 branches missed.">        if (auction instanceof Countdown) {</span>
-<span class="nc" id="L568">            Countdown countdown = (Countdown) auction;</span>
-<span class="nc bnc" id="L569" title="All 2 branches missed.">            if (countdown.getProductQuantity() &lt; 1) {</span>
-<span class="nc" id="L570">                GX.closeAuction();</span>
-<span class="nc" id="L571">                System.out.println(&quot;Verwijderd uit de databsase&quot;);</span>
-<span class="nc" id="L572">                closeButtonClick();</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">        if (auction instanceof Countdown) {</span>
+<span class="nc" id="L576">            Countdown countdown = (Countdown) auction;</span>
+<span class="nc bnc" id="L577" title="All 2 branches missed.">            if (countdown.getProductQuantity() &lt; 1) {</span>
+<span class="nc" id="L578">                GX.closeAuction();</span>
+<span class="nc" id="L579">                System.out.println(&quot;Verwijderd uit de databsase&quot;);</span>
+<span class="nc" id="L580">                closeButtonClick();</span>
             }
-<span class="nc bnc" id="L574" title="All 2 branches missed.">        } else if (auction instanceof Direct) {</span>
-<span class="nc" id="L575">            Direct direct = (Direct) auction;</span>
-<span class="nc bnc" id="L576" title="All 2 branches missed.">            if (direct.getProductQuantity() &lt; 1) {</span>
-<span class="nc" id="L577">                GX.closeAuction();</span>
-<span class="nc" id="L578">                System.out.println(&quot;Verwijderd uit de databsase&quot;);</span>
-<span class="nc" id="L579">                closeButtonClick();</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">        } else if (auction instanceof Direct) {</span>
+<span class="nc" id="L583">            Direct direct = (Direct) auction;</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">            if (direct.getProductQuantity() &lt; 1) {</span>
+<span class="nc" id="L585">                GX.closeAuction();</span>
+<span class="nc" id="L586">                System.out.println(&quot;Verwijderd uit de databsase&quot;);</span>
+<span class="nc" id="L587">                closeButtonClick();</span>
             }
-<span class="nc bnc" id="L581" title="All 2 branches missed.">        } else if (auction instanceof Standard) {</span>
-<span class="nc" id="L582">            Standard standard = (Standard) auction;</span>
-<span class="nc bnc" id="L583" title="All 2 branches missed.">            if (standard.getProductQuantity() &lt; 1) {</span>
-<span class="nc" id="L584">                GX.closeAuction();</span>
-<span class="nc" id="L585">                System.out.println(&quot;Verwijderd uit de databsase&quot;);</span>
-<span class="nc" id="L586">                closeButtonClick();</span>
+<span class="nc bnc" id="L589" title="All 2 branches missed.">        } else if (auction instanceof Standard) {</span>
+<span class="nc" id="L590">            Standard standard = (Standard) auction;</span>
+<span class="nc bnc" id="L591" title="All 2 branches missed.">            if (standard.getProductQuantity() &lt; 1) {</span>
+<span class="nc" id="L592">                GX.closeAuction();</span>
+<span class="nc" id="L593">                System.out.println(&quot;Verwijderd uit de databsase&quot;);</span>
+<span class="nc" id="L594">                closeButtonClick();</span>
             }
         }
 
-<span class="nc" id="L590">    }</span>
+<span class="nc" id="L598">    }</span>
 
     @FXML
     private void closeButtonClick() {
-<span class="nc" id="L594">        Stage stage = (Stage) closeButton.getScene().getWindow();</span>
-<span class="nc" id="L595">        stage.close();</span>
-<span class="nc" id="L596">    }</span>
+<span class="nc" id="L602">        Stage stage = (Stage) closeButton.getScene().getWindow();</span>
+<span class="nc" id="L603">        stage.close();</span>
+<span class="nc" id="L604">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>
