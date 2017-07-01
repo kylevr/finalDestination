@@ -150,7 +150,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         this.RM = RM;
         this.auction = auction;
         loggedInUser = RM.getUser();
-        update();
+        update(); //duurt lang
         Registry registry = LocateRegistry.getRegistry(RM.getIp(), 1099);
         try {
             auctionPublisher = (IRemotePublisherForListener) registry.lookup("auctionPublisher");
@@ -225,7 +225,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         int updateid = auction.getId();
         try {
             auction = RM.getAuction().getAuction(updateid);
-
+            System.out.print("abc");
         } catch (RemoteException ex) {
             Logger.getLogger(AuctionController.class
                     .getName()).log(Level.SEVERE, null, ex);

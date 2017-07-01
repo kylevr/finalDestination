@@ -84,9 +84,10 @@ public class MainController implements Initializable {
         System.out.println("User id = " + RM.getUser().getUserID());
         Pane allAuctions = new Pane();
         allAuctions.setPrefWidth(800);
-        allAuctions.setPrefHeight(150 * auctionInterface.getAuctions().size());
+        ArrayList<Auction> auctions = (ArrayList<Auction>)auctionInterface.getAuctions();
+        allAuctions.setPrefHeight(150 * auctions.size());
         int i = 0;
-        for (Auction a : auctionInterface.getAuctions()) {
+        for (Auction a : auctions) {
             try {
                 Pane Auction = new Pane();
                 Auction.setPrefWidth(800);
@@ -159,22 +160,22 @@ public class MainController implements Initializable {
     }
 
     public void showAuction(Auction a) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Auction.fxml"));
-        Scene newScene;
-        newScene = new Scene(loader.load());
-        AuctionController controller = loader.<AuctionController>getController();
-        controller.setUp(a, this.RM);
-        Stage inputStage = new Stage();
-        inputStage.getIcons().add(new Image("/Icon/scale.png"));
-        inputStage.setScene(newScene);
-        inputStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                System.out.println("Stage X Disabled");
-                we.consume();
-               JOptionPane.showMessageDialog(null, "Please use the close button located on the top left of the screen");
-            }
-        });
-        inputStage.showAndWait();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Auction.fxml"));
+            Scene newScene;
+            newScene = new Scene(loader.load());
+            AuctionController controller = loader.<AuctionController>getController();
+            controller.setUp(a, this.RM);
+            Stage inputStage = new Stage();
+            inputStage.getIcons().add(new Image("/Icon/scale.png"));
+            inputStage.setScene(newScene);
+            inputStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                public void handle(WindowEvent we) {
+                    System.out.println("Stage X Disabled");
+                    we.consume();
+                    JOptionPane.showMessageDialog(null, "Please use the close button located on the top left of the screen");
+                }
+            });
+            inputStage.showAndWait();
     }
 
     public void CategorySelected(Event E) {
