@@ -84,6 +84,8 @@ public class MainController implements Initializable {
 
     public void setUp(RegistryManager RM) throws RemoteException {
         this.RM = RM;
+        RM.getAuctionInterface();
+        auctionInterface = RM.getAuction();
         this.refreshAuctions();
         try {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
@@ -98,92 +100,84 @@ public class MainController implements Initializable {
 
     public void refreshAuctions() throws RemoteException {
         Task taskCalc = new Task<Pane>() {
-        private RegistryManager RM;
-        private IAuction auctionInterface;
-        private Collection<Auction> auctions;
+            @Override
+            public Pane call() throws RemoteException {
+                //get auctions
+                long start = System.currentTimeMillis();
+                Collection<Auction> auctions = auctionInterface.getAuctions();
+                long elapsedTime = System.currentTimeMillis() - start;
+                System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
 
-        @Override
-        public Pane call() throws RemoteException {
-            RM = new RegistryManager();
-            RM.getAuctionInterface();
-            auctionInterface = RM.getAuction();
-
-            //get auctions
-            long start = System.currentTimeMillis();
-            Collection<Auction> auctions = auctionInterface.getAuctions();
-            long elapsedTime = System.currentTimeMillis() - start;
-            System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
-
-            //draw auctions
-            start = System.currentTimeMillis();
-            Pane allAuctions = new Pane();
-            allAuctions.setPrefWidth(800);
-            allAuctions.setPrefHeight(150 * auctions.size());
-            int i = 0;
-            for (Auction a : auctions) {
-                try {
-                    Pane Auction = new Pane();
-                    Auction.setPrefWidth(800);
-                    Auction.setPrefHeight(150);
-                    Auction.relocate(0, 150 * i);
-                    if ((i % 2) == 0) {
-                        Auction.setStyle("-fx-background-color: lightgrey ");
-                    }
-                    Label productName = new Label();
-                    productName.setText(a.getProduct().getName());
-                    productName.setFont(new Font("Arial", 25));
-                    productName.relocate(150, 25);
-
-                    Label price = new Label();
-                    price.setText("€" + a.getCurrentPrice());
-                    price.setFont(new Font("Arial", 20));
-                    price.relocate(550, 120);
-
-                    Label seller = new Label();
-                    seller.setText(a.getSeller().getUsername());
-                    seller.setFont(new Font("Arial", 15));
-                    seller.relocate(550, 20);
-
-                    TextArea description = new TextArea();
-                    description.setPrefSize(200, 60);
-                    description.relocate(150, 65);
-                    description.setText(a.getDescription());
-                    description.wrapTextProperty().setValue(Boolean.TRUE);
-                    description.setEditable(false);
-
-                    //setting image of auction
-                    ImageView image;
+                //draw auctions
+                start = System.currentTimeMillis();
+                Pane allAuctions = new Pane();
+                allAuctions.setPrefWidth(800);
+                allAuctions.setPrefHeight(150 * auctions.size());
+                int i = 0;
+                for (Auction a : auctions) {
                     try {
-                        image = new ImageView(new Image(a.getImageURLs()[0]));
-                    } catch (Exception ex) {
-                        image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                    }
-                    image.setFitWidth(100);
-                    image.setFitHeight(100);
-                    image.relocate(25, 25);
-                    image.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                            new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent e) {
-                            try {
-                                showAuction(a);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                        Pane Auction = new Pane();
+                        Auction.setPrefWidth(800);
+                        Auction.setPrefHeight(150);
+                        Auction.relocate(0, 150 * i);
+                        if ((i % 2) == 0) {
+                            Auction.setStyle("-fx-background-color: lightgrey ");
                         }
-                    });
-                    Auction.getChildren().addAll(productName, image, price, seller, description);
-                    allAuctions.getChildren().add(Auction);
-                    i++;
-                } catch (Exception ex) {
-                }
-            }
-            elapsedTime = System.currentTimeMillis() - start;
-            System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
+                        Label productName = new Label();
+                        productName.setText(a.getProduct().getName());
+                        productName.setFont(new Font("Arial", 25));
+                        productName.relocate(150, 25);
 
-            return allAuctions;
-        }
-    };
+                        Label price = new Label();
+                        price.setText("€" + a.getCurrentPrice());
+                        price.setFont(new Font("Arial", 20));
+                        price.relocate(550, 120);
+
+                        Label seller = new Label();
+                        seller.setText(a.getSeller().getUsername());
+                        seller.setFont(new Font("Arial", 15));
+                        seller.relocate(550, 20);
+
+                        TextArea description = new TextArea();
+                        description.setPrefSize(200, 60);
+                        description.relocate(150, 65);
+                        description.setText(a.getDescription());
+                        description.wrapTextProperty().setValue(Boolean.TRUE);
+                        description.setEditable(false);
+
+                        //setting image of auction
+                        ImageView image;
+                        try {
+                            image = new ImageView(new Image(a.getImageURLs()[0]));
+                        } catch (Exception ex) {
+                            image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+                        }
+                        image.setFitWidth(100);
+                        image.setFitHeight(100);
+                        image.relocate(25, 25);
+                        image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                                new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                try {
+                                    showAuction(a);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
+                        Auction.getChildren().addAll(productName, image, price, seller, description);
+                        allAuctions.getChildren().add(Auction);
+                        i++;
+                    } catch (Exception ex) {
+                    }
+                }
+                elapsedTime = System.currentTimeMillis() - start;
+                System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
+
+                return allAuctions;
+            }
+        };
 
         new Thread(new Runnable() {
             @Override public void run() {
