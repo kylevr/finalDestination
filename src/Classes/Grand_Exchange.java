@@ -312,18 +312,18 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      */
     public Collection<Auction> getAuctions() throws RemoteException {
         //Gets all existing auctions.
-        auctions = auctionConn.getAuctions("*", "auction", "''");
-        products = productConn.getProducts();
-        queuepurchases = qPConn.getQueuePurchases();
-        for (Auction a : auctions) {
-            if (a != null) {
-                try {
-                    auctionPublisher.registerProperty("A" + a.getId());
-                } catch (Exception ex) {
-                    Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }        
+//        auctions = auctionConn.getAuctions("*", "auction", "''");
+//        products = productConn.getProducts();
+//        queuepurchases = qPConn.getQueuePurchases();
+//        for (Auction a : auctions) {
+//            if (a != null) {
+//                try {
+//                    auctionPublisher.registerProperty("A" + a.getId());
+//                } catch (Exception ex) {
+//                    Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }        
         return auctions;
     }
 
