@@ -30,16 +30,14 @@ public class Server {
     // References to registry and Grand Exchange
     private Registry registry = null;
     private Grand_Exchange GE = null;
-    RemotePublisher auctionPublisher;
 
     public Server() throws RemoteException {
 
         // Print port number for registry
         System.out.println("Server: Port number " + portNumber);
-        auctionPublisher = new RemotePublisher();
         // Create Grand Exchange
         try {
-            GE = new Grand_Exchange(auctionPublisher);
+            GE = new Grand_Exchange();
             System.out.println("Server: Grand Exchange created !");
         } catch (RemoteException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,7 +61,6 @@ public class Server {
         try {
             registry.rebind(bindingName, GE);
             System.out.println("GX Binded");
-            registry.rebind("auctionPublisher", auctionPublisher);
             System.out.println("Publisher binded");
         } catch (RemoteException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);

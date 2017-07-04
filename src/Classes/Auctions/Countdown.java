@@ -10,6 +10,7 @@ import Classes.User;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -25,7 +26,7 @@ public class Countdown extends Auction implements Serializable {
     private double startingPrice;
     private  Timestamp creationDate;
 
-    public Countdown(User seller, Product product, int quantity, double price, double instabuyprice, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, Timestamp creatDate) {
+    public Countdown(User seller, Product product, int quantity, double price, double instabuyprice, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, Timestamp creatDate) throws RemoteException {
         super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);
         this.priceloweringAmount = priceloweringAmount;
         this.priceloweringDelay = priceloweringDelay;
@@ -33,9 +34,10 @@ public class Countdown extends Auction implements Serializable {
         this.minPrice = minprice;
         this.creationDate = creatDate;
         setPrice();
+        super.setType("countdown");
     }
 
-    public Countdown(int id, User seller, Product product, int quantity, double price, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, double instabuy, Timestamp creatDate) {
+    public Countdown(int id, User seller, Product product, int quantity, double price, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, double instabuy, Timestamp creatDate) throws RemoteException {
         super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);
         this.priceloweringAmount = priceloweringAmount;
         this.priceloweringDelay = priceloweringDelay;
@@ -43,6 +45,7 @@ public class Countdown extends Auction implements Serializable {
         this.minPrice = minprice;
         this.creationDate = creatDate;
         setPrice();
+        super.setType("countdown");
 
     }
 

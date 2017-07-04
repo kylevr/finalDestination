@@ -3,17 +3,22 @@ package Classes.Auctions;
 import Classes.Bid;
 import Classes.Product;
 import Classes.User;
+import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.RemotePublisher;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class Auction implements Serializable {
+public abstract class Auction extends UnicastRemoteObject implements Serializable, IAuctionInfo {
 
     User seller;
     private int id;
 
+    private RemotePublisher publisher;
     private double currentPrice;
     private double instabuyPrice;
 
@@ -25,6 +30,7 @@ public abstract class Auction implements Serializable {
     private StatusEnum status;
     private String description;
     private String[] imageURLs;
+    private String type;
 
     /**
      *
@@ -37,7 +43,7 @@ public abstract class Auction implements Serializable {
      * @param imageURLs
      * @param instabuy
      */
-    public Auction(int id, User seller, Product product, double price, int quantity, StatusEnum status, String description, String imageURLs, double instabuy) {
+    public Auction(int id, User seller, Product product, double price, int quantity, StatusEnum status, String description, String imageURLs, double instabuy) throws RemoteException{
         this.id = id;
         this.seller = seller;
         this.product = product;
@@ -63,7 +69,7 @@ public abstract class Auction implements Serializable {
      * @param description
      * @param imageURLs
      */
-    public Auction(User seller, Product product, int quantity, double price, double instabuyprice, StatusEnum status, String description, String imageURLs) {
+    public Auction(User seller, Product product, int quantity, double price, double instabuyprice, StatusEnum status, String description, String imageURLs) throws RemoteException {
         this.seller = seller;
         this.product = product;
         this.currentPrice = round(price, 2);
@@ -74,6 +80,9 @@ public abstract class Auction implements Serializable {
         this.description = description;
         this.imageURLs = imageURLs.split(";");
         bids = new ArrayList<>();
+        publisher = new RemotePublisher();
+        publisher.registerProperty("");
+        publisher.registerProperty("");
     }
 
     /**
@@ -81,9 +90,11 @@ public abstract class Auction implements Serializable {
      *
      * @return double
      */
+    @Override
     public double getInstabuyPrice() {
         return instabuyPrice;
     }
+
 
     /**
      * returns is instabuyable true/false
@@ -160,22 +171,31 @@ public abstract class Auction implements Serializable {
 
     }
 
+    @Override
+    public String getProductDescription(){
+        return product.getDescription();
+    }
+
     public Product getProduct() {
         return product;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public StatusEnum getStatus() {
         return status;
     }
 
+    @Override
     public Double getCurrentPrice() {
         return currentPrice;
     }
 
+    @Override
     public int getProductQuantity() {
         return productQuantity;
     }
@@ -184,15 +204,30 @@ public abstract class Auction implements Serializable {
         productQuantity = productQuantity - buyAmount;
     }
 
+    @Override
     public String[] getImageURLs() {
-
         return imageURLs;
     }
+    
+    @Override
+    public String getType(){
+        return this.type;
+    }
+    
+    public void setType(String type){
+        this.type = type;
+    }
 
+    @Override
+    public String getSellerName(){
+        return seller.getUsername();
+    }
+    
     public User getSeller() {
-
         return seller;
     }
+    
+    
 
     public static double round(double value, int places) {
         if (places < 0) {
@@ -205,5 +240,15 @@ public abstract class Auction implements Serializable {
 
     public int getId() {
         return id;
+    }
+    
+    @Override
+    public void subscribe(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.subscribeRemoteListener(listener, property);
+    }
+    
+    @Override
+    public void unSubscribe(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.unsubscribeRemoteListener(listener, property);
     }
 }

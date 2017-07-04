@@ -13,11 +13,8 @@ import Interfaces.IAuthorized;
 import Interfaces.ICreateProduct;
 import Interfaces.ICreateQueuePurchase;
 import Interfaces.IPlaceBid;
-import fontyspublisher.RemotePublisher;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
@@ -37,7 +34,6 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     ArrayList<User> users;
     ArrayList<Auction> auctions;
     ArrayList<Queue_Purchase> queuepurchases;
-    RemotePublisher auctionPublisher;
     Connection con;
     AuctionConnection auctionConn;
     ProductConnection productConn;
@@ -65,14 +61,11 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      *
      * @param publisher
      */
-    public Grand_Exchange(RemotePublisher publisher) throws RemoteException {
-        this.auctionPublisher = publisher;
+    public Grand_Exchange() throws RemoteException {
         products = new ArrayList<>();
         users = new ArrayList<>();
         auctions = new ArrayList<>();
         queuepurchases = new ArrayList<>();
-        //con = new Connection();
-        //con.getConnection();
 
         // Connections
         auctionConn = new AuctionConnection();
@@ -83,17 +76,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         auctions = auctionConn.getAuctions("*", "auction", "''");
         products = productConn.getProducts();
         queuepurchases = qPConn.getQueuePurchases();
-        for (Auction a : auctions) {
-            if (a != null) {
-                try {
-                    auctionPublisher.registerProperty("A" + a.getId());
-                } catch (Exception ex) {
-                    Logger.getLogger(Grand_Exchange.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-//        dbListener = new DatabaseListener();
-//        dbListener.addObserver(this);
+        dbListener = new DatabaseListener();
+        dbListener.addObserver(this);
     }
 
     /**
@@ -327,6 +311,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         return auctions;
     }
 
+    @Override
     public Auction getAuction(int id) {
         int index = -1;
         for (int i = 0; i < auctions.size(); i++) {
@@ -642,7 +627,6 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             if (a != null) {
                 if (a.getId() == auctionid) {
                     a.addBid(new Bid(auctionid, u, price));
-                    auctionPublisher.inform(("A" + a.getId()), price, new Bid(auctionid, u, price));
                 }
             }
         }
@@ -682,7 +666,6 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         System.out.println(AuctionID);
         for (int i = 0; i < amount; i++) {
             auctions.get(index).addBid(new Bid(AuctionID, u, price));
-            auctionPublisher.inform(("A" + auctions.get(index).getId()), price, new Bid(AuctionID, u, price));
 
         }
 
