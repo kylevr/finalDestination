@@ -152,7 +152,7 @@ public class MainController implements Initializable {
                         @Override
                         public void handle(MouseEvent e) {
                             try {
-                                showAuction(i);
+                                showAuction(auctionInfoInterface);
                             } catch (IOException ex) {
                                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -182,12 +182,12 @@ public class MainController implements Initializable {
         }).start();
     }
 
-    public void showAuction(Integer auctionID) throws IOException {
+    public void showAuction(IAuctionInfo auctionInfoInterface) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Auction.fxml"));
         Scene newScene;
         newScene = new Scene(loader.load());
         AuctionController controller = loader.<AuctionController>getController();
-//        controller.setUp(auctionID, this.RM);
+        controller.setUp(auctionInfoInterface, this.RM);
         Stage inputStage = new Stage();
         inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);
