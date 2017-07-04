@@ -144,9 +144,9 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
 
     }
 
-    public void setUp(Auction auction, RegistryManager RM) throws RemoteException {
+    public void setUp(Integer auctionID, RegistryManager RM) throws RemoteException {
         this.RM = RM;
-        this.auction = auction;
+        this.auction = RM.getAuction().getAuction(auctionID);
         loggedInUser = RM.getUser();
         update(); //duurt lang
         Registry registry = LocateRegistry.getRegistry(RM.getIp(), 1099);

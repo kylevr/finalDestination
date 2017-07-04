@@ -6,7 +6,6 @@
 package Interfaces;
 
 import Classes.Auctions.Auction;
-import Classes.Auctions.IAuctionInfo;
 import Classes.Bid;
 import Classes.Feedback;
 import Classes.User;

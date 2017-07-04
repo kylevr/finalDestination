@@ -3,8 +3,9 @@
  * Jorian Vas, Kyle van Raaij, Pieter Beukelman, Sam Dirkx, Lesley Peeters, Robin Welten
  * �2016-2017
  */
-package Classes.Auctions;
+package Interfaces;
 
+import Classes.Auctions.StatusEnum;
 import fontyspublisher.IRemotePropertyListener;
 import java.rmi.RemoteException;
 
@@ -28,7 +29,5 @@ public interface IAuctionInfo {
     public double getInstabuyPrice() throws RemoteException;
     public boolean isInstabuyable() throws RemoteException;
     public int getProductQuantity() throws RemoteException;
-    
-    
     
 }
