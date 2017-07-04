@@ -8,9 +8,11 @@ package Controllers;
 import Classes.Auctions.Auction;
 import Classes.Auctions.Countdown;
 import Classes.Auctions.Direct;
+import Interfaces.IAuctionInfo;
 import Classes.Auctions.Standard;
 import Classes.Auctions.StatusEnum;
 import Classes.Bid;
+import Classes.Grand_Exchange;
 import Classes.User;
 import Exceptions.NotEnoughMoneyException;
 import Interfaces.IAuction;
@@ -30,6 +32,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,6 +57,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javax.swing.JOptionPane;
 
@@ -116,18 +120,33 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     private Button BidBtn;
     @FXML
     private Button buyButton;
-    IRemotePublisherForListener auctionPublisher;
+
+//    IRemotePublisherForListener auctionPublisher;
     IAuction auctionInterface;
     IPlaceBid bid;
-    Auction auction;
-    Direct directAuction;
-    Standard standardAuction;
-    private User loggedInUser;
-    private String type;
+//    Auction auction;
+//    Direct directAuction;
+//    Standard standardAuction;
+//    private User loggedInUser;
     private RegistryManager RM;
-    Timeline timeline1;
-    Timeline timeline;
-    int timeSeconds;
+    private IAuctionInfo auctionInfo;
+
+    private String type;
+    private String productNaam;
+    private String productBeschrijving;
+    private String auctionBeschrijving;
+    private StatusEnum status;
+    private String sellerUsername;
+    private String sellerProfileURL;
+    private String[] auctionImageURL;
+
+    private boolean isInstabuyable;
+    private double instabuyprice;
+    private int quantity;
+    private int auctionId;
+    private double currentprice;
+
+    private List<Bid> biedingen;
 
     /**
      * Initializes the controller class.
@@ -144,83 +163,48 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
 
     }
 
-    public void setUp(Integer auctionID, RegistryManager RM) throws RemoteException {
+    public void setUp(IAuctionInfo auctionInfo, RegistryManager RM) throws RemoteException {
         this.RM = RM;
-        this.auction = RM.getAuction().getAuction(auctionID);
-        loggedInUser = RM.getUser();
-        update(); //duurt lang
-        Registry registry = LocateRegistry.getRegistry(RM.getIp(), 1099);
+        this.auctionInfo = auctionInfo;
+        initialize();
+        auctionInfo.subscribe(this, "currentprice");
+        auctionInfo.subscribe(this, "quantity");
+        auctionInfo.subscribe(this, "newbid");
+    }
+
+    public void initialize() {
         try {
-            auctionPublisher = (IRemotePublisherForListener) registry.lookup("auctionPublisher");
-        } catch (NotBoundException | AccessException ex) {
-            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
+            type = auctionInfo.getType();
+            auctionId = auctionInfo.getId();
+            productNaam = auctionInfo.getProductName();
+            productBeschrijving = auctionInfo.getProductDescription();
+            auctionBeschrijving = auctionInfo.getDescription();
+            status = auctionInfo.getStatus();
+            sellerUsername = auctionInfo.getSellerName();
+            sellerProfileURL = auctionInfo.getSellerImageUrl();
+            auctionImageURL = auctionInfo.getImageURLs();
+            isInstabuyable = auctionInfo.isInstabuyable();
+            instabuyprice = auctionInfo.getInstabuyPrice();
+            quantity = auctionInfo.getProductQuantity();
+            currentprice = auctionInfo.getCurrentPrice();
+            biedingen = auctionInfo.getBids();
+            updateGui();
+        } catch (Exception ex) {
+            System.out.println("kon de auction niet initialiseren...");
         }
-        auctionPublisher.subscribeRemoteListener(this, "A" + auction.getId());
-        System.out.println(auctionPublisher.toString());
-        System.out.println("subscribed");
-        Stage thisStage = (Stage) BidBtn.getParent().getScene().getWindow();
 
     }
 
-    public void liveUpdate() {
-        int updateid = auction.getId();
-        try {
-            auction = RM.getAuction().getAuction(updateid);
-
-        } catch (RemoteException ex) {
-            Logger.getLogger(AuctionController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        if (auction instanceof Countdown) {
-            //setting auction
-            Countdown countdownAuction = (Countdown) auction;
-            countdownAuction.setPrice();
-            countdownCurrentPrice.setText("€" + countdownAuction.getCurrentPrice());
-            timeline.playFromStart();
-            if (auction.getProductQuantity()
-                    > 1) {
-                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
-            } else if (auction.getProductQuantity()
-                    == 1) {
-                countdownAvailableUnits.setText("There is just 1 item left");
-            } else if (auction.getProductQuantity()
-                    == 0) {
-                countdownAvailableUnits.setText("There are no items left, you missed it");
-            }
-
-            setCountdownBuys(auction);
-        } else if (auction instanceof Standard) {
-            standardAuction = (Standard) auction;
-            countdownCurrentPrice.setText("€" + standardAuction.getCurrentPrice());
-            if (auction.getProductQuantity()
-                    >= 1) {
-                countdownAvailableUnits.setText("You're Buying " + auction.getProductQuantity() + " units for this price!");
-            }
-
-            setCountdownBuys(auction);
-        }
-    }
-
-    public void update() {
-        int updateid = auction.getId();
-        try {
-            auctionInterface = RM.getAuction();
-            auction = auctionInterface.getAuction(updateid);
-//            auction = RM.getAuction().getAuction(updateid);
-            System.out.print("abc");
-        } catch (RemoteException ex) {
-            Logger.getLogger(AuctionController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        productTitle.setText(auction.getProduct().getName());
-        productDescription.setText(auction.getProduct().getDescription());
-        auctionDescription.setText(auction.getDescription());
-        productStatus.setText(setStatus(auction.getStatus()));
+    public void updateGui() {
+        productTitle.setText(productNaam);
+        productDescription.setText(productBeschrijving);
+        auctionDescription.setText(auctionBeschrijving);
+        productStatus.setText(getStatus(status));
         int i = 0;
         Pane imagePane = new Pane();
-        imagePane.setPrefWidth(85 * auction.getImageURLs().length);
+        imagePane.setPrefWidth(85 * auctionImageURL.length);
         imagePane.setPrefHeight(70);
-        for (String URL : auction.getImageURLs()) {
+        for (String URL : auctionImageURL) {
             if (URL != null) {
                 ImageView image = null;
                 try {
@@ -242,7 +226,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
                 });
                 Image bigImage = null;
                 try {
-                    bigImage = new Image(auction.getImageURLs()[0]);
+                    bigImage = new Image(auctionImageURL[0]);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -254,15 +238,15 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         }
 
         try {
-            sellerImage.setImage(new Image(auction.getSeller().getImageURL()));
+            sellerImage.setImage(new Image(sellerProfileURL));
         } catch (Exception ex) {
 
         }
-        sellerName.setText(auction.getSeller().getUsername());
+        sellerName.setText(sellerUsername);
         imagesPane.setContent(imagePane);
 
         // Checks if auction has instabuy.
-        if (auction.isInstabuyable() == true) {
+        if (isInstabuyable == true) {
             countdownBuyBtn.setDisable(false);
             txtUnitstoBuy.setDisable(false);
 
@@ -272,81 +256,34 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         }
 
         //Checks if auction is of instance Countdown
-        if (auction instanceof Countdown) {
+        if (type.equals("countdown")) {
             //setting auction
             auctiontype.setText("Countdown Auction");
-            Countdown countdownAuction = (Countdown) auction;
-            countdownAuction.setPrice();
 
             //setting buttons etc:
             txtPriceToBid.setVisible(false);
-            txtPriceToBid.setText(countdownAuction.getCurrentPrice() + "");
+            txtPriceToBid.setText(currentprice + "");
             BidBtn.setVisible(false);
             lblBid.setVisible(false);
             txtUnitstoBuyBid.setVisible(true);
             buyButton.setVisible(true);
             lblUnits.setVisible(true);
 
-            countdownCurrentPrice.setText("€" + countdownAuction.getCurrentPrice());
-            InstabuyCurrentPrice.setText("€" + countdownAuction.getInstabuyPrice());
-            long now = System.currentTimeMillis();
-            long then = countdownAuction.getCreationDate().getTime();
-            long periods_passed = 0;
-            if (countdownAuction.getPriceLoweringDelay() != 0) {
-                periods_passed = (long) Math.floor(((now - then) / 1000 / 60 / (int) countdownAuction.getPriceLoweringDelay()));
-            }
-            long next_period_begin = ((periods_passed + 1) * 1000 * 60 * (int) countdownAuction.getPriceLoweringDelay()) + countdownAuction.getCreationDate().getTime();
-            if (timeline != null) {
-                timeline.stop();
-            }
-            timeline = null;
-            timeline = new Timeline();
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            long duration = (next_period_begin - System.currentTimeMillis()) / 1000;
-            timeSeconds = (int) duration;
-            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {
+            countdownCurrentPrice.setText("€" + currentprice);
+            InstabuyCurrentPrice.setText("€" + instabuyprice);
 
-                @Override
-                public void handle(Event event) {
-                    timeSeconds--;
-                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0);
-                    int secondsToGo = timeSeconds - (minutesToGo * 60);
-                    String minutes = Integer.toString(minutesToGo);
-                    String seconds = Integer.toString(secondsToGo);
-                    if (minutesToGo < 10) {
-                        minutes = "0" + minutes;
-                    }
-                    if (secondsToGo < 10) {
-                        seconds = "0" + seconds;
-                    }
-                    CreateDate.setText(minutes + ":" + seconds);
-                    if (minutesToGo <= 0) {
-                        minutesBar.setProgress(-1);
-                    } else {
-                        minutesBar.setProgress(timeSeconds / (countdownAuction.getPriceLoweringDelay() * 60));
-                    }
-                    if (timeSeconds <= 0) {
-                        timeline.stop();
-                        update();
-                    }
-                }
-            }));
-            timeline.playFromStart();
-
-            if (auction.getProductQuantity()
+            if (quantity
                     > 1) {
-                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
-            } else if (auction.getProductQuantity()
+                countdownAvailableUnits.setText("There are " + quantity + " units available");
+            } else if (quantity
                     == 1) {
                 countdownAvailableUnits.setText("There is just 1 item left");
-            } else if (auction.getProductQuantity()
+            } else if (quantity
                     == 0) {
                 countdownAvailableUnits.setText("There are no items left, you missed it");
             }
 
-            setCountdownBuys(auction);
-
-        } else if (auction instanceof Standard) {
+        } else if (type.equals("standard")) {
             //setting correct buttons:           
             txtPriceToBid.setVisible(true);
             BidBtn.setVisible(true);
@@ -358,94 +295,67 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
             this.type = "standard";
             this.minutesBar.setVisible(false);
             auctiontype.setText("Standard Auction");
-            standardAuction = (Standard) auction;
-            countdownCurrentPrice.setText("€" + standardAuction.getCurrentPrice());
-            InstabuyCurrentPrice.setText("€" + standardAuction.getInstabuyPrice());
+            countdownCurrentPrice.setText("€" + currentprice);
+            InstabuyCurrentPrice.setText("€" + instabuyprice);
 
-            Timestamp newDate = standardAuction.getCreationDate();
-            CreateDate.setText(newDate.getMonth() + "/" + newDate.getDay() + "  " + newDate.getHours() + ":" + newDate.getMinutes() + ":" + newDate.getSeconds());
-
-            if (auction.getProductQuantity()
+            if (quantity
                     >= 1) {
-                countdownAvailableUnits.setText("You're Buying " + auction.getProductQuantity() + " units for this price!");
+                countdownAvailableUnits.setText("You're Buying " + quantity + " units for this price!");
             }
-
-            setCountdownBuys(auction);
-            long now = System.currentTimeMillis();
-            long then = standardAuction.getEndDate().getTime();
-            timeSeconds = (int) ((now - then) / 1000);
-            if (timeline != null) {
-                timeline.stop();
-            }
-            timeline = null;
-            timeline = new Timeline();
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler() {
-
-                @Override
-                public void handle(Event event) {
-                    timeSeconds--;
-                    int timeDays = timeSeconds;
-                    int daysToGo = (int) Math.floor(timeDays / 60.0 / 60 / 24.0);
-                    int hoursToGo = (int) Math.floor(timeSeconds / 60 / 60.0) - daysToGo * 24;
-                    int minutesToGo = (int) Math.floor(timeSeconds / 60.0) - (hoursToGo * 60) - (daysToGo * 24 * 60);
-                    int secondsToGo = timeSeconds - (hoursToGo * 60 * 60) - (daysToGo * 24 * 60 * 60) - (minutesToGo * 60);
-                    String hours = Integer.toString(hoursToGo);
-                    String minutes = Integer.toString(minutesToGo);
-                    String seconds = Integer.toString(secondsToGo);
-                    if (hoursToGo < 10) {
-                        hours = "0" + hours;
-                    }
-                    if (minutesToGo < 10) {
-                        minutes = "0" + minutes;
-                    }
-                    if (secondsToGo < 10) {
-                        seconds = "0" + seconds;
-                    }
-                    CreateDate.setText(daysToGo + "Days,  " + hours + ":" + minutes + ":" + seconds);
-                    if (timeSeconds <= 0) {
-                        timeline.stop();
-                        //update();
-                    }
-                }
-            }));
-            timeline.playFromStart();
-
         }
 
-        if (auction instanceof Direct) {
-            this.type = "direct";
+        if (type.equals("direct")) {
+
             auctiontype.setText("Direct Auction");
-            directAuction = (Direct) auction;
-            countdownCurrentPrice.setText("€" + directAuction.getCurrentPrice());
-            InstabuyCurrentPrice.setText("€" + directAuction.getInstabuyPrice());
+            countdownCurrentPrice.setText("€" + currentprice);
+            InstabuyCurrentPrice.setText("€" + instabuyprice);
 
-            Timestamp newDate = directAuction.getCreationDate();
-            CreateDate.setText(newDate.getMonth() + "/" + newDate.getDay() + "  " + newDate.getHours() + ":" + newDate.getMinutes() + ":" + newDate.getSeconds());
-
-            if (auction.getProductQuantity()
+            if (quantity
                     > 1) {
-                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
-            } else if (auction.getProductQuantity()
+                countdownAvailableUnits.setText("There are " + quantity + " units available");
+            } else if (quantity
                     == 1) {
                 countdownAvailableUnits.setText("There is just 1 item left");
-            } else if (auction.getProductQuantity()
+            } else if (quantity
                     == 0) {
                 countdownAvailableUnits.setText("There are no items left, you missed it");
             }
-
-            setCountdownBuys(auction);
-
         }
 
-        txtUnitstoBuy.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    txtUnitstoBuy.setText(newValue.replaceAll("[^\\d]", ""));
-                }
+        updateBids();
+    }
+
+    public void updateBids() {
+
+        Pane BuyPane = new Pane();
+        BuyPane.setPrefWidth(371);
+        BuyPane.setPrefHeight(75 * biedingen.size());
+        int a = 0;
+        for (Bid b : biedingen) {
+            Pane p = new Pane();
+            p.setPrefHeight(75);
+            p.setPrefWidth(371);
+            p.relocate(0, a * 75);
+            if ((a % 2) == 0) {
+                p.setStyle("-fx-background-color: lightgrey ");
             }
-        });
+            Label name = new Label();
+            name.setText(b.getPlacerUsername());
+            name.setFont(new Font("Arial", 17));
+            Label price = new Label();
+            if (b.getAmount() >= instabuyprice || instabuyprice != 0) {
+                price.setText("Bought at a price of: €" + b.getAmount());
+            } else {
+                price.setText("Bidded: €" + b.getAmount() + " for this item");
+            }
+            price.setFont(new Font("Arial", 14));
+            name.relocate(10, 15);
+            price.relocate(10, 45);
+            p.getChildren().addAll(price, name);
+            BuyPane.getChildren().add(p);
+            a++;
+        }
+        recentPurchasesPane.setContent(BuyPane);
     }
 
     /**
@@ -454,7 +364,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
      * @param status StatusEnum
      * @return
      */
-    public String setStatus(StatusEnum status) {
+    public String getStatus(StatusEnum status) {
         switch (status) {
             case New:
                 return "New";
@@ -474,186 +384,108 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     }
 
     public void buyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-        RM.getPlaceBidInterface();
-        this.bid = RM.getBid();
-        System.out.println("Saldo = " + RM.getUser().getSaldo());
-        RM.getUser().getSaldo();
-
-        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
-        if (RM.getUser().getSaldo() < totalprice) {
-            JOptionPane.showMessageDialog(null, "You don't have enough money on your account to perform this action.");
-        } else {
-            if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
-                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
-                if (reply == JOptionPane.YES_OPTION) {
-                    int units = Integer.parseInt(txtUnitstoBuyBid.getText());
-                    bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());
-                    //update();
-                    JOptionPane.showMessageDialog(null, "Your order has been placed");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Canceled");
-                }
-            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
-                JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
-            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > auction.getProductQuantity()) {
-                JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
-            } else {
-                JOptionPane.showMessageDialog(null, "Something went wrong");
-            }
-        }
-        checkAuctionStatus();
+//        RM.getPlaceBidInterface();
+//        this.bid = RM.getBid();
+//        System.out.println("Saldo = " + RM.getUser().getSaldo());
+//        RM.getUser().getSaldo();
+//
+//        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
+//        if (RM.getUser().getSaldo() < totalprice) {
+//            JOptionPane.showMessageDialog(null, "You don't have enough money on your account to perform this action.");
+//        } else {
+//            if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
+//                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
+//                if (reply == JOptionPane.YES_OPTION) {
+//                    int units = Integer.parseInt(txtUnitstoBuyBid.getText());
+//                    bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());
+//                    //update();
+//                    JOptionPane.showMessageDialog(null, "Your order has been placed");
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Canceled");
+//                }
+//            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
+//                JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
+//            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > auction.getProductQuantity()) {
+//                JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Something went wrong");
+//            }
+//        }
     }
 
     public void bidButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
         double price = Double.parseDouble(txtPriceToBid.getText());
-        if (auction.getCurrentPrice() < price) {
+        if (currentprice < price) {
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Bid " + txtPriceToBid.getText(), "Are You Sure?", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                if (bid.placeBid(1, RM.getUser().getUserID(), auction.getId(), price)) {
+                if (bid.placeBid(1, RM.getUser().getUserID(), auctionId, price)) {
                     JOptionPane.showMessageDialog(null, "Your bid has been placed.");
                 } else {
-                    //JOptionPane.showMessageDialog(null, "Something went wrong while placing your bid.");
+                    JOptionPane.showMessageDialog(null, "Something went wrong while placing your bid.");
                 }
-                //update();
             } else {
                 JOptionPane.showMessageDialog(null, "Canceled");
             }
-        } else if (auction.getCurrentPrice() > Double.parseDouble(txtPriceToBid.getText())) {
+        } else if (currentprice > Double.parseDouble(txtPriceToBid.getText())) {
             JOptionPane.showMessageDialog(null, "You can't bid less than current price");
         } else {
             JOptionPane.showMessageDialog(null, "Something went wrong");
         }
-        checkAuctionStatus();
     }
 
     public void instabuyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-        RM.getPlaceBidInterface();
-        this.bid = RM.getBid();
-
-        if (Integer.parseInt(txtUnitstoBuy.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuy.getText()) > 0 && auction != null) {
-            double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();
-
-            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + auction.getInstabuyPrice() + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
-            if (reply == JOptionPane.YES_OPTION) {
-                int units = Integer.parseInt(txtUnitstoBuy.getText());
-                bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());
-                //update();
-            } else {
-                JOptionPane.showMessageDialog(null, "Canceled");
-            }
-        } else if (Integer.parseInt(txtUnitstoBuy.getText()) <= 0) {
-            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
-        } else {
-            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
-        }
-        checkAuctionStatus();
-    }
-
-    public void setCountdownBuys(Auction auction) {
-
-        Pane BuyPane = new Pane();
-        BuyPane.setPrefWidth(371);
-        BuyPane.setPrefHeight(75 * auction.getBids().size());
-        int a = 0;
-        ArrayList<Bid> bids = auction.getBids();
-        Collections.reverse(bids);
-        for (Bid b : bids) {
-            Pane p = new Pane();
-            p.setPrefHeight(75);
-            p.setPrefWidth(371);
-            p.relocate(0, a * 75);
-            if ((a % 2) == 0) {
-                p.setStyle("-fx-background-color: lightgrey ");
-            }
-            Label name = new Label();
-            name.setText(b.getPlacerUsername());
-            name.setFont(new Font("Arial", 17));
-            Label price = new Label();
-            if (auction instanceof Countdown || auction instanceof Direct) {
-                price.setText("Bought at a price of: €" + b.getAmount());
-            } else {
-                price.setText("Bidded: €" + b.getAmount() + " for this item");
-            }
-            price.setFont(new Font("Arial", 14));
-            name.relocate(10, 15);
-            price.relocate(10, 45);
-            p.getChildren().addAll(price, name);
-            BuyPane.getChildren().add(p);
-            a++;
-        }
-        recentPurchasesPane.setContent(BuyPane);
-
-    }
-
-    /**
-     * if items in the auction are less then one, the auction closes
-     */
-    public void checkAuctionStatus() throws SQLException {
-        if (auction instanceof Countdown) {
-            Countdown countdown = (Countdown) auction;
-            if (countdown.getProductQuantity() < 1) {
-                //GX.closeAuction();
-                System.out.println("Verwijderd uit de databsase");
-                closeButtonClick();
-            }
-        } else if (auction instanceof Direct) {
-            Direct direct = (Direct) auction;
-            if (direct.getProductQuantity() < 1) {
-                //GX.closeAuction();
-                System.out.println("Verwijderd uit de databsase");
-                closeButtonClick();
-            }
-        } else if (auction instanceof Standard) {
-            Standard standard = (Standard) auction;
-            if (standard.getProductQuantity() < 1) {
-                //GX.closeAuction();
-                System.out.println("Verwijderd uit de databsase");
-                closeButtonClick();
-            }
-        }
-
+//        RM.getPlaceBidInterface();
+//        this.bid = RM.getBid();
+//
+//        if (Integer.parseInt(txtUnitstoBuy.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuy.getText()) > 0 && auction != null) {
+//            double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();
+//
+//            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + auction.getInstabuyPrice() + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
+//            if (reply == JOptionPane.YES_OPTION) {
+//                int units = Integer.parseInt(txtUnitstoBuy.getText());
+//                bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());
+//                //update();
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Canceled");
+//            }
+//        } else if (Integer.parseInt(txtUnitstoBuy.getText()) <= 0) {
+//            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
+//        } else {
+//            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
+//        }
     }
 
     @FXML
     private void closeButtonClick() {
         try {
-            auctionPublisher.unsubscribeRemoteListener(this, "A" + auction.getId());
-            System.out.println("Unsubscribed Succesfully!");
+            auctionInfo.unSubscribe(this, "currentprice");
+            auctionInfo.unSubscribe(this, "quantity");
+            auctionInfo.unSubscribe(this, "newbid");
         } catch (RemoteException ex) {
-            Logger.getLogger(AuctionController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
-        System.out.println("Price: " + (Double) evt.getOldValue());
-        Bid b = (Bid) evt.getNewValue();
-        System.out.println("Bid: " + b.getPlacerUsername());
-        this.auction.setCurrentPrice((Double) evt.getOldValue());
-        this.auction.addBid((Bid) evt.getNewValue());
-        Platform.runLater(() -> {
-            this.countdownCurrentPrice.setText("€" + (Double) evt.getOldValue());
-            setCountdownBuys(this.auction);
-            if (auction instanceof Countdown) {
-            countdownCurrentPrice.setText("€" + auction.getCurrentPrice());
-            timeline.playFromStart();
-            if (auction.getProductQuantity()
-                    > 1) {
-                countdownAvailableUnits.setText("There are " + auction.getProductQuantity() + " units available");
-            } else if (auction.getProductQuantity()
-                    == 1) {
-                countdownAvailableUnits.setText("There is just 1 item left");
-            } else if (auction.getProductQuantity()
-                    == 0) {
-                countdownAvailableUnits.setText("There are no items left, you missed it");
-            }
-            }
-        });
+        switch (evt.getPropertyName()) {
+            case "currentprice":
+                currentprice = (Double) evt.getNewValue();
+                break;
+            case "quantity":
+                quantity = (Integer) evt.getNewValue();
+                break;
+            case "newbid":
+                Bid newBid = (Bid) evt.getNewValue();
+                biedingen.add(newBid);
+                break;
+        }
+        updateGui();
     }
 
 }
