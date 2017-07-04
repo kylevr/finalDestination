@@ -34,6 +34,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
 
     /**
      *
+     * @param id
      * @param seller
      * @param product
      * @param price

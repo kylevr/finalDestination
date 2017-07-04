@@ -314,14 +314,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     @Override
     public Auction getAuction(int id) {
-        int index = -1;
-        for (int i = 0; i < auctions.size(); i++) {
-            if (auctions.get(i).getId() == id) {
-                index = i;
-                break;
+        for(Auction a : auctions){
+            if(a.getId() == id){
+                return a;
             }
         }
-        return auctions.get(index);
+        return null;
     }
 
     /**
