@@ -7,7 +7,6 @@ package Controllers;
 
 import Classes.Auctions.Auction;
 import Classes.CategoryEnum;
-import Interfaces.IAuction;
 import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
@@ -80,7 +79,6 @@ public class MainController implements Initializable {
             loggedInUserImage.setImage(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
 
             System.out.println("LoggedInUser doesn't have an imageURL yet");
-
         }
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
