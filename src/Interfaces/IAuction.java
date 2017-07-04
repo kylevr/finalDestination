@@ -9,6 +9,7 @@ import Classes.Auctions.Auction;
 import Classes.Bid;
 import Classes.Feedback;
 import Classes.User;
+import fontyspublisher.IRemotePropertyListener;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -93,5 +94,8 @@ public interface IAuction extends Remote{
     public void updateAuction(Auction auction) throws RemoteException;
     
     public ArrayList<Integer> getAuctionIds() throws RemoteException;
+        
+    public void subscribe(IRemotePropertyListener listener, String property) throws RemoteException;
     
+    public void unSubscribe(IRemotePropertyListener listener, String property) throws RemoteException;
 }

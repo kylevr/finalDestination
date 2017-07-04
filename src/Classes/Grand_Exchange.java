@@ -14,6 +14,8 @@ import Interfaces.IAuthorized;
 import Interfaces.ICreateProduct;
 import Interfaces.ICreateQueuePurchase;
 import Interfaces.IPlaceBid;
+import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.RemotePublisher;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
@@ -41,6 +43,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     QueuePurchaseConnection qPConn;
     UserConnection userConn;
     DatabaseListener dbListener;
+    private RemotePublisher publisher;
     static Properties mailServerProperties;
     static Session getMailSession;
     static MimeMessage generateMailMessage;
@@ -92,6 +95,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         queuepurchases = qPConn.getQueuePurchases();
         dbListener = new DatabaseListener();
         dbListener.addObserver(this);
+        publisher = new RemotePublisher();
+        publisher.registerProperty("newauction");
     }
 
     /**
@@ -777,5 +782,15 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             tempList.add(a.getId());
         }
         return tempList;
+    }
+
+    @Override
+    public void subscribe(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.subscribeRemoteListener(listener, property);
+    }
+    
+    @Override
+    public void unSubscribe(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.unsubscribeRemoteListener(listener, property);
     }
 }
