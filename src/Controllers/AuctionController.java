@@ -17,10 +17,12 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -102,7 +104,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
 
     // Registry manager
     private RegistryManager RM;
-    
+
     // Interfaces
     private IPlaceBid bid;
     private IAuctionInfo auctionInfo;
@@ -118,15 +120,14 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     private double instabuyprice;
     private int quantity;
     private List<Bid> biedingen;
-    
+
     // Product info
     private String productNaam;
     private String productBeschrijving;
-    
+
     // Seller info
     private String sellerUsername;
     private String sellerProfileURL;
-
 
     /**
      * Initializes the controller class.
@@ -147,9 +148,9 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         this.RM = RM;
         this.auctionInfo = auctionInfo;
         initialize();
-//        auctionInfo.subscribe(this, "currentprice");
-//        auctionInfo.subscribe(this, "quantity");
-//        auctionInfo.subscribe(this, "newbid");
+        auctionInfo.subscribe(this, "currentprice");
+        auctionInfo.subscribe(this, "quantity");
+        auctionInfo.subscribe(this, "newbid");
     }
 
     public void initialize() {
@@ -419,7 +420,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         RM.getPlaceBidInterface();
         this.bid = RM.getBid();
 
-        if (Integer.parseInt(txtUnitstoBuy.getText()) <= quantity && Integer.parseInt(txtUnitstoBuy.getText()) > 0 ) {
+        if (Integer.parseInt(txtUnitstoBuy.getText()) <= quantity && Integer.parseInt(txtUnitstoBuy.getText()) > 0) {
             double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * instabuyprice;
 
             int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + instabuyprice + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
@@ -453,19 +454,32 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
+        System.out.println("Auction: receiving changes from server..");
         switch (evt.getPropertyName()) {
             case "currentprice":
+                System.out.println("Auction: updating current price...");
                 currentprice = (Double) evt.getNewValue();
                 break;
             case "quantity":
+                System.out.println("Auction: updating quantity...");
                 quantity = (Integer) evt.getNewValue();
                 break;
             case "newbid":
+                System.out.println("Auction: updating bids...");
                 Bid newBid = (Bid) evt.getNewValue();
                 biedingen.add(newBid);
+                System.out.println("Auction: updating current price...");
                 break;
         }
+
+        System.out.println("Auction: updating GUI...");
+        Platform.runLater(new Runnable() {
+    @Override
+    public void run() {
         updateGui();
+    }
+});
+        
     }
 
 }

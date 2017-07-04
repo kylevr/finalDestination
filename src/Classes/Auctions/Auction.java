@@ -13,6 +13,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Auction extends UnicastRemoteObject implements Serializable, IAuctionInfo {
 
@@ -25,7 +27,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
 
     private boolean instabuyable;
     private int productQuantity;
-    private Bid currentBid;
+    private Bid lastBid;
     private ArrayList<Bid> bids;
     private Product product;
     private StatusEnum status;
@@ -140,10 +142,12 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
             double amount = bid.getAmount();
             if (amount > currentPrice) {
                 this.bids.add(bid);
+                this.lastBid = bid;
                 this.currentPrice = bid.getAmount();
                 return true;
             } else if (amount == currentPrice) {
                 this.bids.add(bid);
+                this.lastBid = bid;
                 return true;
             }
             return false;
@@ -271,5 +275,16 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
     @Override
     public void unSubscribe(IRemotePropertyListener listener, String property) throws RemoteException {
         publisher.unsubscribeRemoteListener(listener, property);
+    }
+    
+    public synchronized void informClients(){
+        try {
+            publisher.inform("quantity", null, productQuantity);
+            publisher.inform("currentprice", null, this.currentPrice);
+            publisher.inform("newbid", null, lastBid);
+            System.out.println("informed clients!");
+        } catch (RemoteException ex) {
+            Logger.getLogger(Auction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

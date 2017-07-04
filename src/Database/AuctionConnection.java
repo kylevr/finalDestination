@@ -206,7 +206,7 @@ public class AuctionConnection {
                         instabuyprice = myRs.getDouble("instabuyprice");
                         date = myRs.getTimestamp("timecreated");
                         auction = new Countdown(id, user, product, quantity, price, priceloweringAmount, priceloweringDelay, minprice, status, description, imageURL, instabuyprice, date);
-                        //auction.addBid(getBids(id));
+                        auction.addBid(getBids(id));
                         break;
                     case "direct": {
                         id = myRs.getInt("id");
@@ -220,7 +220,7 @@ public class AuctionConnection {
                         imageURL = myRs.getString("imageUrl");
                         instabuyprice = myRs.getDouble("instabuyprice");
                         auction = new Direct(id, user, product, price, begin, quantity, status, description, imageURL, instabuyprice);
-                        //auction.addBid(getBids(id));
+                        auction.addBid(getBids(id));
                         break;
                     }
                     case "standard": {
@@ -236,7 +236,7 @@ public class AuctionConnection {
                         imageURL = myRs.getString("imageUrl");
                         instabuyprice = myRs.getDouble("instabuyprice");
                         auction = new Standard(id, user, product, price, quantity, begin, date, status, description, imageURL, instabuyprice);
-                        //auction.addBid(getBids(id));
+                        auction.addBid(getBids(id));
                         break;
                     }
                     default:
