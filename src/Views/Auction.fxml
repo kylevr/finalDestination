@@ -32,7 +32,7 @@
         <Button fx:id="closeButton" layoutX="26.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#closeButtonClick" text="Close" />
         <ImageView id="productImage" fx:id="bigProductImage" fitHeight="243.9888421056013" fitWidth="367.0" layoutX="19.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true" />
         <ScrollPane fx:id="imagesPane" content="$null" hbarPolicy="AS_NEEDED" layoutX="20.0" layoutY="351.0" prefHeight="85.0" prefWidth="366.99977792969" vbarPolicy="NEVER" />
-        <Button id="closeButton" layoutX="314.0" layoutY="15.0" minHeight="19.951171875" mnemonicParsing="false" onMouseClicked="#update" prefHeight="19.951171875" text="Refresh" />
+        <Button id="closeButton" layoutX="314.0" layoutY="15.0" minHeight="19.951171875" mnemonicParsing="false" prefHeight="19.951171875" text="Refresh" />
       </children>
     </Pane>
     <Pane id="countdownPane" layoutX="400.0" layoutY="0.0" prefHeight="800.0" prefWidth="400.0">

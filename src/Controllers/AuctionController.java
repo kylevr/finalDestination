@@ -147,9 +147,9 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         this.RM = RM;
         this.auctionInfo = auctionInfo;
         initialize();
-        auctionInfo.subscribe(this, "currentprice");
-        auctionInfo.subscribe(this, "quantity");
-        auctionInfo.subscribe(this, "newbid");
+//        auctionInfo.subscribe(this, "currentprice");
+//        auctionInfo.subscribe(this, "quantity");
+//        auctionInfo.subscribe(this, "newbid");
     }
 
     public void initialize() {
