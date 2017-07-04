@@ -102,6 +102,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
      *
      * @return
      */
+    @Override
     public boolean isInstabuyable() {
         return instabuyable;
     }
@@ -171,6 +172,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
     public void sendMailRequest(String emailRequester) {
 
     }
+    
 
     @Override
     public String getProductDescription(){

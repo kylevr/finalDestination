@@ -26,6 +26,7 @@ public interface IAuctionInfo {
     public String getSellerName() throws RemoteException;
     public Double getCurrentPrice() throws RemoteException;
     public double getInstabuyPrice() throws RemoteException;
+    public boolean isInstabuyable() throws RemoteException;
     public int getProductQuantity() throws RemoteException;
     
     
