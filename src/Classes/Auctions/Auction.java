@@ -58,6 +58,10 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
         this.imageURLs = imageURLs.split(";");
         bids = new ArrayList<>();
         this.instabuyPrice = instabuy;
+        publisher = new RemotePublisher();
+        publisher.registerProperty("currentprice");
+        publisher.registerProperty("quantity");
+        publisher.registerProperty("newbid");
     }
 
     /**

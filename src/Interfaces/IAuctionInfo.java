@@ -11,7 +11,6 @@ import fontyspublisher.IRemotePropertyListener;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -35,7 +34,5 @@ public interface IAuctionInfo extends Remote{
     public boolean isInstabuyable() throws RemoteException;
     public int getProductQuantity() throws RemoteException;
     public int getId() throws RemoteException;
-    
-    
     
 }
