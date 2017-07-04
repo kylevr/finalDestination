@@ -3,8 +3,9 @@
  * Jorian Vas, Kyle van Raaij, Pieter Beukelman, Sam Dirkx, Lesley Peeters, Robin Welten
  * �2016-2017
  */
-package Classes.Auctions;
+package Interfaces;
 
+import Classes.Auctions.StatusEnum;
 import Classes.Bid;
 import fontyspublisher.IRemotePropertyListener;
 import java.rmi.RemoteException;

@@ -1,5 +1,6 @@
 package Classes.Auctions;
 
+import Interfaces.IAuctionInfo;
 import Classes.Bid;
 import Classes.Product;
 import Classes.User;

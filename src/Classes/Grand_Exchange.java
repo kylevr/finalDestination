@@ -2,7 +2,7 @@ package Classes;
 
 import Classes.Auctions.Auction;
 import Classes.Auctions.Direct;
-import Classes.Auctions.IAuctionInfo;
+import Interfaces.IAuctionInfo;
 import Classes.Auctions.Standard;
 import Classes.Auctions.StatusEnum;
 import Classes.User;
@@ -75,6 +75,19 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
         //Gets all existing auctions.
         auctions = auctionConn.getAuctions("*", "auction", "''");
+        int i = 0;
+        for (Auction a : auctions)
+        {
+            try
+            {
+                System.out.println(i + " id=" + a.getId());
+            }
+            catch(Exception e)
+            {
+                System.out.println(i + " is fucked");
+            }
+            i++;
+        }
         products = productConn.getProducts();
         queuepurchases = qPConn.getQueuePurchases();
         dbListener = new DatabaseListener();

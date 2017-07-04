@@ -7,10 +7,13 @@ package Controllers;
 
 import Classes.Auctions.Auction;
 import Classes.CategoryEnum;
+import Interfaces.IAuction;
+import Interfaces.IAuctionInfo;
 import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -20,6 +23,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -61,6 +65,7 @@ public class MainController implements Initializable {
 
     /**
      * Initializes the controller class.
+     *
      * @param url
      * @param rb
      */
@@ -72,7 +77,7 @@ public class MainController implements Initializable {
     public void setUp(RegistryManager RM) throws RemoteException {
         this.RM = RM;
         RM.getAuctionInterface();
-        this.refreshAuctions();
+        //this.refreshAuctions();
         try {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
         } catch (NullPointerException ex) {
@@ -83,13 +88,14 @@ public class MainController implements Initializable {
         comboBoxCategory.getItems().setAll(CategoryEnum.values());
     }
 
+    @FXML
     public void refreshAuctions() throws RemoteException {
         Task taskCalc = new Task<Pane>() {
             @Override
             public Pane call() throws RemoteException {
-                //get auctions
+                //get auctions               
                 long start = System.currentTimeMillis();
-                Collection<Auction> auctions = RM.getAuction().getAuctions();
+                ArrayList<Integer> auctionIDs = RM.getAuction().getAuctionIds();
                 long elapsedTime = System.currentTimeMillis() - start;
                 System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
 
@@ -97,61 +103,63 @@ public class MainController implements Initializable {
                 start = System.currentTimeMillis();
                 Pane allAuctions = new Pane();
                 allAuctions.setPrefWidth(800);
-                allAuctions.setPrefHeight(150 * auctions.size());
-                int i = 0;
-                for (Auction a : auctions) {
+                allAuctions.setPrefHeight(150 * auctionIDs.size());
+                for (Integer i : auctionIDs) {
+                    IAuctionInfo auctionInfoInterface = RM.getAuction().getIAuctionInterface(i);
+
+                    Pane Auction = new Pane();
+                    Auction.setPrefWidth(800);
+                    Auction.setPrefHeight(150);
+                    Auction.relocate(0, 150 * i);
+                    if ((i % 2) == 0) {
+                        Auction.setStyle("-fx-background-color: lightgrey ");
+                    }
+                    Label productName = new Label();
+                    productName.setText(auctionInfoInterface.getProductName());
+                    productName.setFont(new Font("Arial", 25));
+                    productName.relocate(150, 25);
+
+                    Label price = new Label();
+                    price.setText("€" + auctionInfoInterface.getCurrentPrice());
+                    price.setFont(new Font("Arial", 20));
+                    price.relocate(550, 120);
+
+                    Label seller = new Label();
+                    seller.setText(auctionInfoInterface.getSellerName());
+                    seller.setFont(new Font("Arial", 15));
+                    seller.relocate(550, 20);
+
+                    TextArea description = new TextArea();
+                    description.setPrefSize(200, 60);
+                    description.relocate(150, 65);
+                    description.setText(auctionInfoInterface.getDescription());
+                    description.wrapTextProperty().setValue(Boolean.TRUE);
+                    description.setEditable(false);
+
+                    //setting image of auction
+                    ImageView image;
                     try {
-                        Pane Auction = new Pane();
-                        Auction.setPrefWidth(800);
-                        Auction.setPrefHeight(150);
-                        Auction.relocate(0, 150 * i);
-                        if ((i % 2) == 0) {
-                            Auction.setStyle("-fx-background-color: lightgrey ");
-                        }
-                        Label productName = new Label();
-                        productName.setText(a.getProduct().getName());
-                        productName.setFont(new Font("Arial", 25));
-                        productName.relocate(150, 25);
-
-                        Label price = new Label();
-                        price.setText("€" + a.getCurrentPrice());
-                        price.setFont(new Font("Arial", 20));
-                        price.relocate(550, 120);
-
-                        Label seller = new Label();
-                        seller.setText(a.getSeller().getUsername());
-                        seller.setFont(new Font("Arial", 15));
-                        seller.relocate(550, 20);
-
-                        TextArea description = new TextArea();
-                        description.setPrefSize(200, 60);
-                        description.relocate(150, 65);
-                        description.setText(a.getDescription());
-                        description.wrapTextProperty().setValue(Boolean.TRUE);
-                        description.setEditable(false);
-
-                        //setting image of auction
-                        ImageView image;
-                        try {
-                            image = new ImageView(new Image(a.getImageURLs()[0]));
-                        } catch (Exception ex) {
-                            image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                        }
-                        image.setFitWidth(100);
-                        image.setFitHeight(100);
-                        image.relocate(25, 25);
-                        image.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+                        image = new ImageView(new Image(auctionInfoInterface.getImageURLs()[0]));
+                    } catch (Exception ex) {
+                        image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+                    }
+                    image.setFitWidth(100);
+                    image.setFitHeight(100);
+                    image.relocate(25, 25);
+                    image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                            new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent e) {
                             try {
-                                showAuction(a);
+                                showAuction(i);
                             } catch (IOException ex) {
                                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        });
-                        Auction.getChildren().addAll(productName, image, price, seller, description);
-                        allAuctions.getChildren().add(Auction);
-                        i++;
-                    } catch (Exception ex) {
-                    }
+                        }
+                    });
+
+                    Auction.getChildren().addAll(productName, image, price, seller, description);
+                    allAuctions.getChildren().add(Auction);
                 }
                 elapsedTime = System.currentTimeMillis() - start;
                 System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
@@ -165,7 +173,7 @@ public class MainController implements Initializable {
                 try {
                     Thread auctionCalcThread = new Thread(taskCalc);
                     auctionCalcThread.start();
-                    auctionsPane.setContent((Pane)taskCalc.get());
+                    auctionsPane.setContent((Pane) taskCalc.get());
                 } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -173,12 +181,12 @@ public class MainController implements Initializable {
         }).start();
     }
 
-    public void showAuction(Auction a) throws IOException {
+    public void showAuction(Integer auctionID) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Auction.fxml"));
         Scene newScene;
         newScene = new Scene(loader.load());
         AuctionController controller = loader.<AuctionController>getController();
-        controller.setUp(a, this.RM);
+        controller.setUp(auctionID, this.RM);
         Stage inputStage = new Stage();
         inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);
