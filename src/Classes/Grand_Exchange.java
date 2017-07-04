@@ -2,6 +2,7 @@ package Classes;
 
 import Classes.Auctions.Auction;
 import Classes.Auctions.Direct;
+import Classes.Auctions.IAuctionInfo;
 import Classes.Auctions.Standard;
 import Classes.Auctions.StatusEnum;
 import Classes.User;
@@ -763,5 +764,20 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
     @Override
     public void updateAuction(Auction auction) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IAuctionInfo getIAuctionInterface(int auctionID) throws RemoteException {
+        IAuctionInfo auctionInfo = (IAuctionInfo) this.getAuction(id);
+        return auctionInfo;
+    }
+
+    @Override
+    public ArrayList<Integer> getAuctionIds() throws RemoteException {
+        ArrayList<Integer> tempList = new ArrayList<>();
+        for(Auction a : auctions){
+            tempList.add(a.getId());
+        }
+        return tempList;
     }
 }

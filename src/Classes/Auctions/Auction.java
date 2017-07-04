@@ -18,7 +18,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
     User seller;
     private int id;
 
-    private RemotePublisher publisher;
+    public RemotePublisher publisher;
     private double currentPrice;
     private double instabuyPrice;
 
@@ -81,8 +81,9 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
         this.imageURLs = imageURLs.split(";");
         bids = new ArrayList<>();
         publisher = new RemotePublisher();
-        publisher.registerProperty("");
-        publisher.registerProperty("");
+        publisher.registerProperty("currentprice");
+        publisher.registerProperty("quantity");
+        publisher.registerProperty("newbid");
     }
 
     /**
@@ -184,6 +185,11 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
     public String getDescription() {
         return description;
     }
+    
+    @Override
+    public String getProductName(){
+        return product.getName();
+    }
 
     @Override
     public StatusEnum getStatus() {
@@ -207,6 +213,11 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
     @Override
     public String[] getImageURLs() {
         return imageURLs;
+    }
+    
+    @Override
+    public String getSellerImageUrl(){
+        return seller.getImageURL();
     }
     
     @Override

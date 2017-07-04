@@ -35,6 +35,7 @@ public class Countdown extends Auction implements Serializable {
         this.creationDate = creatDate;
         setPrice();
         super.setType("countdown");
+        super.publisher.registerProperty("remainingtime");
     }
 
     public Countdown(int id, User seller, Product product, int quantity, double price, double priceloweringAmount, double priceloweringDelay, double minprice, StatusEnum status, String description, String imageURLs, double instabuy, Timestamp creatDate) throws RemoteException {

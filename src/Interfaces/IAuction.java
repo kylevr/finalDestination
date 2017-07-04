@@ -6,11 +6,13 @@
 package Interfaces;
 
 import Classes.Auctions.Auction;
+import Classes.Auctions.IAuctionInfo;
 import Classes.Bid;
 import Classes.Feedback;
 import Classes.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +33,8 @@ public interface IAuction extends Remote{
      * @return list of auctions
      */
     Auction getAuction(int id) throws RemoteException;
-
+    
+    IAuctionInfo getIAuctionInterface(int auctionID) throws RemoteException;
 
     /**
      *returns list of Bids with auction id
@@ -89,5 +92,7 @@ public interface IAuction extends Remote{
      * @param auction the auction that need to be updated
      */
     public void updateAuction(Auction auction) throws RemoteException;
+    
+    public ArrayList<Integer> getAuctionIds() throws RemoteException;
     
 }
