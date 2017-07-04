@@ -388,12 +388,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
                 System.out.println("Auction is null");
             }
 
-            for (Auction A : auctions) {
-                if (A.getId() == tempAuction.getId()) {
-                    auctions.set(auctions.indexOf(A), tempAuction);
-                    System.out.println(tempAuction.getProduct().getName() + "Replaced in list.");
-                }
-            }
+            
             if (!auctions.contains(tempAuction) && tempAuction != null) {
 
                 for (Queue_Purchase QP : queuepurchases) {
@@ -631,6 +626,9 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             if (a != null) {
                 if (a.getId() == auctionid) {
                     a.addBid(new Bid(auctionid, u, price));
+                    System.out.println("informing clients for auction: " + a.getProductName());
+                    a.informClients();
+                    
                 }
             }
         }
@@ -670,7 +668,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
         System.out.println(AuctionID);
         for (int i = 0; i < amount; i++) {
             auctions.get(index).addBid(new Bid(AuctionID, u, price));
-
+            auctions.get(index).informClients();
         }
 
         Auction a = auctions.get(index);
