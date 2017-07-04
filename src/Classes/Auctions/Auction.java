@@ -160,6 +160,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
      *
      * @return List<Bid>
      */
+    @Override
     public ArrayList<Bid> getBids() {
         return bids;
     }
