@@ -19,7 +19,7 @@ public interface IAuctionInfo {
     
     public void subscribe(IRemotePropertyListener listener, String property) throws RemoteException;
     public void unSubscribe(IRemotePropertyListener listener, String property) throws RemoteException;
-    public List<String> getImageURLs() throws RemoteException;
+    public String[] getImageURLs() throws RemoteException;
     public String getSellerImageUrl() throws RemoteException;
     public StatusEnum getStatus() throws RemoteException;
     public String getDescription() throws RemoteException;

@@ -214,8 +214,8 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
     }
 
     @Override
-    public List<String> getImageURLs() {
-        return Arrays.asList(imageURLs);
+    public String[] getImageURLs() {
+        return imageURLs;
     }
     
     @Override
