@@ -11,7 +11,6 @@ import Classes.Auctions.Direct;
 import Classes.Auctions.Standard;
 import Classes.Auctions.StatusEnum;
 import Classes.Bid;
-import Classes.Grand_Exchange;
 import Classes.User;
 import Exceptions.NotEnoughMoneyException;
 import Interfaces.IAuction;
@@ -55,7 +54,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javax.swing.JOptionPane;
 
@@ -162,24 +160,6 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
         System.out.println("subscribed");
         Stage thisStage = (Stage) BidBtn.getParent().getScene().getWindow();
 
-//        timeline1 = new Timeline();
-//        timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
-//
-//            @Override
-//            public void handle(Event event) {
-//                liveUpdate();
-//            }
-//        }));
-//        timeline1.playFromStart();
-//        timeline1 = new Timeline();
-//        timeline1.getKeyFrames().add(new KeyFrame(Duration.seconds(5), new EventHandler() {
-//
-//            @Override
-//            public void handle(Event event) {
-//                liveUpdate();
-//            }
-//        }));
-//        timeline1.playFromStart();
     }
 
     public void liveUpdate() {
@@ -224,7 +204,9 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     public void update() {
         int updateid = auction.getId();
         try {
-            auction = RM.getAuction().getAuction(updateid);
+            auctionInterface = RM.getAuction();
+            auction = auctionInterface.getAuction(updateid);
+//            auction = RM.getAuction().getAuction(updateid);
             System.out.print("abc");
         } catch (RemoteException ex) {
             Logger.getLogger(AuctionController.class

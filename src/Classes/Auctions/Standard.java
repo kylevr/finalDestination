@@ -8,6 +8,7 @@ package Classes.Auctions;
 import Classes.Product;
 import Classes.User;
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 
 /**
@@ -19,17 +20,19 @@ public class Standard extends Auction implements Serializable {
     private Timestamp creationDate;
     private Timestamp timeEnd;
 
-    public Standard(int id, User seller, Product product, double price, int quantity, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs, double instabuy) {
+    public Standard(int id, User seller, Product product, double price, int quantity, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs, double instabuy) throws RemoteException {
         super(id, seller, product, price, quantity, status, description, imageURLs, instabuy);
         this.timeEnd = timeEnd;
         this.creationDate = beginTime;
         this.timeEnd = new Timestamp(beginTime.getTime()+(long)604800000);
+        super.setType("standard");
     }
 
-    public Standard(User seller, Product product, int quantity, double price, double instabuyprice, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs) {
+    public Standard(User seller, Product product, int quantity, double price, double instabuyprice, Timestamp beginTime, Timestamp timeEnd, StatusEnum status, String description, String imageURLs) throws RemoteException {
         super(seller, product, quantity, price, instabuyprice, status, description, imageURLs);
         this.timeEnd = timeEnd;
         this.creationDate = beginTime;
+        super.setType("standard");
     }
 
     /**

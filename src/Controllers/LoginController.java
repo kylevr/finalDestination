@@ -5,14 +5,11 @@
  */
 package Controllers;
 
-import Classes.Grand_Exchange;
 import Classes.User;
-import Database.UserConnection;
 import Interfaces.IAuthorized;
 import grandexchange.RegistryManager;
 import java.io.IOException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  *
@@ -67,17 +62,16 @@ public class LoginController implements Initializable {
     public void button_loginUser() throws IOException {
         //nieuwe oplossing, fix ik na unittests. (database dingen >> isVerified)
         try {
-            
-            if(!textfield_username.getText().isEmpty() || !textfield_password.getText().isEmpty()){
-                //
-            
-            user = authorization.login(textfield_username.getText(), textfield_password.getText());
-            System.out.println("userid " + user.getUserID());
-            
+
+            if (!textfield_username.getText().isEmpty() || !textfield_password.getText().isEmpty()) {
+                
+                user = authorization.login(textfield_username.getText(), textfield_password.getText());
+                System.out.println("userid " + user.getUserID());
+                
             }
         } catch (Exception ex) {
-                                                                   Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-ex.printStackTrace();
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
 
         //tijdelijke oplossing user getten
@@ -112,15 +106,6 @@ ex.printStackTrace();
 
     @FXML
     public void button_registerUser() throws IOException {
-//        Stage newStage = new Stage();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Registration.fxml"));
-//        Parent root = loader.load();
-//        newStage.setScene(new Scene(root));
-//        newStage.show();
-//        Stage stage = (Stage) currentPane.getScene().getWindow();
-//        stage.close();
-        //Stage currentStage = (Stage)currentPane.getScene().getWindow();
-        //currentStage.close();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Registration.fxml"));
         Parent root = loader.load();
