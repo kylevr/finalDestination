@@ -121,32 +121,33 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     @FXML
     private Button buyButton;
 
-//    IRemotePublisherForListener auctionPublisher;
-    IAuction auctionInterface;
-    IPlaceBid bid;
-//    Auction auction;
-//    Direct directAuction;
-//    Standard standardAuction;
-//    private User loggedInUser;
+    // Registry manager
     private RegistryManager RM;
+    
+    // Interfaces
+    private IPlaceBid bid;
     private IAuctionInfo auctionInfo;
 
+    // Auction info
     private String type;
-    private String productNaam;
-    private String productBeschrijving;
+    private int auctionId;
+    private String[] auctionImageURL;
     private String auctionBeschrijving;
     private StatusEnum status;
-    private String sellerUsername;
-    private String sellerProfileURL;
-    private String[] auctionImageURL;
-
+    private double currentprice;
     private boolean isInstabuyable;
     private double instabuyprice;
     private int quantity;
-    private int auctionId;
-    private double currentprice;
-
     private List<Bid> biedingen;
+    
+    // Product info
+    private String productNaam;
+    private String productBeschrijving;
+    
+    // Seller info
+    private String sellerUsername;
+    private String sellerProfileURL;
+
 
     /**
      * Initializes the controller class.
@@ -343,7 +344,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
             name.setText(b.getPlacerUsername());
             name.setFont(new Font("Arial", 17));
             Label price = new Label();
-            if (b.getAmount() >= instabuyprice || instabuyprice != 0) {
+            if (b.getAmount() >= instabuyprice && instabuyprice != 0) {
                 price.setText("Bought at a price of: €" + b.getAmount());
             } else {
                 price.setText("Bidded: €" + b.getAmount() + " for this item");
@@ -384,33 +385,33 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     }
 
     public void buyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-//        RM.getPlaceBidInterface();
-//        this.bid = RM.getBid();
-//        System.out.println("Saldo = " + RM.getUser().getSaldo());
-//        RM.getUser().getSaldo();
-//
-//        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * auction.getCurrentPrice();
-//        if (RM.getUser().getSaldo() < totalprice) {
-//            JOptionPane.showMessageDialog(null, "You don't have enough money on your account to perform this action.");
-//        } else {
-//            if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= auction.getProductQuantity()) {
-//                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
-//                if (reply == JOptionPane.YES_OPTION) {
-//                    int units = Integer.parseInt(txtUnitstoBuyBid.getText());
-//                    bid.placeBuy(units, loggedInUser.getUsername(), auction.getId(), auction.getCurrentPrice());
-//                    //update();
-//                    JOptionPane.showMessageDialog(null, "Your order has been placed");
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Canceled");
-//                }
-//            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
-//                JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
-//            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > auction.getProductQuantity()) {
-//                JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Something went wrong");
-//            }
-//        }
+        RM.getPlaceBidInterface();
+        this.bid = RM.getBid();
+        System.out.println("Saldo = " + RM.getUser().getSaldo());
+        RM.getUser().getSaldo();
+
+        double totalprice = Double.parseDouble(txtUnitstoBuyBid.getText()) * currentprice;
+        if (RM.getUser().getSaldo() < totalprice) {
+            JOptionPane.showMessageDialog(null, "You don't have enough money on your account to perform this action.");
+        } else {
+            if (Integer.parseInt(txtUnitstoBuyBid.getText()) >= 1 && Integer.parseInt(txtUnitstoBuyBid.getText()) <= quantity) {
+                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to Buy " + txtUnitstoBuyBid.getText() + " items with a total price of: €" + totalprice + " ?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION) {
+                    int units = Integer.parseInt(txtUnitstoBuyBid.getText());
+                    bid.placeBuy(units, RM.getUser().getUsername(), auctionId, currentprice);
+                    //update();
+                    JOptionPane.showMessageDialog(null, "Your order has been placed");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Canceled");
+                }
+            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) < 1) {
+                JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
+            } else if (Integer.parseInt(txtUnitstoBuyBid.getText()) > quantity) {
+                JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
+            } else {
+                JOptionPane.showMessageDialog(null, "Something went wrong");
+            }
+        }
     }
 
     public void bidButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
@@ -436,25 +437,25 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
     }
 
     public void instabuyButtonClick() throws RemoteException, NotEnoughMoneyException, SQLException {
-//        RM.getPlaceBidInterface();
-//        this.bid = RM.getBid();
-//
-//        if (Integer.parseInt(txtUnitstoBuy.getText()) <= auction.getProductQuantity() && Integer.parseInt(txtUnitstoBuy.getText()) > 0 && auction != null) {
-//            double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * auction.getInstabuyPrice();
-//
-//            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + auction.getInstabuyPrice() + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
-//            if (reply == JOptionPane.YES_OPTION) {
-//                int units = Integer.parseInt(txtUnitstoBuy.getText());
-//                bid.placeBid(units, RM.getUser().getUserID(), auction.getId(), auction.getInstabuyPrice());
-//                //update();
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Canceled");
-//            }
-//        } else if (Integer.parseInt(txtUnitstoBuy.getText()) <= 0) {
-//            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
-//        } else {
-//            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
-//        }
+        RM.getPlaceBidInterface();
+        this.bid = RM.getBid();
+
+        if (Integer.parseInt(txtUnitstoBuy.getText()) <= quantity && Integer.parseInt(txtUnitstoBuy.getText()) > 0 ) {
+            double totalPrice = Double.parseDouble(txtUnitstoBuy.getText()) * instabuyprice;
+
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to buy " + txtUnitstoBuy.getText() + "\nitems with the price of: €" + instabuyprice + " a item \nand a total of: €" + totalPrice, "Are you sure?", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                int units = Integer.parseInt(txtUnitstoBuy.getText());
+                bid.placeBid(units, RM.getUser().getUserID(), auctionId, instabuyprice);
+                //update();
+            } else {
+                JOptionPane.showMessageDialog(null, "Canceled");
+            }
+        } else if (Integer.parseInt(txtUnitstoBuy.getText()) <= 0) {
+            JOptionPane.showMessageDialog(null, "You can't buy less than 1 object");
+        } else {
+            JOptionPane.showMessageDialog(null, "You can't buy more objects than there are available");
+        }
     }
 
     @FXML
