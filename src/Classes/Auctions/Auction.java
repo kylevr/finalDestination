@@ -254,6 +254,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
         return bd.doubleValue();
     }
 
+    @Override
     public int getId() {
         return id;
     }

@@ -33,6 +33,7 @@ public interface IAuctionInfo {
     public ArrayList<Bid> getBids() throws RemoteException;
     public boolean isInstabuyable() throws RemoteException;
     public int getProductQuantity() throws RemoteException;
+    public int getId() throws RemoteException;
     
     
     
