@@ -5,30 +5,12 @@
  */
 package grandexchange;
 
-import Classes.Auctions.Auction;
-import Classes.Auctions.Countdown;
-import Classes.Auctions.StatusEnum;
-import Classes.Bid;
-import Classes.Grand_Exchange;
-import Classes.Product;
-import Classes.User;
-import Controllers.AuctionController;
-import Controllers.LoginController;
-import Controllers.MainController;
 import java.io.IOException;
-import java.util.Date;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import Database.*;
-import java.io.Serializable;
-import java.util.ArrayList;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;

@@ -62,6 +62,7 @@ public class MainController implements Initializable {
     private ListView lstCategory;
 
     private RegistryManager RM;
+    private IAuctionInfo auctionInfoInterface;
 
     /**
      * Initializes the controller class.
@@ -105,7 +106,7 @@ public class MainController implements Initializable {
                 allAuctions.setPrefWidth(800);
                 allAuctions.setPrefHeight(150 * auctionIDs.size());
                 for (Integer i : auctionIDs) {
-                    IAuctionInfo auctionInfoInterface = RM.getAuction().getIAuctionInterface(i);
+                    auctionInfoInterface = RM.getAuction().getIAuctionInterface(i);
 
                     Pane Auction = new Pane();
                     Auction.setPrefWidth(800);
@@ -186,7 +187,7 @@ public class MainController implements Initializable {
         Scene newScene;
         newScene = new Scene(loader.load());
         AuctionController controller = loader.<AuctionController>getController();
-        controller.setUp(auctionID, this.RM);
+//        controller.setUp(auctionID, this.RM);
         Stage inputStage = new Stage();
         inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);

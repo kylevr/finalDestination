@@ -8,6 +8,7 @@ package Interfaces;
 import Classes.Auctions.StatusEnum;
 import Classes.Bid;
 import fontyspublisher.IRemotePropertyListener;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author SwekLord420
  */
-public interface IAuctionInfo {
+public interface IAuctionInfo extends Remote{
     
     public void subscribe(IRemotePropertyListener listener, String property) throws RemoteException;
     public void unSubscribe(IRemotePropertyListener listener, String property) throws RemoteException;
