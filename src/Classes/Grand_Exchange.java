@@ -766,7 +766,7 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
 
     @Override
     public IAuctionInfo getIAuctionInterface(int auctionID) throws RemoteException {
-        IAuctionInfo auctionInfo = (IAuctionInfo) this.getAuction(id);
+        IAuctionInfo auctionInfo = (IAuctionInfo) this.getAuction(auctionID);
         return auctionInfo;
     }
 
