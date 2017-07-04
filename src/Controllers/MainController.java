@@ -21,19 +21,16 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -60,16 +57,13 @@ public class MainController implements Initializable {
     private ComboBox<CategoryEnum> comboBoxCategory;
     @FXML
     private ListView lstCategory;
-    @FXML
-    private Button btnQueuePurchase;
-    @FXML
-    private TextField textField_usernameOfFeedbackOwner;
 
-    private IAuction auctionInterface;
     private RegistryManager RM;
 
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -79,7 +73,6 @@ public class MainController implements Initializable {
     public void setUp(RegistryManager RM) throws RemoteException {
         this.RM = RM;
         RM.getAuctionInterface();
-        auctionInterface = RM.getAuction();
         this.refreshAuctions();
         try {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
@@ -98,7 +91,7 @@ public class MainController implements Initializable {
             public Pane call() throws RemoteException {
                 //get auctions
                 long start = System.currentTimeMillis();
-                Collection<Auction> auctions = auctionInterface.getAuctions();
+                Collection<Auction> auctions = RM.getAuction().getAuctions();
                 long elapsedTime = System.currentTimeMillis() - start;
                 System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
 
@@ -149,15 +142,11 @@ public class MainController implements Initializable {
                         image.setFitWidth(100);
                         image.setFitHeight(100);
                         image.relocate(25, 25);
-                        image.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                                new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent e) {
-                                try {
-                                    showAuction(a);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                        image.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+                            try {
+                                showAuction(a);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         });
                         Auction.getChildren().addAll(productName, image, price, seller, description);
@@ -173,22 +162,16 @@ public class MainController implements Initializable {
             }
         };
 
-        new Thread(new Runnable() {
-            @Override public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override public void run() {
-                        try {
-                            Thread auctionCalcThread = new Thread(taskCalc);
-                            auctionCalcThread.start();
-                            auctionsPane.setContent((Pane)taskCalc.get());
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ExecutionException ex) {
-                            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                });
-            }
+        new Thread(() -> {
+            Platform.runLater(() -> {
+                try {
+                    Thread auctionCalcThread = new Thread(taskCalc);
+                    auctionCalcThread.start();
+                    auctionsPane.setContent((Pane)taskCalc.get());
+                } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         }).start();
     }
 
@@ -201,12 +184,10 @@ public class MainController implements Initializable {
         Stage inputStage = new Stage();
         inputStage.getIcons().add(new Image("/Icon/scale.png"));
         inputStage.setScene(newScene);
-        inputStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                System.out.println("Stage X Disabled");
-                we.consume();
-                JOptionPane.showMessageDialog(null, "Please use the close button located on the top left of the screen");
-            }
+        inputStage.setOnCloseRequest((WindowEvent we) -> {
+            System.out.println("Stage X Disabled");
+            we.consume();
+            JOptionPane.showMessageDialog(null, "Please use the close button located on the top left of the screen");
         });
         inputStage.showAndWait();
     }
@@ -232,7 +213,6 @@ public class MainController implements Initializable {
     @FXML
     public void button_Logout() throws IOException {
         RM.getAuthorization().logout(RM.getUser().getUsername());
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Login.fxml"));
         Parent root = loader.load();
         Stage newStage = new Stage();
@@ -272,45 +252,11 @@ public class MainController implements Initializable {
             inputStage.setScene(newScene);
             inputStage.showAndWait();
         } catch (Exception e) {
-            e.printStackTrace();
             Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }
-
-    public void button_goToFeedbackOf() throws IOException {
-        if (!textField_usernameOfFeedbackOwner.getText().isEmpty()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Profile_Feedback.fxml"));
-                Parent root = loader.load();
-                Profile_FeedbackController controller = (Profile_FeedbackController) loader.getController();
-                controller.setUp(RM, textField_usernameOfFeedbackOwner.getText());
-                Stage inputStage = new Stage();
-                Scene newScene = new Scene(root);
-                inputStage.getIcons().add(new Image("/Icon/scale.png"));
-                inputStage.setScene(newScene);
-                inputStage.setTitle("Grand Exchange");
-                inputStage.show();
-                Stage stage = (Stage) auctionsPane.getScene().getWindow();
-                stage.close();
-            } catch (Exception ex) {
-                System.out.println("Failed to open feedback screen");
-                ex.printStackTrace();
-                Logger.getLogger(AuctionController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            System.out.println("textField_usernameOfFeedbackOwner may not be empty when trying to open profile feedback");
         }
     }
 
     public void button_exit() {
         Runtime.getRuntime().halt(1);
-    }
-
-    public void btnRefresh() {
-        try {
-            this.refreshAuctions();
-        } catch (RemoteException ex) {
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }
