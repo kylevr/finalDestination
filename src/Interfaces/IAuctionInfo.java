@@ -6,8 +6,11 @@
 package Interfaces;
 
 import Classes.Auctions.StatusEnum;
+import Classes.Bid;
 import fontyspublisher.IRemotePropertyListener;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -27,7 +30,10 @@ public interface IAuctionInfo {
     public String getSellerName() throws RemoteException;
     public Double getCurrentPrice() throws RemoteException;
     public double getInstabuyPrice() throws RemoteException;
+    public ArrayList<Bid> getBids() throws RemoteException;
     public boolean isInstabuyable() throws RemoteException;
     public int getProductQuantity() throws RemoteException;
+    
+    
     
 }
