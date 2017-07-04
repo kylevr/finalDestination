@@ -61,7 +61,7 @@ public abstract class Auction extends UnicastRemoteObject implements Serializabl
         publisher = new RemotePublisher();
         publisher.registerProperty("currentprice");
         publisher.registerProperty("quantity");
-        publisher.registerProperty("newbid");
+        publisher.registerProperty("newbid");   
     }
 
     /**

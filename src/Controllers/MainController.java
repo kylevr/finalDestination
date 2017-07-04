@@ -6,13 +6,18 @@
 package Controllers;
 
 import Classes.Auctions.Auction;
+import Classes.Bid;
 import Classes.CategoryEnum;
 import Interfaces.IAuction;
 import Interfaces.IAuctionInfo;
+import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.RemotePublisher;
 import grandexchange.RegistryManager;
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +32,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -50,7 +56,7 @@ import javax.swing.JOptionPane;
  *
  * @author piete
  */
-public class MainController implements Initializable {
+public class MainController extends UnicastRemoteObject implements IRemotePropertyListener, Initializable {
 
     @FXML
     private ScrollPane auctionsPane;
@@ -62,7 +68,9 @@ public class MainController implements Initializable {
     private ListView lstCategory;
 
     private RegistryManager RM;
-    private IAuctionInfo auctionInfoInterface;
+    private IAuction auctionInterface;
+    private RemotePublisher publisher;
+
 
     /**
      * Initializes the controller class.
@@ -75,9 +83,15 @@ public class MainController implements Initializable {
         // TODO
     }
 
+    public MainController() throws RemoteException
+    {
+    }
+    
     public void setUp(RegistryManager RM) throws RemoteException {
         this.RM = RM;
         RM.getAuctionInterface();
+        auctionInterface = RM.getAuction();
+        publisher = new RemotePublisher();  
         //this.refreshAuctions();
         try {
             loggedInUserImage.setImage(new Image(RM.getUser().getImageURL()));
@@ -91,95 +105,94 @@ public class MainController implements Initializable {
 
     @FXML
     public void refreshAuctions() throws RemoteException {
-        Task taskCalc = new Task<Pane>() {
-            @Override
-            public Pane call() throws RemoteException {
-                //get auctions               
-                long start = System.currentTimeMillis();
-                ArrayList<Integer> auctionIDs = RM.getAuction().getAuctionIds();
-                long elapsedTime = System.currentTimeMillis() - start;
-                System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
+        //get auctions               
+        long start = System.currentTimeMillis();
+        ArrayList<Integer> auctionIDs = auctionInterface.getAuctionIds();
+        long elapsedTime = System.currentTimeMillis() - start;
+        System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
 
-                //draw auctions
-                start = System.currentTimeMillis();
-                Pane allAuctions = new Pane();
-                allAuctions.setPrefWidth(800);
-                allAuctions.setPrefHeight(150 * auctionIDs.size());
-                for (Integer i : auctionIDs) {
-                    auctionInfoInterface = RM.getAuction().getIAuctionInterface(i);
+        //draw auctions
+        start = System.currentTimeMillis();
+        Pane allAuctions = new Pane();
+        allAuctions.setPrefWidth(800);
+        allAuctions.setPrefHeight(150 * auctionIDs.size());
+        for (Integer i : auctionIDs) {
+            IAuctionInfo auctionInfoInterface = auctionInterface.getIAuctionInterface(i);
 
-                    Pane Auction = new Pane();
-                    Auction.setPrefWidth(800);
-                    Auction.setPrefHeight(150);
-                    Auction.relocate(0, 150 * i);
-                    if ((i % 2) == 0) {
-                        Auction.setStyle("-fx-background-color: lightgrey ");
-                    }
-                    Label productName = new Label();
-                    productName.setText(auctionInfoInterface.getProductName());
-                    productName.setFont(new Font("Arial", 25));
-                    productName.relocate(150, 25);
-
-                    Label price = new Label();
-                    price.setText("€" + auctionInfoInterface.getCurrentPrice());
-                    price.setFont(new Font("Arial", 20));
-                    price.relocate(550, 120);
-
-                    Label seller = new Label();
-                    seller.setText(auctionInfoInterface.getSellerName());
-                    seller.setFont(new Font("Arial", 15));
-                    seller.relocate(550, 20);
-
-                    TextArea description = new TextArea();
-                    description.setPrefSize(200, 60);
-                    description.relocate(150, 65);
-                    description.setText(auctionInfoInterface.getDescription());
-                    description.wrapTextProperty().setValue(Boolean.TRUE);
-                    description.setEditable(false);
-
-                    //setting image of auction
-                    ImageView image;
-                    try {
-                        image = new ImageView(new Image(auctionInfoInterface.getImageURLs()[0]));
-                    } catch (Exception ex) {
-                        image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
-                    }
-                    image.setFitWidth(100);
-                    image.setFitHeight(100);
-                    image.relocate(25, 25);
-                    image.addEventHandler(MouseEvent.MOUSE_CLICKED,
-                            new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent e) {
-                            try {
-                                showAuction(auctionInfoInterface);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    });
-
-                    Auction.getChildren().addAll(productName, image, price, seller, description);
-                    allAuctions.getChildren().add(Auction);
-                }
-                elapsedTime = System.currentTimeMillis() - start;
-                System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
-
-                return allAuctions;
+            Pane Auction = new Pane();
+            Auction.setPrefWidth(800);
+            Auction.setPrefHeight(150);
+            Auction.relocate(0, 150 * i);
+            if ((i % 2) == 0) {
+                Auction.setStyle("-fx-background-color: lightgrey ");
             }
-        };
+            Label productName = new Label();
+            productName.setText(auctionInfoInterface.getProductName());
+            productName.setFont(new Font("Arial", 25));
+            productName.relocate(150, 25);
+            publisher.registerProperty("productname" + i);
+            publisher.subscribeRemoteListener(this, "productname" + i);
+            publisher.inform("productname" + i, this, auctionInfoInterface.getProductName());
 
-        new Thread(() -> {
-            Platform.runLater(() -> {
-                try {
-                    Thread auctionCalcThread = new Thread(taskCalc);
-                    auctionCalcThread.start();
-                    auctionsPane.setContent((Pane) taskCalc.get());
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            Label price = new Label();
+            price.setText("€" + auctionInfoInterface.getCurrentPrice());
+            price.setFont(new Font("Arial", 20));
+            price.relocate(550, 120);
+            publisher.registerProperty("currentprice" + i);
+            publisher.subscribeRemoteListener(this, "currentprice" + i);
+            publisher.inform("currentprice" + i, this, auctionInfoInterface.getCurrentPrice());
+
+            Label seller = new Label();
+            seller.setText(auctionInfoInterface.getSellerName());
+            seller.setFont(new Font("Arial", 15));
+            seller.relocate(550, 20);
+            publisher.registerProperty("sellername" + i);
+            publisher.subscribeRemoteListener(this, "sellername" + i);
+            publisher.inform("sellername" + i, this, auctionInfoInterface.getSellerName());
+
+
+            TextArea description = new TextArea();
+            description.setPrefSize(200, 60);
+            description.relocate(150, 65);
+            description.setText(auctionInfoInterface.getDescription());
+            description.wrapTextProperty().setValue(Boolean.TRUE);
+            description.setEditable(false);
+            publisher.registerProperty("description" + i);
+            publisher.subscribeRemoteListener(this, "description" + i);
+            publisher.inform("description" + i, this, auctionInfoInterface.getDescription());
+
+            //setting image of auction
+            ImageView image;
+            try {
+                image = new ImageView(new Image(auctionInfoInterface.getImageURLs()[0]));
+            } catch (Exception ex) {
+                image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+            }
+            image.setFitWidth(100);
+            image.setFitHeight(100);
+            image.relocate(25, 25);
+            image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                    new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    try {
+                        showAuction(auctionInfoInterface);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
-        }).start();
+            publisher.registerProperty("imagethumbnail" + i);
+            publisher.subscribeRemoteListener(this, "imagethumbnail" + i);
+            publisher.inform("imagethumbnail" + i, this, image.getUserData());
+
+            Auction.getChildren().addAll(productName, image, price, seller, description);
+            allAuctions.getChildren().add(Auction);
+        }
+        elapsedTime = System.currentTimeMillis() - start;
+        System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
+
+        auctionsPane.setContent(allAuctions);
     }
 
     public void showAuction(IAuctionInfo auctionInfoInterface) throws IOException {
@@ -266,4 +279,116 @@ public class MainController implements Initializable {
     public void button_exit() {
         Runtime.getRuntime().halt(1);
     }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
+        //HOE HET ZOU MOETEN IN THEORIE!!!  Note: bij de eerste inform zijn de childs sowieso nog null, omdat de content van de auctionspane nog niet is geset.
+        System.out.println("Maincontroller detected propertyChange of " + evt.getPropertyName());
+                
+        String compareString = "productname.*";
+        /* kijk wat het producttype is, if bepaald type handel af voor dat type*/
+        if (evt.getPropertyName().matches(compareString))
+        {
+            /*haal auctionID uit de binnengekregen value*/
+            int auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+            
+            
+            /*doorloop de lijst in de GUI en update corresponderend gui element*/
+            //implementeer
+        }
+        /*maak if statements voor de andere cases (currentprice, imagethumbnail enzovoorts)*/
+        
+        compareString = "currentprice.*";
+        /* kijk wat het producttype is, if bepaald type handel af voor dat type*/
+        if (evt.getPropertyName().matches(compareString))
+        {
+            /*haal auctionID uit de binnengekregen value*/
+            int auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+            
+            /*doorloop de lijst in de GUI en update corresponderend gui element*/
+            //implementeer
+        }
+     
+        
+        
+        
+//        //implementeer ondergegeven switch voor de maincontroller's auctions
+//        System.out.println("Maincontroller detected propertyChange of " + evt.getPropertyName());
+//        
+//        Pane allAuctions = (Pane)this.auctionsPane.getContent();
+//        
+//        int auctionID = -1;
+//        String compareString = "productname.*";
+//        if (evt.getPropertyName().matches(compareString))
+//        {
+//            int i = 0;
+//            auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+//            
+//            for (Node child : allAuctions.getChildren()) //het aantal children is 16...zijn dit de auctions?
+//            {
+//                i++;
+//                //object o is ALTIJD null. Maar dit kan toch niet als er een lijst met children is? 
+//                //je hoort toch geen list van null objecten te krijgen? 
+//                //als ik in debug mode naar child kijk, lijkt het niet een null object... vreemd                
+//                Object o = child; 
+//                System.out.println(o);
+//                System.out.println(i);
+//            }
+//        }
+//        else
+//        {
+//            
+//        }
+//        compareString = "currentprice.*";
+//        if (evt.getPropertyName().matches(compareString))
+//        {
+//            auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+//            for (Auction a : this.auctionInterface.getAuctions())
+//            {
+//                if (a.equals(this.auctionInterface.getAuction(auctionID)))
+//                {
+//                    a.setCurrentPrice((Double)evt.getNewValue());
+//                }
+//            }
+//        }
+//        compareString = "sellername.*";
+//        if (evt.getPropertyName().matches(compareString))
+//        {
+//            auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+//            for (Auction a : this.auctionInterface.getAuctions())
+//            {
+//                if (a.equals(this.auctionInterface.getAuction(auctionID)))
+//                {
+//                    a.setSellername((String)evt.getNewValue());
+//                }
+//            }        
+//        }      
+//        compareString = "description.*";
+//        if (evt.getPropertyName().matches(compareString))
+//        {
+//            auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+//            for (Auction a : this.auctionInterface.getAuctions())
+//            {
+//                if (a.equals(this.auctionInterface.getAuction(auctionID)))
+//                {
+//                    a.setDescription((String)evt.getNewValue());
+//                }
+//            }
+//        }
+//        compareString = "imagethumbnail.*";
+//        if (evt.getPropertyName().matches(compareString))
+//        {
+//            auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
+//            for (Auction a : this.auctionInterface.getAuctions())
+//            {
+//                if (a.equals(this.auctionInterface.getAuction(auctionID)))
+//                {
+//                    a.setImagethumbnail((Image)evt.getNewValue());
+//                }
+//            }
+//        }
+        
+
+    }
 }
+
