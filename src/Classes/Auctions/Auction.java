@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Auction extends UnicastRemoteObject implements Serializable, IAuctionInfo {
+public class Auction extends UnicastRemoteObject implements Serializable, IAuctionInfo {
 
     User seller;
     private int id;
