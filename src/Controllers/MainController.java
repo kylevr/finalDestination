@@ -125,33 +125,11 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
             {
                 allAuctions.setPrefHeight(this.auctionsPane.getPrefHeight() + auctionsPane.getPrefHeight());
                 this.auctionsPane.setPrefHeight(allAuctions.getPrefHeight());
-
-                Collection<Node> toRemove = new ArrayList<Node>();
-                for (Node node : allAuctions.getChildren())
-                {
-                    String a = "abc";
-                    Pane pane = (Pane)node;
-                    Label auctionIDLabel = (Label)pane.getChildren().get(5);
-                    Integer auctionID = parseInt(auctionIDLabel.getText());
-                    if (i.equals(auctionID))
-                    {
-                        toRemove.add(node);
-                    }
-                }
-                allAuctions.getChildren().removeAll(toRemove);
-                allAuctions.getChildren().add(auctionPane);
-
                 
-//                publisher.registerProperty("auctionPane" + i);
-//                publisher.subscribeRemoteListener(this, "auctionPane" + i);
-//                publisher.inform("auctionPane" + i, this, auctionPane);  
+                publisher.registerProperty("auctionPane" + i);
+                publisher.subscribeRemoteListener(this, "auctionPane" + i);
+                publisher.inform("auctionPane" + i, this, auctionPane);  
             }
-
-//            publisher.registerProperty("auctionPane" + i);
-//            publisher.subscribeRemoteListener(this, "auctionPane" + i);
-//            publisher.inform("auctionPane" + i, this, auctionPane);            
-            
-            //allAuctions.getChildren().add(auctionPane);
         }
         this.auctionsPane.setContent(allAuctions);
         elapsedTime = System.currentTimeMillis() - start;
@@ -414,12 +392,31 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
         if (evt.getPropertyName().matches(compareString))
         {
             /*haal auctionID uit de binnengekregen value*/
-            int auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
-            
+            Integer auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
             
             /*doorloop de lijst in de GUI en update corresponderend gui element*/
             //implementeer
-            //allAuctions.getChildren().add((Pane)evt.getNewValue());
+            Pane auctionPane = this.getPaneOfAuction(auctionID);
+            if (auctionPane != null)
+            {
+                allAuctions.setPrefHeight(this.auctionsPane.getPrefHeight() + auctionsPane.getPrefHeight());
+                this.auctionsPane.setPrefHeight(allAuctions.getPrefHeight());
+                
+                Collection<Node> toRemove = new ArrayList<Node>();
+                for (Node node : allAuctions.getChildren())
+                {
+                    String a = "abc";
+                    Pane pane = (Pane)node;
+                    Label auctionIDLabel = (Label)pane.getChildren().get(5);
+                    Integer auctionIDFromLabel = parseInt(auctionIDLabel.getText());
+                    if (auctionID.equals(auctionIDFromLabel))
+                    {
+                        toRemove.add(node);
+                    }
+                }
+                allAuctions.getChildren().removeAll(toRemove);
+                allAuctions.getChildren().add(auctionPane);
+            }      
         }
         /*maak if statements voor de andere cases (currentprice, imagethumbnail enzovoorts)*/
 
