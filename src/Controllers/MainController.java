@@ -70,6 +70,7 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
     private RegistryManager RM;
     private IAuction auctionInterface;
     private RemotePublisher publisher;
+    Pane allAuctions;
 
 
     /**
@@ -89,6 +90,7 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
     
     public void setUp(RegistryManager RM) throws RemoteException {
         this.RM = RM;
+        allAuctions = new Pane();
         RM.getAuctionInterface();
         auctionInterface = RM.getAuction();
         publisher = new RemotePublisher();  
@@ -113,54 +115,163 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
 
         //draw auctions
         start = System.currentTimeMillis();
-        Pane allAuctions = new Pane();
         allAuctions.setPrefWidth(800);
-        allAuctions.setPrefHeight(150 * auctionIDs.size());
+        this.auctionsPane.setPrefWidth(allAuctions.getPrefWidth());
+        
         for (Integer i : auctionIDs) {
-            IAuctionInfo auctionInfoInterface = auctionInterface.getIAuctionInterface(i);
+            Pane auctionPane = this.getPaneOfAuction(i);
+            if (auctionPane != null)
+            {
+                allAuctions.setPrefHeight(this.auctionsPane.getPrefHeight() + auctionsPane.getPrefHeight());
+                this.auctionsPane.setPrefHeight(allAuctions.getPrefHeight());
+                for (Node node : allAuctions.getChildren())
+                {
+                    Object o = (Pane)node;
+                    System.out.println(o);
+                }
+                allAuctions.getChildren().add(auctionPane);
+                
+                publisher.registerProperty("auctionPane" + i);
+                publisher.subscribeRemoteListener(this, "auctionPane" + i);
+                publisher.inform("auctionPane" + i, this, auctionPane);  
+            }
 
-            Pane Auction = new Pane();
-            Auction.setPrefWidth(800);
-            Auction.setPrefHeight(150);
-            Auction.relocate(0, 150 * i);
+//            publisher.registerProperty("auctionPane" + i);
+//            publisher.subscribeRemoteListener(this, "auctionPane" + i);
+//            publisher.inform("auctionPane" + i, this, auctionPane);            
+            
+            //allAuctions.getChildren().add(auctionPane);
+        }
+        this.auctionsPane.setContent(allAuctions);
+        elapsedTime = System.currentTimeMillis() - start;
+        System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
+    }
+    
+//    @FXML
+//    public void refreshAuctions() throws RemoteException {
+//        //get auctions               
+//        long start = System.currentTimeMillis();
+//        ArrayList<Integer> auctionIDs = auctionInterface.getAuctionIds();
+//        long elapsedTime = System.currentTimeMillis() - start;
+//        System.out.println("PerformanceGetAuctionsInMS=" + elapsedTime);
+//
+//        //draw auctions
+//        start = System.currentTimeMillis();
+//        Pane allAuctions = new Pane();
+//        allAuctions.setPrefWidth(800);
+//        allAuctions.setPrefHeight(150 * auctionIDs.size());
+//        
+//        for (Integer i : auctionIDs) {
+//            IAuctionInfo auctionInfoInterface = auctionInterface.getIAuctionInterface(i);
+//            
+//            Pane Auction = new Pane();
+//            Auction.setPrefWidth(800);
+//            Auction.setPrefHeight(150);
+//            Auction.relocate(0, 150 * i);
+//            if ((i % 2) == 0) {
+//                Auction.setStyle("-fx-background-color: lightgrey ");
+//            }
+//            Label productName = new Label();
+//            productName.setText(auctionInfoInterface.getProductName());
+//            productName.setFont(new Font("Arial", 25));
+//            productName.relocate(150, 25);
+//            publisher.registerProperty("productname" + i);
+//            publisher.subscribeRemoteListener(this, "productname" + i);
+//            publisher.inform("productname" + i, this, auctionInfoInterface.getProductName());
+//
+//            Label price = new Label();
+//            price.setText("€" + auctionInfoInterface.getCurrentPrice());
+//            price.setFont(new Font("Arial", 20));
+//            price.relocate(550, 120);
+//            publisher.registerProperty("currentprice" + i);
+//            publisher.subscribeRemoteListener(this, "currentprice" + i);
+//            publisher.inform("currentprice" + i, this, auctionInfoInterface.getCurrentPrice());
+//
+//            Label seller = new Label();
+//            seller.setText(auctionInfoInterface.getSellerName());
+//            seller.setFont(new Font("Arial", 15));
+//            seller.relocate(550, 20);
+//            publisher.registerProperty("sellername" + i);
+//            publisher.subscribeRemoteListener(this, "sellername" + i);
+//            publisher.inform("sellername" + i, this, auctionInfoInterface.getSellerName());
+//
+//
+//            TextArea description = new TextArea();
+//            description.setPrefSize(200, 60);
+//            description.relocate(150, 65);
+//            description.setText(auctionInfoInterface.getDescription());
+//            description.wrapTextProperty().setValue(Boolean.TRUE);
+//            description.setEditable(false);
+//            publisher.registerProperty("description" + i);
+//            publisher.subscribeRemoteListener(this, "description" + i);
+//            publisher.inform("description" + i, this, auctionInfoInterface.getDescription());
+//
+//            //setting image of auction
+//            ImageView image;
+//            try {
+//                image = new ImageView(new Image(auctionInfoInterface.getImageURLs()[0]));
+//            } catch (Exception ex) {
+//                image = new ImageView(new Image(this.getClass().getResource("/Classes/unavailable.jpg").toExternalForm()));
+//            }
+//            image.setFitWidth(100);
+//            image.setFitHeight(100);
+//            image.relocate(25, 25);
+//            image.addEventHandler(MouseEvent.MOUSE_CLICKED,
+//                    new EventHandler<MouseEvent>() {
+//                @Override
+//                public void handle(MouseEvent e) {
+//                    try {
+//                        showAuction(auctionInfoInterface);
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//            });
+//            publisher.registerProperty("imagethumbnail" + i);
+//            publisher.subscribeRemoteListener(this, "imagethumbnail" + i);
+//            publisher.inform("imagethumbnail" + i, this, image.getUserData());
+//
+//            Auction.getChildren().addAll(productName, image, price, seller, description);
+//            allAuctions.getChildren().add(Auction);
+//        }
+//        auctionsPane.setContent(allAuctions);
+//        elapsedTime = System.currentTimeMillis() - start;
+//        System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
+//    }
+    
+    public Pane getPaneOfAuction(int i)
+    {
+        Pane auctionPane = new Pane();
+        try {
+            IAuctionInfo auctionInfoInterface = auctionInterface.getIAuctionInterface(i);
+            auctionPane.setPrefWidth(800);
+            auctionPane.setPrefHeight(150);
+            auctionPane.relocate(0, 150 * i);
             if ((i % 2) == 0) {
-                Auction.setStyle("-fx-background-color: lightgrey ");
+                auctionPane.setStyle("-fx-background-color: lightgrey ");
             }
             Label productName = new Label();
             productName.setText(auctionInfoInterface.getProductName());
             productName.setFont(new Font("Arial", 25));
             productName.relocate(150, 25);
-            publisher.registerProperty("productname" + i);
-            publisher.subscribeRemoteListener(this, "productname" + i);
-            publisher.inform("productname" + i, this, auctionInfoInterface.getProductName());
-
+            
             Label price = new Label();
             price.setText("€" + auctionInfoInterface.getCurrentPrice());
             price.setFont(new Font("Arial", 20));
             price.relocate(550, 120);
-            publisher.registerProperty("currentprice" + i);
-            publisher.subscribeRemoteListener(this, "currentprice" + i);
-            publisher.inform("currentprice" + i, this, auctionInfoInterface.getCurrentPrice());
-
+            
             Label seller = new Label();
             seller.setText(auctionInfoInterface.getSellerName());
             seller.setFont(new Font("Arial", 15));
             seller.relocate(550, 20);
-            publisher.registerProperty("sellername" + i);
-            publisher.subscribeRemoteListener(this, "sellername" + i);
-            publisher.inform("sellername" + i, this, auctionInfoInterface.getSellerName());
-
-
+             
             TextArea description = new TextArea();
             description.setPrefSize(200, 60);
             description.relocate(150, 65);
             description.setText(auctionInfoInterface.getDescription());
             description.wrapTextProperty().setValue(Boolean.TRUE);
             description.setEditable(false);
-            publisher.registerProperty("description" + i);
-            publisher.subscribeRemoteListener(this, "description" + i);
-            publisher.inform("description" + i, this, auctionInfoInterface.getDescription());
-
+            
             //setting image of auction
             ImageView image;
             try {
@@ -173,26 +284,21 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
             image.relocate(25, 25);
             image.addEventHandler(MouseEvent.MOUSE_CLICKED,
                     new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    try {
-                        showAuction(auctionInfoInterface);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-            publisher.registerProperty("imagethumbnail" + i);
-            publisher.subscribeRemoteListener(this, "imagethumbnail" + i);
-            publisher.inform("imagethumbnail" + i, this, image.getUserData());
+                        @Override
+                        public void handle(MouseEvent e) {
+                            try {
+                                showAuction(auctionInfoInterface);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    });
+            auctionPane.getChildren().addAll(productName, image, price, seller, description);
 
-            Auction.getChildren().addAll(productName, image, price, seller, description);
-            allAuctions.getChildren().add(Auction);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        elapsedTime = System.currentTimeMillis() - start;
-        System.out.println("PerformanceSetAuctionsPaneInMS=" + elapsedTime);
-
-        auctionsPane.setContent(allAuctions);
+        return auctionPane;
     }
 
     public void showAuction(IAuctionInfo auctionInfoInterface) throws IOException {
@@ -285,7 +391,7 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
         //HOE HET ZOU MOETEN IN THEORIE!!!  Note: bij de eerste inform zijn de childs sowieso nog null, omdat de content van de auctionspane nog niet is geset.
         System.out.println("Maincontroller detected propertyChange of " + evt.getPropertyName());
                 
-        String compareString = "productname.*";
+        String compareString = "auctionPane.*";
         /* kijk wat het producttype is, if bepaald type handel af voor dat type*/
         if (evt.getPropertyName().matches(compareString))
         {
@@ -295,22 +401,10 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
             
             /*doorloop de lijst in de GUI en update corresponderend gui element*/
             //implementeer
+            //allAuctions.getChildren().add((Pane)evt.getNewValue());
         }
         /*maak if statements voor de andere cases (currentprice, imagethumbnail enzovoorts)*/
-        
-        compareString = "currentprice.*";
-        /* kijk wat het producttype is, if bepaald type handel af voor dat type*/
-        if (evt.getPropertyName().matches(compareString))
-        {
-            /*haal auctionID uit de binnengekregen value*/
-            int auctionID = Integer.parseInt(evt.getPropertyName().substring(compareString.length()-2, evt.getPropertyName().length()));
-            
-            /*doorloop de lijst in de GUI en update corresponderend gui element*/
-            //implementeer
-        }
-     
-        
-        
+
         
 //        //implementeer ondergegeven switch voor de maincontroller's auctions
 //        System.out.println("Maincontroller detected propertyChange of " + evt.getPropertyName());
