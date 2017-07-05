@@ -405,7 +405,6 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
                 Collection<Node> toRemove = new ArrayList<Node>();
                 for (Node node : allAuctions.getChildren())
                 {
-                    String a = "abc";
                     Pane pane = (Pane)node;
                     Label auctionIDLabel = (Label)pane.getChildren().get(5);
                     Integer auctionIDFromLabel = parseInt(auctionIDLabel.getText());
@@ -414,7 +413,10 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
                         toRemove.add(node);
                     }
                 }
-                allAuctions.getChildren().removeAll(toRemove);
+                if (!toRemove.isEmpty())
+                {
+                    allAuctions.getChildren().removeAll(toRemove);
+                }
                 allAuctions.getChildren().add(auctionPane);
             }      
         }
