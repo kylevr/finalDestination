@@ -324,7 +324,7 @@ public class AuctionController extends UnicastRemoteObject implements IRemotePro
             name.setText(b.getPlacerUsername());
             name.setFont(new Font("Arial", 17));
             Label price = new Label();
-            if (b.getAmount() >= instabuyprice && instabuyprice != 0) {
+            if ((b.getAmount() >= instabuyprice && instabuyprice != 0)||type.equals("countdown")) {
                 price.setText("Bought at a price of: €" + b.getAmount());
             } else {
                 price.setText("Bidded: €" + b.getAmount() + " for this item");
