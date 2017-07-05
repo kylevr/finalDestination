@@ -195,7 +195,12 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
      * @return
      */
     public int addProductToDB(String name, String description, int gtin) {
-        return productConn.insertProduct(name, description, gtin);
+        int productId = productConn.insertProduct(name, description, gtin);
+        if(productId > 0){
+            Product newProduct = new Product(productId,Integer.toString(gtin),name,description);
+            //addProduct(newProduct);
+        }
+        return productId;
     }
 
     /**
@@ -745,8 +750,8 @@ public class Grand_Exchange extends UnicastRemoteObject implements Observer, IAu
             throw new IllegalArgumentException();
         }
         int index = -1;
-        for (int i = 0; i < auctions.size(); i++) {
-            if (Integer.parseInt(products.get(i).getGTIN()) == productID) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getId() == productID) {
                 index = i;
                 break;
             }
