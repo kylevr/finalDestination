@@ -15,6 +15,7 @@ import fontyspublisher.RemotePublisher;
 import grandexchange.RegistryManager;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
+import static java.lang.Integer.parseInt;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -126,14 +127,21 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
                 this.auctionsPane.setPrefHeight(allAuctions.getPrefHeight());
                 for (Node node : allAuctions.getChildren())
                 {
-                    Object o = (Pane)node;
-                    System.out.println(o);
+                    String a = "abc";
+                    Pane pane = (Pane)node;
+                    Label auctionIDLabel = (Label)pane.getChildren().get(5);
+                    Integer auctionID = parseInt(auctionIDLabel.getText());
+                    if (i.equals(auctionID))
+                    {
+                        allAuctions.getChildren().remove(node);
+                    }
                 }
                 allAuctions.getChildren().add(auctionPane);
+
                 
-                publisher.registerProperty("auctionPane" + i);
-                publisher.subscribeRemoteListener(this, "auctionPane" + i);
-                publisher.inform("auctionPane" + i, this, auctionPane);  
+//                publisher.registerProperty("auctionPane" + i);
+//                publisher.subscribeRemoteListener(this, "auctionPane" + i);
+//                publisher.inform("auctionPane" + i, this, auctionPane);  
             }
 
 //            publisher.registerProperty("auctionPane" + i);
@@ -294,6 +302,13 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
                         }
                     });
             auctionPane.getChildren().addAll(productName, image, price, seller, description);
+            
+            //invisible auctionid node to store auctionid as string
+            Label auctionIDlabel = new Label();
+            Integer auctionID = auctionInfoInterface.getId();
+            auctionIDlabel.setText(auctionID.toString());
+            auctionIDlabel.setVisible(false);
+            auctionPane.getChildren().add(auctionIDlabel);
 
         } catch (RemoteException ex) {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
