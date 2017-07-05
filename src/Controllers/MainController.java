@@ -125,6 +125,8 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
             {
                 allAuctions.setPrefHeight(this.auctionsPane.getPrefHeight() + auctionsPane.getPrefHeight());
                 this.auctionsPane.setPrefHeight(allAuctions.getPrefHeight());
+
+                Collection<Node> toRemove = new ArrayList<Node>();
                 for (Node node : allAuctions.getChildren())
                 {
                     String a = "abc";
@@ -133,9 +135,10 @@ public class MainController extends UnicastRemoteObject implements IRemoteProper
                     Integer auctionID = parseInt(auctionIDLabel.getText());
                     if (i.equals(auctionID))
                     {
-                        allAuctions.getChildren().remove(node);
+                        toRemove.add(node);
                     }
                 }
+                allAuctions.getChildren().removeAll(toRemove);
                 allAuctions.getChildren().add(auctionPane);
 
                 
